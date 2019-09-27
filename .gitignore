@@ -1,3 +1,19 @@
+# editor backups, emacs, and Mac stuff
+.DS_Store
+*~
+*.bak
+TAGS
+\#*
+
+# temporary test files
+*.dot
+*.ord
+*.sgf
+*.graphml
+
+# java class files
+*.class
+
 # Prerequisites
 *.d
 
