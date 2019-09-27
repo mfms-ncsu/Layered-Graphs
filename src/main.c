@@ -1,9 +1,9 @@
 /**
- * @file min_crossings.c
- * @brief Main program for crossing minimization heuristics
+ * @file main.c
+ * @brief Main program for heuristics minimizing various objectives in
+ * layered graphs
  * @author Matt Stallmann
  * @date 2008/12/29
- * $Id: min_crossings.c 135 2016-01-13 20:27:33Z mfms $
  */
 
 
@@ -16,10 +16,6 @@
 #include<assert.h>
 #include<libgen.h>              /* basename() */
 #include<float.h>               /* DBL_MAX */
-
-#ifdef _OPENMP
-#include<omp.h>
-#endif
 
 #include"constants.h"
 #include"stats.h"
@@ -42,7 +38,6 @@ int max_iterations = INT_MAX;
 double runtime = 0;
 double max_runtime = DBL_MAX;
 double start_time = 0;
-int number_of_processors = 1;
 bool standard_termination = true;
 enum adjust_weights_enum adjust_weights = LEFT;
 enum sift_option_enum sift_option = DEGREE;
@@ -82,7 +77,7 @@ static bool do_post_processing = false;
  */
 static void printUsage( void )
 {
-  printf( "Usage: min_crossings [opts] file.dot file.ord\n" );
+  printf( "Usage: minimization [opts] file.dot file.ord\n" );
   printf( " where opts is one or more of the following\n" );
   printf(
          "  -h (median | bary | mod_bary | mcn | sifting | mce | mce_s | mse\n"
@@ -110,10 +105,6 @@ static void printUsage( void )
          "      [not implemented yet]\n"
          "  -v to get verbose information about the graph\n"
          "  -t trace_freq, if trace printout is desired, 0 means only at the end of a pass, > 0 sets frequency\n"
-         "  -f create a special .dot file of 'favored' edges; used for visualizing\n"
-         "  -k NUMBER_OF_PROCESSORS (for simulation); currently supports 0 or 1\n"
-         "      [0 means unlimited and is default for parallel barycenter versions]\n"
-         "  -m number of OpenMP threads [default: 1]\n"
          );
 }
 
@@ -172,34 +163,6 @@ static void runHeuristic( void )
     barycenter();
   else if( strcmp( heuristic, "mod_bary" ) == 0 )
     modifiedBarycenter();
-  else if( strcmp( heuristic, "static_bary" ) == 0 ) {
-    number_of_processors = 0;
-    adjust_weights = AVG;
-    balanced_weight = true;
-    staticBarycenter();
-  }
-  else if( strcmp( heuristic, "alt_bary" ) == 0 ) {
-    number_of_processors = 0;
-    adjust_weights = AVG;
-    balanced_weight = true;
-    evenOddBarycenter();
-  }
-  else if( strcmp( heuristic, "up_down_bary" ) == 0 ) {
-    number_of_processors = 0;
-    adjust_weights = AVG;
-    upDownBarycenter();
-  }
-  else if( strcmp( heuristic, "slab_bary" ) == 0 ) {
-    // number_of_processors determines size of slab, must be > 0
-    adjust_weights = AVG;
-    slabBarycenter();
-  }
-  else if( strcmp( heuristic, "rotate_bary" ) == 0 ) {
-    number_of_processors = 0;
-    adjust_weights = AVG;
-    balanced_weight = true;
-    rotatingBarycenter();
-  }
   else if ( strcmp( heuristic, "mcn" ) == 0 )
     maximumCrossingsNode();
   else if ( strcmp( heuristic, "mce_s" ) == 0 )
@@ -238,7 +201,6 @@ int main( int argc, char * argv[] )
 
   int seed = 0;
   int ch = -1;
-  number_of_processors = 1;
 
   // process command-line options; these must come before the file arguments
   // note: options that have an arg are followed by : but others are not
@@ -335,12 +297,6 @@ int main( int argc, char * argv[] )
             exit( EXIT_FAILURE );
           }
           break;
-        case 'k':
-          number_of_processors = atoi( optarg );
-          break;
-        case 'f':
-          favored_edges = true;
-          break;
         case 'o':
           produce_output = true;
           output_base_name = calloc( strlen(optarg) + 1, sizeof(char) );
@@ -352,12 +308,6 @@ int main( int argc, char * argv[] )
         case 't':
           trace_freq = atoi( optarg );
           break;
-        case 'm':
-          number_of_processors = atoi(optarg);
-#ifdef _OPENMP
-          assert(number_of_processors <= omp_get_num_procs());
-#endif
-          break;
         default:
           printUsage();
           exit( EXIT_FAILURE );
@@ -365,11 +315,6 @@ int main( int argc, char * argv[] )
 
         }  /* end of switch */
     }  /* end of while */
-
-#ifdef _OPENMP
-  // set number of OpenMP threads
-  omp_set_num_threads(number_of_processors);
-#endif
 
   // start command line at first index after the options and get the two file
   // names: dot and ord, respectively
@@ -560,7 +505,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2019 09 27 at 16:14:25 GMT] */
+/*  [Last modified: 2019 09 27 at 18:02:13 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */

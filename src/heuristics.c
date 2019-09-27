@@ -197,32 +197,20 @@ bool end_of_iteration( void )
 #ifdef DEBUG
   printf( " ### crossings at end of iteration:\n"
           "   current: total = %d,"
-#ifdef MAX_EDGE
           " edge = %d"
-#endif
           "\n"
           "   best:    total = %d,"
-#ifdef MAX_EDGE
           " edge = %d"
-#endif
           "\n"
           "   iteration:  %d"
-#ifdef MAX_EDGE
           "          %d"
-#endif
           "\n",
           numberOfCrossings(),
-#ifdef MAX_EDGE
           maxEdgeCrossings(),
-#endif
           total_crossings.best,
-#ifdef MAX_EDGE
           max_edge_crossings.best,
-#endif
           total_crossings.best_heuristic_iteration
-#ifdef MAX_EDGE
           , max_edge_crossings.best_heuristic_iteration
-#endif
           );
 #endif // DEBUG
   bool done = false;
@@ -253,14 +241,10 @@ static void print_standard_termination_message()
   if ( ! standard_termination_message_printed )
     {
       printf( "*** standard termination here: iteration %d crossings %d"
-#ifdef MAX_EDGE              
               " edge_crossings %d"
-#endif
               " graph %s ***\n",
               iteration, total_crossings.best,
-#ifdef MAX_EDGE
               max_edge_crossings.best,
-#endif
               graph_name );
     }
   standard_termination_message_printed = true;
@@ -469,253 +453,6 @@ void modifiedBarycenter( void )
         }
       tracePrint( -1, "=== mod_bary, all layers fixed" );
     }
-}
-
-/**
- * @todo For the following variations of barycenter, staticBarycenter() and
- * evenOddBarycenter(), which are intended to be parallelized, it would be
- * useful to have a global variable 'number_of_processors' to govern when the
- * end of an iteration takes place. The current code assumes that the number
- * of processors is unlimited, but synchronization and capture of current
- * minimum takes place only at synchronization points, i.e., calls to
- * end_of_iteration().
- *
- * The mechanism would count local_iterations and do something like:<br>
- *      if ( local_iterations % number_of_processors == 0 )
- *         end_of_iteration();
- * <br>
- * local_iterations would be updated in the body of each for loop that is
- *      intended to be parallelized (and effects a change) and the above code
- *      woul occur at the end of such a loop
- */
-
-void staticBarycenter( void )
-{
-  tracePrint( -1, "*** start static barycenter" );
-  while ( ! terminate() )
-    {
-      // sort all layers independently (in parallel) and do a sweep - doesn't
-      // matter which direction
-      for ( int layer = 0; layer < number_of_layers; layer++ )
-        {
-          barycenterWeights( layer, BOTH );
-        }
-      for ( int layer = 0; layer < number_of_layers; layer++ )
-        {
-          layerSort( layer );
-          updateCrossingsForLayer( layer );
-          tracePrint( layer, "static barycenter" );
-          if ( number_of_processors == 1 && end_of_iteration() )
-            return;
-        }
-      if ( number_of_processors != 1 && end_of_iteration() )
-        return;
-    }
-}
-
-/**
- * Should really be called oddEvenBarycenter, and is referred to as
- * alt_bary in the user interface. Alternates between sorting odd and even
- * numbered layers based on both neighboring layers. Weight assignment is
- * affected by the 'balanced_weight' parameter, set with the -b command-line
- * option.
- */
-void evenOddBarycenter( void ) {
-  int layer;
-  tracePrint( -1, "*** start odd/even barycenter" );
-  while ( ! terminate() ) {
-      // compute weights, then sort the odd layers
-#ifdef _OPENMP
-#pragma omp parallel for default(none) private(layer) \
-  shared(number_of_layers, trace_freq, number_of_processors)
-#endif
-      for ( layer = 1; layer < number_of_layers; layer += 2 ) {
-          barycenterWeights( layer, BOTH );
-          layerSort( layer );
-          updateCrossingsForLayer( layer );
-          tracePrint( layer, "odd layers" );
-          if ( number_of_processors == 1 && end_of_iteration() )
-            return;
-      }
-      tracePrint( -1, "--- evenOddBarycenter end of iteration" );
-      if ( number_of_processors != 1 && end_of_iteration() )
-        return;
-
-      // ditto for the even layers
-#ifdef _OPENMP
-#pragma omp parallel for default(none) private(layer) \
-  shared(number_of_layers, trace_freq, number_of_processors)
-#endif
-      for ( layer = 0; layer < number_of_layers; layer += 2 ) {
-          barycenterWeights( layer, BOTH );
-          layerSort( layer );
-          updateCrossingsForLayer( layer );
-          tracePrint( layer, "evenlayers" );
-          if ( number_of_processors == 1 && end_of_iteration() )
-            return;
-      }
-      tracePrint( -1, "--- evenOddBarycenter end of iteration" );
-      if ( number_of_processors != 1 && end_of_iteration() )
-        return;
-    }
-}
-
-/**
- * Alternates between odd and even numbered layers, but instead of
- * alternating at every iteration and using both neighboring layers to assign
- * weights, this version uses the downward layer (starting with odd layers)
- * for a number of iterations corresponding to the number of layers, and then
- * the upward layer for an equal number of iterations.
- */
-void upDownBarycenter( void ) {
-  tracePrint( -1, "*** start up/down barycenter" );
-  Orientation sort_direction = DOWNWARD;
-  while ( ! terminate() ) {
-      // compute weights, then sort the odd layers
-#ifdef _OPENMP
-#pragma omp parallel for default(none) private(layer) \
-  shared(number_of_layers, trace_freq, number_of_processors)
-#endif
-    int start_layer = 1;          /* 1 for odd, 0 for even */
-    for ( int i = 0; i < number_of_layers; i++ ) {
-      for ( int layer = start_layer; layer < number_of_layers; layer += 2 ) {
-        barycenterWeights( layer, sort_direction );
-        layerSort( layer );
-        updateCrossingsForLayer( layer );
-        char buffer[LINE_LENGTH+1];
-        sprintf( buffer, "odd/even = %d, direction = %d",
-                 start_layer, sort_direction );
-        tracePrint( layer, buffer );
-        if ( number_of_processors == 1 && end_of_iteration() )
-          return;
-      } // end, sort either odd or even layers
-      tracePrint( -1, "--- upDownBaryCenter, end of iteration" );
-      if ( number_of_processors != 1 && end_of_iteration() )
-        return;
-      start_layer = 1 - start_layer;
-#ifdef _OPENMP
-#pragma omp parallel for default(none) private(layer) \
-      shared(number_of_layers, trace_freq, number_of_processors)
-#endif
-    } // end, do number_of_layers times
-    if ( sort_direction == DOWNWARD ) sort_direction = UPWARD;
-    else sort_direction = DOWNWARD;
-  } // end, while ( ! terminate() )
-} // end, upDownBarycenter
-
-/**
- * Does the parallel part of each iteration of the slabBarycenter algorithm
- * below.
- * @param offset how far above the bottom of the slab each layer to be sorted is
- * @return true if this iteration is to be the last one
- */
-static bool slab_bary_iteration( int offset, 
-                                 int slab_size,
-                                 Orientation sort_direction ) {
-  char buffer[LINE_LENGTH+1];
-  for ( int slab_bottom = 0;
-        slab_bottom < number_of_layers - 1;
-        slab_bottom += slab_size ) {
-    int layer = (slab_bottom + offset) % number_of_layers;
-    if ( ( sort_direction == DOWNWARD && layer == 0 )
-         || ( sort_direction == UPWARD && layer == number_of_layers - 1 )
-         ) continue;
-    barycenterWeights( layer, sort_direction );
-    layerSort( layer );
-    updateCrossingsForLayer( layer );
-    sprintf( buffer, "offset = %d, slab_bottom = %d, direction = %d",
-             offset, slab_bottom, sort_direction );
-    tracePrint( layer, buffer );
-    if ( number_of_processors == 1 && end_of_iteration() )
-      return true;
-  } // end, sort a layer in each slab
-  sprintf( buffer, "--- slabBarycenter, end of iteration, offset = %d", offset );
-  tracePrint( -1, buffer );
-  if ( number_of_processors != 1 && end_of_iteration() )
-    return true;
-#ifdef _OPENMP
-#pragma omp parallel for default(none) private(layer) \
-  shared(number_of_layers, trace_freq, number_of_processors)
-#endif
-  return false;
-}
-
-/**
- * Each processor does a full-blown barycenter algorithm. Starts are
- * staggered at distance max(layers/processors,2) and each sweep wraps around  
- * to make the best use of of each processor. Startting layer shifts by 1 at
- * each iteration.
- */
-void slabBarycenter( void ) {
-  int slab_size = number_of_layers;
-  if ( number_of_processors > 1 ) slab_size /= number_of_processors;
-  if ( slab_size < 2 ) slab_size = 2;
-  char buffer[LINE_LENGTH+1];
-  sprintf( buffer, "*** start slab barycenter, slab size = %d", slab_size );
-  tracePrint( -1, buffer );
-  while ( ! terminate() ) {
-      // compute weights, then sort the odd layers
-#ifdef _OPENMP
-#pragma omp parallel for default(none) private(layer) \
-  shared(number_of_layers, trace_freq, number_of_processors)
-#endif
-    // first do an upsweep in each slab
-    // use the bottom layer of the next slab up as well
-    for ( int offset = 1; offset < number_of_layers; offset++ ) {
-      bool no_more_iterations
-        = slab_bary_iteration( offset, slab_size, DOWNWARD );
-      if ( no_more_iterations ) return;
-    } // end, upward sweep
-
-    // now a downward sweep in each slab, using the top layer of the next
-    // slab down during the last iteration
-    for ( int offset = slab_size - 1; offset > 0; offset-- ) {
-      bool no_more_iterations
-        = slab_bary_iteration( offset, slab_size, UPWARD );
-      if ( no_more_iterations ) return;
-    } // end, downward sweep
-
-  } // end, while ( ! terminate() )
-} // end, slabBarycenter
-
-/**
- * Alternates between even numbered and odd numbered layers. Unlike alt_bary,
- * which bases sorting on both neighboring layers simultaneously, this
- * version rotates between doing upward, downward, and both.
- */
-void rotatingBarycenter( void ) {
-  tracePrint( -1, "*** start rotating barycenter" );
-  Orientation sort_direction = BOTH;
-  int start_layer = 1;          /* 1 for odd, 0 for even */
-  while ( ! terminate() ) {
-      // compute weights, then sort the odd layers
-#ifdef _OPENMP
-#pragma omp parallel for default(none) private(layer) \
-  shared(number_of_layers, trace_freq, number_of_processors)
-#endif
-    for ( int layer = start_layer; layer < number_of_layers; layer += 2 ) {
-      barycenterWeights( layer, sort_direction );
-      layerSort( layer );
-      updateCrossingsForLayer( layer );
-      char buffer[LINE_LENGTH+1];
-      sprintf( buffer, "odd/even = %d, direction = %d",
-        start_layer, sort_direction );
-      tracePrint( layer, buffer );
-      if ( number_of_processors == 1 && end_of_iteration() )
-        return;
-    } // end, sort either odd or even layers
-    tracePrint( -1, "--- upDownBaryCenter, end of iteration" );
-    if ( number_of_processors != 1 && end_of_iteration() )
-      return;
-#ifdef _OPENMP
-#pragma omp parallel for default(none) private(layer) \
-    shared(number_of_layers, trace_freq, number_of_processors)
-#endif
-    start_layer = 1 - start_layer;
-    if ( sort_direction == DOWNWARD ) sort_direction = UPWARD;
-    else if ( sort_direction == UPWARD ) sort_direction = BOTH;
-    else sort_direction = DOWNWARD;
-  } // end, while ( ! terminate() )
 }
 
 /**
@@ -1244,4 +981,4 @@ void swapping( void )
 
 #endif // ! defined(TEST)
 
-/*  [Last modified: 2019 09 27 at 15:48:58 GMT] */
+/*  [Last modified: 2019 09 27 at 18:01:12 GMT] */

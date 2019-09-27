@@ -3,13 +3,7 @@
 CC=gcc
 DFLAGS = 
 OFLAGS = -O3
-#MPFLAGS = -fopenmp
-MPFLAGS =
-# for specifying that MAX_EDGE (maximum crossings for an edge) and/or PARETO
-# (create a list of Pareto optimum solutions) is to be used
-EFLAGS = -DMAX_EDGE -DPARETO
-# all programs are compiled with max edge objective included
-CFLAGS = -c -Wall -g -std=c99 $(EFLAGS) $(MPFLAGS) $(OFLAGS) $(DFLAGS)
+CFLAGS = -c -Wall -g -std=c99 $(OFLAGS) $(DFLAGS)
 #CLIBS  = -lm -lgomp
 CLIBS = -lm
 

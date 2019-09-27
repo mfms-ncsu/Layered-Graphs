@@ -160,13 +160,6 @@ void medianWeights( int layer, Orientation orientation )
   Layerptr layerptr = layers[ layer ];
   int i = 0;
   int num_nodes = layerptr->number_of_nodes;
-/*
-#ifdef _OPENMP
-#pragma omp parallel for default(none) private(i) \
-  shared(num_nodes, orientation, balanced_weight, \
-  layerptr, trace_freq, number_of_processors)
-#endif
-*/
   for(i = 0 ; i < num_nodes; i++ )
     {
       if ( orientation == BOTH )
@@ -217,4 +210,4 @@ bool medianDownSweep( int starting_layer )
   return false;
 }
 
-/*  [Last modified: 2019 09 27 at 15:59:40 GMT] */
+/*  [Last modified: 2019 09 27 at 18:02:41 GMT] */

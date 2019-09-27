@@ -1,0 +1,39 @@
+Options to get rid of and add/modify.
+
+*** Get rid of ***
+
+- sifting variations (-s)
+- mce variations (-e)
+- the -g option; made obsolete by naming heuristics differently
+
+*** Modify ***
+
+- the -h option so that a sequence of heuristics, separated by commas, can be specified
+
+- the -i and -r options should also be comma separated so that different heuristics can have different numbers of iterations or time limits; need to look into which of these has precedence if both are specified; also, may need to use '_' to indicate that the corresponding heuristic does not use the option: for example, one heuristic may run for a number of iterations while another has a time limit
+
+- might need a global iteration count to be used with the -c option and reported with each mimimum or Pareto point
+
+- output is not conducive to csv because each minimum or Pareto point comes with an iteration number that is reported on the same line; need to think in terms of a conversion script and/or separate lines for the iteration reports
+
+*** Add ***
+
+- facilities for reading and writing sgf files; the program would base the I/O method on the extension(s) of the input file(s)
+
+- ability to have positions that are not consecutive on a layer, in order to be able to minimize non-verticality, both directly and as a Pareto option
+
+- a variant of barycenter that takes non-consecutive positions into account; here the new positions would be "as close as possible" to the computed averages (Terri may have started something like this)
+
+- the new barycenter variant might coincidentally be a good heuristic for minimizing total crossings, at least in some situations
+
+- a mnv heuristic, similar to mce, that chooses an edge with maximum non-verticality and minimizes the non-verticality of edges incident on its endpoints
+
+*** Implementation notes ***
+
+For heuristics it would be good to have an array of structs, each entry has a heuristic name, pointer to the corresponding function, iterations, and time limit; the latter two are left unspecified. Suppose that the user specifies options
+       -h bary,mce -i 1000,_ -r _,10
+Then the program would
+    - search the array to find the "bary" entry
+    - copy the struct, filling in the iteration field with 1000
+    - run barycenter consulting the current struct for runtime and iterations
+    - repeat the process for "mce" using the same global variable for the copy

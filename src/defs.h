@@ -41,16 +41,6 @@ extern double start_time;
 extern double max_runtime;
 
 /**
- * When simulating a heuristic that can be parallelized, there may be a
- * tradeoff between number of processors and solution quality. Fewer
- * processors may lead to fewer crossings because the number of crossings can
- * be checked more often. For example, if there is only one processor, you
- * can check every time a change occurs. If there are more, you have to wait
- * until the next synchronization point.
- */
-extern int number_of_processors;
-
-/**
  * True if using the standard, "natural" stopping criterion for the iterative
  * heuristic, e.g., no improvement after a sweep for barycenter.
  */
@@ -190,5 +180,5 @@ extern int trace_freq;
 
 #endif
 
-/*  [Last modified: 2019 09 27 at 16:10:35 GMT] */
+/*  [Last modified: 2019 09 27 at 17:59:26 GMT] */
 

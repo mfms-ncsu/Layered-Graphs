@@ -145,31 +145,19 @@ static void adjust_weights_left( int layer )
 static void adjust_weights_avg( int layer ) {
   Layerptr layerptr = layers[ layer ];
   int num_nodes = layerptr->number_of_nodes;
-  // this method of adjusting weights is used in parallel barycenter
-  // versions, so it is important that the adjusted weight of a node is not
-  // influenced by the already adjusted weight of its left neighbor;
-  // temp_weights holds the unadjusted weights
-  double * temp_weights;
-  bool parallel = (number_of_processors != 1);
-  if ( parallel ) {
-    temp_weights = (double *) calloc( num_nodes, sizeof(double) );
-    for ( int i = 0; i < num_nodes; i++ ) {
-      temp_weights[i] = layerptr->nodes[i]->weight;
-    }
-  }
   for ( int i = 0; i < num_nodes; i++ ) {
     Nodeptr node = layerptr->nodes[i];
-    double weight = parallel ? temp_weights[i] : layerptr->nodes[i]->weight; 
+    double weight = layerptr->nodes[i]->weight; 
     // Do nothing if node already has a weight
     if ( weight != -1 ) continue;
 
     double left_weight = -1;
     double right_weight = -1;
     if ( i > 0 ) {
-      left_weight = parallel ? temp_weights[i-1] : layerptr->nodes[i-1]->weight;
+      left_weight = layerptr->nodes[i-1]->weight;
     }
     if ( i < num_nodes - 1 ) {
-      right_weight = parallel ? temp_weights[i+1] : layerptr->nodes[i+1]->weight;
+      right_weight = layerptr->nodes[i+1]->weight;
     }
 
     // if both neighbors are present and have weights, take the
@@ -186,16 +174,14 @@ static void adjust_weights_avg( int layer ) {
       node->weight = right_weight;
     }
     else {
-      // neither neighbor has a weight: can propagate from left if not parallel
-      node->weight = parallel ? 0 : left_weight;
+      // neither neighbor has a weight: can propagate from left
+      node->weight = left_weight;
     }
 #ifdef DEBUG
     printf("  adjust_weight (avg), node = %s, weight = %f\n",
            node->name, node->weight );
 #endif  
   } // for nodes on this layer
-  if ( parallel )
-    free( temp_weights );
 } // end, adjust_weights_avg
 
 /**
@@ -212,13 +198,6 @@ void barycenterWeights( int layer, Orientation orientation )
   Layerptr layerptr = layers[ layer ];
   int i = 0;
   int num_nodes = layerptr->number_of_nodes;
-/*
-#ifdef _OPENMP
-#pragma omp parallel for default(none) private(i) \
-  shared(num_nodes, orientation, balanced_weight, \
-  layerptr, trace_freq, number_of_processors)
-#endif
-*/
   for(i = 0 ; i < num_nodes; i++ )
     {
       if ( orientation == BOTH && balanced_weight )
@@ -273,4 +252,4 @@ bool barycenterDownSweep( int starting_layer )
   return false;
 }
 
-/*  [Last modified: 2019 09 27 at 15:57:31 GMT] */
+/*  [Last modified: 2019 09 27 at 17:59:03 GMT] */
