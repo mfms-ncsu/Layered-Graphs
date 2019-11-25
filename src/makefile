@@ -8,7 +8,7 @@ CFLAGS = -c -Wall -g -std=c99 $(OFLAGS) $(DFLAGS)
 CLIBS = -lm
 
 # all programs that can be created
-PROGRAMS = minimization create_random_dag add_edges dot_and_ord_to_sgf rand_seq
+PROGRAMS = minimization create_random_dag add_edges dot_and_ord_to_sgf
 
 # object files common to all heuristics
 OBJECTS = sifting.o dfs.o sorting.o heuristics.o barycenter.o crossings.o\
@@ -52,9 +52,6 @@ crossings_test: crossings_test.o sorting.o heuristics_test.o\
 	 graph_io.o dot.o ord.o hash.o crossing_utilities.o\
 ; $(CC) $(DFLAGS) crossings_test.o sorting.o heuristics_test.o\
 	 graph_io.o dot.o ord.o hash.o crossing_utilities.o -o crossings_test
-
-rand_seq: rand_seq.c;
-	$(CC) rand_seq.c -o rand_seq
 
 # source dependencies
 

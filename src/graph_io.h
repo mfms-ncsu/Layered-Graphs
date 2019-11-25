@@ -20,7 +20,7 @@
  * first pass. Also initializes all graph-related data structures and global
  * variables.
  */
-void readGraph( const char * dot_file, const char * ord_file );
+void readDotAndOrd( const char * dot_file, const char * ord_file );
 
 /**
  * Prints the graph in a verbose format on standard output for debugging
@@ -59,4 +59,4 @@ void renumberNodesUsingDotFile( const char * dot_file );
 
 #endif
 
-/*  [Last modified: 2016 02 16 at 20:06:09 GMT] */
+/*  [Last modified: 2019 11 25 at 21:52:52 GMT] */

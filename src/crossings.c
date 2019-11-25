@@ -391,7 +391,7 @@ void barycenterUpSweep(int layer) {}
 
 int main( int argc, char * argv[] )
 {
-  readGraph( argv[1], argv[2] );
+  readDotAndOrd( argv[1], argv[2] );
   initCrossings();
   updateAllCrossings();
   printCrossings();
@@ -432,4 +432,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2019 09 27 at 15:58:03 GMT] */
+/*  [Last modified: 2019 11 25 at 21:52:50 GMT] */

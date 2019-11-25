@@ -12,6 +12,8 @@ Options to get rid of and add/modify.
 
 - the -i and -r options should also be comma separated so that different heuristics can have different numbers of iterations or time limits; need to look into which of these has precedence if both are specified; also, may need to use '_' to indicate that the corresponding heuristic does not use the option: for example, one heuristic may run for a number of iterations while another has a time limit
 
+- the -R option for randomization also needs comma-separated arguments; here we need to distinguish between actual seed, use seed from previous heuristic, if any, no seed, and no randomness; maybe should not have the "use seed from previous" option -- too complicated, but can use, e.g., -1 for no randomness
+
 - might need a global iteration count to be used with the -c option and reported with each mimimum or Pareto point
 
 - output is not conducive to csv because each minimum or Pareto point comes with an iteration number that is reported on the same line; need to think in terms of a conversion script and/or separate lines for the iteration reports

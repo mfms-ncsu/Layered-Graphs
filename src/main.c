@@ -320,6 +320,12 @@ int main( int argc, char * argv[] )
   // names: dot and ord, respectively
   argc -= optind;
   argv += optind;
+
+  /**
+   * @todo Allow either one or two arguments; extract base name and
+   * extension; if only one file and extension is .sgf, read sgf; otherwise
+   * read dot and ord.
+   */
   if( argc != 2 )
     {
       printf( "Wrong number of filenames (%d)\n", argc );
@@ -351,12 +357,15 @@ int main( int argc, char * argv[] )
       strcpy( output_base_name, base_name_ptr ); 
     }
 
-  // initialize graph
-  readGraph( dot_file_name, ord_file_name );
+  // read graph
+  readDotAndOrd( dot_file_name, ord_file_name );
 
   // create list of favored edges if appropriate
   // do the allocations unconditionally to avoid having to check for
   // 'favored_edges' everywhere
+  //
+  // @todo this is a test version only - treats all edges along paths
+  // emanating from middle node of middle layer as favored
   initPriorityEdges();
   if ( favored_edges )
     {
@@ -392,15 +401,15 @@ int main( int argc, char * argv[] )
   init_order( best_crossings_order );
 
   best_edge_crossings_order
-    = (Orderptr) calloc( 1, sizeof(struct order_struct) ); 
+    = (Orderptr) calloc( 1, sizeof(struct order_struct) );
   init_order( best_edge_crossings_order );
 
   best_total_stretch_order
-    = (Orderptr) calloc( 1, sizeof(struct order_struct) ); 
+    = (Orderptr) calloc( 1, sizeof(struct order_struct) );
   init_order( best_total_stretch_order );
 
   best_bottleneck_stretch_order
-    = (Orderptr) calloc( 1, sizeof(struct order_struct) ); 
+    = (Orderptr) calloc( 1, sizeof(struct order_struct) );
   init_order( best_bottleneck_stretch_order );
 
   best_favored_crossings_order
@@ -505,7 +514,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2019 09 27 at 18:02:13 GMT] */
+/*  [Last modified: 2019 11 25 at 22:00:12 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */

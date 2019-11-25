@@ -359,7 +359,7 @@ static int countIsolatedNodes()
   return isolated_nodes;
 }
 
-void readGraph( const char * dot_file, const char * ord_file )
+void readDotAndOrd( const char * dot_file, const char * ord_file )
 {
   number_of_nodes = 0;
   number_of_edges = 0;
@@ -498,7 +498,7 @@ void printGraph()
 
 int main( int argc, char * argv[] )
 {
-  readGraph( argv[1], argv[2] );
+  readDotAndOrd( argv[1], argv[2] );
   printGraph();
   fprintf( stderr, "Average number of probes = %5.2f\n",
            getAverageNumberOfProbes() );
@@ -507,4 +507,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2019 09 27 at 15:58:47 GMT] */
+/*  [Last modified: 2019 11 25 at 21:52:48 GMT] */

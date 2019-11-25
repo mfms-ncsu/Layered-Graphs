@@ -1,5 +1,5 @@
 /**
- * @file dot.cxx
+ * @file dot.c
  * @brief
  * Module for reading files in .dot format
  * @author Matt Stallmann
@@ -255,4 +255,4 @@ int main()
 
 #endif
 
-/*  [Last modified: 2019 09 27 at 16:19:08 GMT] */
+/*  [Last modified: 2019 11 25 at 21:15:20 GMT] */

@@ -107,10 +107,10 @@ int main( int argc, char * argv[] )
   const char * dot_file_name = argv[1];
   const char * ord_file_name = argv[2];
 
-  readGraph( dot_file_name, ord_file_name );
+  readDotAndOrd( dot_file_name, ord_file_name );
   write_sgf();
 
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2014 07 17 at 20:14:41 GMT] */
+/*  [Last modified: 2019 11 25 at 21:52:49 GMT] */

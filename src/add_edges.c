@@ -204,7 +204,7 @@ int main( int argc, char * argv[] )
   strcat( dot_name_buffer, ".dot" );
   strcpy( ord_name_buffer, input_base_name );
   strcat( ord_name_buffer, ".ord" );
-  readGraph( dot_name_buffer, ord_name_buffer );
+  readDotAndOrd( dot_name_buffer, ord_name_buffer );
   int original_num_edges = number_of_edges;
 
   // check whether the desired number of edges is reasonable
@@ -250,4 +250,4 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2011 07 07 at 16:57:39 GMT] */
+/*  [Last modified: 2019 11 25 at 21:52:51 GMT] */
