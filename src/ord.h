@@ -4,7 +4,6 @@
  *          ordering on layers of a graph)
  * @author Matt Stallmann
  * @date 29 Dec 1998
- * $Id: ord.h 2 2011-06-07 19:50:41Z mfms $
  */
 
 //     Copyright (C) 2001 Matthias Stallmann.
@@ -113,4 +112,4 @@ void outputNode( FILE * out, const char * node );
 
 #endif
 
-/*  [Last modified: 2008 12 29 at 19:01:52 GMT] */
+/*  [Last modified: 2019 12 13 at 20:04:10 GMT] */

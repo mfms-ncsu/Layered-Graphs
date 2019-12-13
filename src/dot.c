@@ -33,12 +33,10 @@
 #include<ctype.h>
 
 #include"dot.h"
+#include "constants.h"
 #include"defs.h"
 
-#define MAX_MSG_LENGTH 512
-#define MAX_NAME_LENGTH 512
-
-static char error_message[MAX_MSG_LENGTH];
+static char error_message[MAX_NAME_LENGTH];
 static char local_graph_name[MAX_NAME_LENGTH];
 static int line_number = 1;
 
@@ -255,4 +253,4 @@ int main()
 
 #endif
 
-/*  [Last modified: 2019 11 25 at 21:15:20 GMT] */
+/*  [Last modified: 2019 12 13 at 21:08:31 GMT] */

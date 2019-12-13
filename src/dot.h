@@ -1,10 +1,9 @@
 /**
  * @file dot.h
  * @brief
- * Module for reading files in .dot format
+ * Module for reading and writing files in .dot format
  * @author Matt Stallmann
  * @date 1998/07/17, modified for new experiments 2008/12/17
- * $Id: dot.h 2 2011-06-07 19:50:41Z mfms $
  */
 
 //     Copyright (C) 2001 Matthias Stallmann.
@@ -89,5 +88,5 @@ void outputEdge( FILE * out,
 
 #endif
 
-/*  [Last modified: 2011 04 19 at 20:31:55 GMT] */
+/*  [Last modified: 2019 12 13 at 20:03:53 GMT] */
 
