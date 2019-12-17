@@ -47,36 +47,46 @@ void initSgf(FILE * in);
 
 /**
  * places the name of the graph into buffer, which must be preallocated
+ * @assume initSgf() has already been called (hence no need for the file ptr)
  */
-void getNameFromSgfFile(FILE * in, char * buffer);
+void getNameFromSgfFile(char * buffer);
 
 /**
  * @return number of nodes
+ * @assume initSgf() and getNameFromSgfFile() have already been called
  */
-int getNumberOfNodes(FILE * in);
+int getNumberOfNodes();
 
 /**
  * @return number of edges
+ * @assume initSgf(), getNameFromSgfFile(), and getNumberOfNodes() have
+ * already been called
  */
-int getNumberOfEdges(FILE * in);
+int getNumberOfEdges();
 
 /**
  * @return number of layers
+ * @assume initSgf()), getNameFromSgfFile(), getNumberOfNodes(), and
+ * getNumberOfEdges() have already been called
  */
-int getNumberOfLayers(FILE * in);
+int getNumberOfLayers();
 
 /**
  * put node id, layer, and position into the preallocated sgf_node
  * @return true if there is a next node
+ * @assume the tag line has been read, i.e., getNameFromSgfFile(),
+ * getNumberOfNodes(), getNumberOfEdges(), and getNumberOfLayers() have
+ * already been called
  */
 bool getNextNode(FILE * in, struct sgf_node_struct * sgf_node);
 
 /**
  * put source and target into the preallocated edge
  * @return true if there is a next edge
+ * @assume all nodes have been read from the file using getNumberOfNodes()
  */
 bool getNextEdge(File * in, struct sgf_edge_struct * sgf_edge);
 
 #endif
 
-/*  [Last modified: 2019 12 13 at 20:30:06 GMT] */
+/*  [Last modified: 2019 12 16 at 20:44:57 GMT] */
