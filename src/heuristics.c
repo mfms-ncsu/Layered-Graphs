@@ -281,6 +281,11 @@ bool isFixedLayer( int layer ) { return layers[layer]->fixed; }
 void fixNode( Nodeptr node ) { node->fixed = true; }
 void fixEdge( Edgeptr edge ) { edge->fixed = true; }
 void fixLayer( int layer ) { layers[layer]->fixed = true; }
+
+/**
+ * @todo the next two functions (and others like them) can simply ue the
+ * mater node list
+ */
 bool allNodesFixed( void )
 {
   int layer = 0;
@@ -981,4 +986,4 @@ void swapping( void )
 
 #endif // ! defined(TEST)
 
-/*  [Last modified: 2019 09 27 at 18:01:12 GMT] */
+/*  [Last modified: 2020 03 15 at 19:02:46 GMT] */

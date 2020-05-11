@@ -15,12 +15,17 @@
 #include"graph.h"
 
 /**
- * Reads the graph from the given files, specified by their names. Each file
- * is read twice so that arrays can be allocated to the correct size on the
- * first pass. Also initializes all graph-related data structures and global
- * variables.
+ * Reads the graph from the given dot and ord files, specified by their names.
+ * Each file is read twice so that arrays can be allocated to the correct
+ * size on the first pass.
+ * Also initializes all graph-related data structures and global variables.
  */
 void readDotAndOrd( const char * dot_file, const char * ord_file );
+
+/**
+ * Reads a graph from an sgf file.
+ */
+void readSgf(const char * sgf_file);
 
 /**
  * Prints the graph in a verbose format on standard output for debugging
@@ -49,14 +54,20 @@ void writeDot( const char * dot_file_name,
                );
 
 /**
+ * Writes the current graph to an sgf file with the given name.
+ */
+void writeSgf(const char * sgf_file_name);
+
+/**
  * Renumbers nodes, i.e., assigns id's, based on their order of appearance in
  * a dot file. This is useful if converting to sgf format -- see
  * dot_and_ord_to_sgf.c; the node number will not depend on the order in the
  * ord file and different orderings will have the same node numbers so that
  * they can be compared.
+ * @todo not implemented and not clear that it needs to be
  */
 void renumberNodesUsingDotFile( const char * dot_file );
 
 #endif
 
-/*  [Last modified: 2019 11 25 at 21:52:52 GMT] */
+/*  [Last modified: 2020 05 11 at 15:57:17 GMT] */

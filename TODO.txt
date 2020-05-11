@@ -1,7 +1,5 @@
 This repository is incomplete. The following items need to be copied from ~/MySoftware/Crossing-Minimization-private and cleaned up.
 
-- ilp directory (scripts related to creating CPLEX input for optimizing various objectives)
-
 - python directory, selective; maybe put these all into scripts
 
 - scripts directory (add .sh extensions where appropriate)
