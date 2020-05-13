@@ -3,6 +3,13 @@
 """
 Converts a graph in .sgf format to a linear integer program
 This program translates from standard input to standard output.
+
+Variables are as follows:
+    x_i_j        1 if node i precedes node j on their common layer
+    c_i_j_k_el   1 if edge i,j crosses edge k,el; 0 otherwise
+    p_i_el       (integer) position of node i on layer el
+    d_u_v_i      used to "linearize" the quadratic quantity (d_u_v)^2,
+                  where d_u_v is the offset for edge uv
 """
 
 import sys
@@ -15,22 +22,22 @@ import itertools
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter # to allow newlines in help messages
 
-TOLERANCE = 0
+TOLERANCE = 0                   # for stretch constraints
 MAX_TERMS_IN_LINE = 100
 INDENT = "  "
 
 parser = ArgumentParser(formatter_class=RawTextHelpFormatter,
-                                 description='Creates an ILP to minimize an objective based on an sgf representation of a layered graph',
-                                 epilog='reads sgf from standard input, prints lp file on standard output')
+                        description='Creates an ILP to minimize an objective based on an sgf representation of a layered graph',
+                        epilog='reads sgf from standard input, prints lp file on standard output')
 parser.add_argument('--objective', choices={'total','bottleneck',
                                             'stretch','bn_stretch',
-                                            'quadratic', 'vertical'},
+                                            'quad_stretch', 'vertical'},
                     default='total',
                     required=True,
                     help='minimize ...\n'
                     + ' total/bottleneck (total/bottleneck crossings)\n'
                     + ' stretch/bn_stretch (total/bottleneck edge length)\n'
-                    + ' quadratic (use quadratic programming to miminze total stretch)\n'
+                    + ' quad_stretch (use quadratic programming to miminze total stretch)\n'
                     + ' vertical (minimize non-verticality)\n')
 parser.add_argument('--total', type=int,
                     help='constraint on the total number of crossings (default: None)')
@@ -49,18 +56,20 @@ parser.add_argument('--bipartite', type=int,
 
 args = parser.parse_args()
 
-# creates three global data structures that describe the graph
-#
-# _node_dictionary: the item whose key is the id of a node and whose value is
-# a tuple of the form (layer, up_neighbors, down_neighbors), where
-#     layer is the layer of the node
-#     up_neighbors is a list of adjacent nodes on the next higher layer
-#     down_neighbors is a list of adjacent nodes on the next lower layer
-#
-# _edge_list: each item is a tuple of the form:
-#       (source, target)
-#
-# _layer_list: _layer_list[i] is a list of nodes on layer i
+"""
+The following code creates three global data structures that describe the graph
+
+ _node_dictionary: the item whose key is the id of a node and whose value is
+ a tuple of the form (layer, up_neighbors, down_neighbors), where
+     layer is the layer of the node
+     up_neighbors is a list of adjacent nodes on the next higher layer
+     down_neighbors is a list of adjacent nodes on the next lower layer
+
+ _edge_list: each item is a tuple of the form:
+       (source, target)
+
+ _layer_list: _layer_list[i] is a list of nodes on layer i
+"""
 
 _node_dictionary = {}
 _edge_list = []
@@ -80,8 +89,10 @@ def read_sgf(input):
             _comments.append(line[1:])
         line = read_nonblank(input)
 
-# adds a _node_dictionary entry to map a node id to its layer and empty lists
-# for the neighbors
+"""
+adds a _node_dictionary entry to map a node id to its layer and empty
+lists for the neighbors
+"""
 def process_node(line):
     global _node_dictionary
     global _layer_list
@@ -97,8 +108,11 @@ def process_node(line):
         number_of_layers += 1
     _layer_list[layer].append(node_id)
 
-# adds an edge to the list of edges and adds the endpoints to the appropriate
-# lists of neighbors
+
+"""
+adds an edge to the list of edges and adds the endpoints to the appropriate
+lists of neighbors
+"""
 def process_edge( line ):
     global _edge_list
     global _node_dictionary
@@ -111,18 +125,22 @@ def process_edge( line ):
     _node_dictionary[source][1].append(target)
     _node_dictionary[target][2].append(source)
 
-# @return the first non-blank line in the input
+"""
+@return the first non-blank line in the input
+"""
 def read_nonblank( input ):
     line = input.readline()
     while ( line and line.strip() == "" ):
         line = input.readline()
     return line
 
-# computes the global array _layer_size that gives the size of each layer
-#  and the global integer _max_layer_size
-# also computes the global array _layer_factor so that _layer_factor[i] gives the
-# multiplier on a position variable in layer i when stretch is computed;
-# this will be 1/(L-1), where L is the number of nodes in layer i
+"""
+ computes the global array _layer_size that gives the size of each layer
+  and the global integer _max_layer_size
+ also computes the global array _layer_factor so that _layer_factor[i] gives the
+ multiplier on a position variable in layer i when stretch is computed;
+ this will be 1/(L-1), where L is the number of nodes in layer i
+"""
 def compute_layer_factors():
     global _layer_size
     global _max_layer_size
@@ -147,15 +165,17 @@ def compute_layer_factors():
     for layer in range(number_of_layers):
         _layer_factor[layer] = 1.0 / denominator[layer]
 
-# In what follows a constraint is a tuple of the form
-#  (left, relational_operator, right)
-# where left is a list of strings,
-#       relational_operator is one of '>=', '<=', '=', etc.
-#       and right is a string representing a number.
-# each string in left is a +, -, a +c or -c (where c is a constant)
-# followed by a variable name.
+"""
+ In what follows a constraint is a tuple of the form
+  (left, relational_operator, right)
+ where left is a list of strings,
+       relational_operator is one of '>=', '<=', '=', etc.
+       and right is a string representing a number.
+ each string in left is a +, -, a +c or -c (where c is a constant)
+ followed by a variable name.
 
-# variables are added to these sets when they arise in constraints
+ variables are added to these sets when they arise in constraints
+"""
 _binary_variables = []
 _integer_variables = []
 _continuous_variables = []
@@ -163,8 +183,10 @@ _crossing_variables = []
 _raw_stretch_variables = []
 _nonverticality_variables = []
 
-# @return a list of constraints on relative position variables x_i_j, where
-# x_i_j is 1 if node i precedes node j on their common layer, 0 otherwise
+"""
+ @return a list of constraints on relative position variables x_i_j, where
+         x_i_j is 1 if node i precedes node j on their common layer, 0 otherwise
+"""
 def triangle_constraints():
     global _binary_variables
     triangle_constraints = []
@@ -214,11 +236,13 @@ def triangle_constraints():
     #                        = x_j_i - x_j_k - x_k_i
     return triangle_constraints
 
-# @return a list of position constraints given the node list and edge list
-# p_i_el represents the position of node i in layer el
-# if node i precedes node j on layer el then p_j_el - p_i_el >= 1, otherwise unconstrained
-# can simulate unconstrained using multiplication of x_j_i by _max_layer_size
-# if contiguous p_i_el <= layer_size - 1, otherwise it's <= _max_layer_size - 1
+"""
+ @return a list of position constraints given the node list and edge list
+ p_i_el represents the position of node i in layer el
+ if node i precedes node j on layer el then p_j_el - p_i_el >= 1, otherwise unconstrained
+ can simulate unconstrained using multiplication of x_j_i by _max_layer_size
+ if contiguous p_i_el <= layer_size - 1, otherwise it's <= _max_layer_size - 1
+"""
 def position_constraints(contiguous):
     global _integer_variables
     position_constraints = []
@@ -245,9 +269,11 @@ def position_constraints(contiguous):
         position_constraints.append(([ position_variable ], '<=', rightmost_position))
     return position_constraints
 
-# @return a list of trivial constraints of the form "c_i_j_i_j = 0", one for
-# each edge ij, so that each edge is guaranteed to be included when the
-# solution is parsed by sol2sgf.py
+"""
+@return a list of trivial constraints of the form "c_i_j_i_j = 0", one for
+ each edge ij, so that each edge is guaranteed to be included when the
+ solution is parsed by sol2sgf.py
+"""
 def edges_for_output():
     global _binary_variables
     edges = []
@@ -259,11 +285,13 @@ def edges_for_output():
         _binary_variables.append(edge_variable)
     return edges
 
-# @return a list of crossing constraints given node list and edge list the
-# variable c_i_j_k_l = 1 iff edge ij crosses edge kl, where i,k are on one
-# layer and j,l are on the next layer; a crossing occurs if
-#      i precedes k and l precedes j
-#   or k precedes i and j precedes l
+"""
+ @return a list of crossing constraints given node list and edge list the
+ variable c_i_j_k_l = 1 iff edge ij crosses edge kl, where i,k are on one
+ layer and j,l are on the next layer; a crossing occurs if
+      i precedes k and l precedes j
+   or k precedes i and j precedes l
+"""
 def crossing_constraints():
     global _binary_variables
     global _crossing_variables
@@ -306,9 +334,11 @@ def crossing_constraints():
     return crossing_constraints
     
 
-# @return a list of bottleneck crossing constraints
-# a bottleneck constraint has the form
-#    bottleneck - sum of all crossing variables for a particular edge >= 0
+"""
+ @return a list of bottleneck crossing constraints
+ a bottleneck constraint has the form
+    bottleneck - sum of all crossing variables for a particular edge >= 0
+"""
 def bottleneck_constraints():
     global _integer_variables
     _integer_variables.append("bottleneck")
@@ -341,9 +371,11 @@ def bottleneck_constraints():
             bottleneck_constraints.append((left, relop, right))
 
     return bottleneck_constraints
-    
-# @return a single constraint that captures the fact that the total >= the
-# sum of all crossing variables
+
+"""
+ @return a single constraint that captures the fact that the total >= the
+ sum of all crossing variables
+"""
 def total_constraint():
     relop = '>='
     right = '0'
@@ -352,9 +384,13 @@ def total_constraint():
         left.append("- " + crossing_variable)
     return (left, relop, right)
     
-# @return a list of stretch constraints, each constraint says, essentially,
-# that the s_i_j = abs((1/|V_k|) * p_i_k - (1/|V_{k+1}) * p_j_{k+1}), where ij is an
-# edge and k is the layer of node i
+"""
+ @return a list of stretch constraints, each constraint says, essentially,
+ that the s_i_j = abs((1/|V_k|) * p_i_k - (1/|V_{k+1}|) * p_j_{k+1}), where ij is an
+ edge and k is the layer of node i
+
+ s_i_j = abs(z_i_j), as computed in raw_stretch_constraints() below
+"""
 def stretch_constraints():
     global _continuous_variables
     global _stretch_variables
@@ -384,12 +420,12 @@ def stretch_constraints():
         # and 1 if z_i_j is negative
         indicator_variable = "b_" + source + "_" + target
         _binary_variables.append(indicator_variable)
-        # ensure s_i_j <= z_i_j if b_i_j = 0
+        # ensure s_i_j <= z_i_j if b_i_j = 0 (modulo tolerance)
         left = ["+ " + raw_variable]
         left.append("+ 2 " + indicator_variable)
         left.append("- " + stretch_variable)
         stretch_constraints.append((left, relop, right))
-        # ensure s_i_j <= -z_i_j if b_i_j = 1
+        # ensure s_i_j <= -z_i_j if b_i_j = 1 (modulo tolerance)
         left = ["- " + raw_variable]
         left.append("- 2 " + indicator_variable)
         left.append("- " + stretch_variable)
@@ -397,13 +433,15 @@ def stretch_constraints():
         stretch_constraints.append((left, relop, right))
 
     return stretch_constraints
-    
-# @return a list of constraints that give value to variables whose absolute
-# values define stretch and whose squares are used in the quadratic
-# objective. Each constraint says, essentially, that
-# z_i_j = abs((1/|V_k|) * p_i_k - (1/|V_{k+1}) * p_j_{k+1}), where ij is an
-# edge and k is the layer of node i; these are also used to get absolute
-# value equality constraints for the regular stretch variables
+
+"""
+ @return a list of constraints that give value to variables whose absolute
+ values define stretch and whose squares are used in the quad_stretch
+ objective. Each constraint says, essentially, that
+ z_i_j = abs((1/|V_k|) * p_i_k - (1/|V_{k+1}) * p_j_{k+1}), where ij is an
+ edge and k is the layer of node i; these are also used to get absolute
+ value equality constraints for the regular stretch variables
+"""
 def raw_stretch_constraints():
     global _raw_stretch_variables
     raw_constraints = []
@@ -428,10 +466,14 @@ def raw_stretch_constraints():
         raw_constraints.append((left, relop, right))
     return raw_constraints
     
-# @return distance constraints for "linearized" versions of non-verticality
-# variables d_u_v_i (see 2011 Jena tech report by Chimani and Hungerlaender);
-# add the variables to _integer_variables:
-#   d_u_v_i >= d_u_v_0 - i or d_u_v_0 - d_u_v_i <= i
+"""
+ @return distance constraints for "linearized" versions of non-verticality
+ variables d_u_v_i
+ (see 2013 INFORMS Journal on Computing, Chimani and Hungerlaender, pp. 611-624);
+ add the variables to _integer_variables:
+   d_u_v_i >= d_u_v_0 - i or d_u_v_0 - d_u_v_i <= i
+ the effect is the same as using (d_u_v)^2, where d_u_v is the offset for edge uv
+"""
 def linearized_distances():
     linearized_distance_constraints = []
     for edge in _edge_list:
@@ -455,11 +497,13 @@ def linear_distance_constraints(u, v):
         linearized_distance_constraints.append((left, relop, right))
     return linearized_distance_constraints
 
-# @return constraints that will make "distance" variables d_u_v = d_u_v_0
-# represent the absolute value of the difference between u's position on its
-# layer and v's position on its layer; also adds the appropriate variables to
-# the list _integer_variables; the sum of squares of these variables is the
-# total non-verticality; see edge_nonverticalities for a linear version
+"""
+ @return constraints that will make "distance" variables d_u_v = d_u_v_0
+ represent the absolute value of the difference between u's position on its
+ layer and v's position on its layer; also adds the appropriate variables to
+ the list _integer_variables; the sum of squares of these variables is the
+ total non-verticality; see edge_nonverticalities for a linear version
+"""
 def distance_definitions():
     global _integer_variables
     distance_constraints = []
@@ -484,13 +528,15 @@ def distance_definitions():
         distance_constraints.append((left, relop, right))
     return distance_constraints
 
-# @return a set of constraints that define q_u_v = the (quadratic)
-# nonverticality of edge uv, defined by the linearized distances as follows
-#  q_u_v = d_u_v_0 + 2 d_u_v_1 + 2 d_u_v_2 + ... + 2 d_u_v_max
-# This works because q_u_v is supposed to be d_u_v_0 squared and
-#  d_u_v_i = d_u_v_0 - i; actually >= but it doesn't matter
-# so we get sum_{i = 1 to d_u_v_0} i + sum_{i = 1 to d_u_v_0 - 1} i
-# see linearized distances
+"""
+ @return a set of constraints that define q_u_v = the (quadratic)
+ nonverticality of edge uv, defined by the linearized distances as follows
+  q_u_v = d_u_v_0 + 2 d_u_v_1 + 2 d_u_v_2 + ... + 2 d_u_v_max
+ This works because q_u_v is supposed to be d_u_v_0 squared and
+  d_u_v_i = d_u_v_0 - i; actually >= but it doesn't matter
+ so we get sum_{i = 1 to d_u_v_0} i + sum_{i = 1 to d_u_v_0 - 1} i
+ see linearized distances
+"""
 def edge_nonverticalities():
     nonverticality_constraints = []
     for edge in _edge_list:
@@ -513,7 +559,9 @@ def edge_nonverticality_constraint(u, v):
     left.append('- ' + quadratic_variable)
     return (left, relop, right)
 
-# sets the variable vertical = sum of all q_u_v's
+"""
+ sets the variable vertical = sum of all q_u_v's
+"""
 def total_nonverticality():
     relop = '='
     right = '0'
@@ -522,9 +570,11 @@ def total_nonverticality():
     _nonverticality_variables.append('vertical')
     return (left, relop, right)
 
-# @return a list of constraints that represent lower bounds on the
-# nonverticality of individual nodes, based on indegree and outdegree
-# Note: we need to consider each edge from both directions
+"""
+ @return a list of constraints that represent lower bounds on the
+ nonverticality of individual nodes, based on indegree and outdegree
+ Note: we need to consider each edge from both directions
+"""
 def verticality_lower_bounds():
     lower_bounds = []
     for node in _node_dictionary:
@@ -552,8 +602,10 @@ def verticality_bounds(node, neighbors):
             bounds.append((left, relop, right))
     return bounds
 
-# @return a list of lower bounds on verticality of complete bipartite graphs
-# @param limit upper limit on number of nodes to consider
+"""
+ @return a list of lower bounds on verticality of complete bipartite graphs
+ @param limit upper limit on number of nodes to consider
+"""
 def bipartite_constraints(limit):
     if limit < 2:
         limit = _max_layer_size
@@ -583,8 +635,10 @@ def bipartite_constraints(limit):
                 break
     return []
 
-# @return a single constraint for total stretch, i.e., stretch >= sum of
-# stretch variables
+"""
+ @return a single constraint for total stretch, i.e., stretch >= sum of
+ stretch variables
+"""
 def total_stretch_constraint():
     relop = '>='
     right = '0'
@@ -594,8 +648,10 @@ def total_stretch_constraint():
         left.append("- " + stretch_variable)
     return (left, relop, right)
 
-# @return a list of bottleneck stretch constraints, i.e., bn_stretch is >=
-# each stretch variable.
+"""
+ @return a list of bottleneck stretch constraints, i.e., bn_stretch is >=
+ each stretch variable.
+"""
 def bottleneck_stretch_constraints():
     global _continuous_variables
     relop = '>='
@@ -607,16 +663,20 @@ def bottleneck_stretch_constraints():
         bottleneck_stretch_constraints.append((left, relop, right))
     return bottleneck_stretch_constraints
 
-# permutes the left hand side of each constraint as well as the order of the
-# constraints in the list
+"""
+ permutes the left hand side of each constraint as well as the order of the
+ constraints in the list
+"""
 def permute_constraints(constraints):
     random.shuffle(constraints)
     for constraint in constraints:
         random.shuffle(constraint[0])
 
-# @return a string consisting of the elements of L separated by blanks and
-# with a line break (and indentation) inserted between sublists of length
-# max_length
+"""
+ @return a string consisting of the elements of L separated by blanks and
+ with a line break (and indentation) inserted between sublists of length
+ max_length
+"""
 def split_list(L, max_length):
     number_of_segments = int(math.ceil(len(L) / float(max_length)))
     output = ""
@@ -643,16 +703,21 @@ def print_quadratic_stretch_objective():
     quadratic_variables_squared = ["+" + x + "^2" for x in _raw_stretch_variables]
     print(INDENT + "[ " +  split_list(quadratic_variables_squared, MAX_TERMS_IN_LINE) + " ]/2")
 
-# prints an objective representing total nonverticality The "[" and "]/2" at
-# beginning and end of the list, respectively, are needed for quadratic
-# expressions in CPLEX.
-# Note: need to make coefficients = 2; CPLEX divides them by 2 for some
-# reason, but only in the objective function.
+"""
+ prints an objective representing total nonverticality The "[" and "]/2" at
+ beginning and end of the list, respectively, are needed for quadratic
+ expressions in CPLEX.
+ Note: need to make coefficients = 2; CPLEX divides them by 2 for some
+ reason, but only in the objective function.
+"""
 def print_verticality_objective():
     print(INDENT + "[ " \
               + split_list(verticality_variables_squared, MAX_TERMS_IN_LINE) \
               + " ]/2" )
 
+"""
+Generic functions for printing constraints
+"""
 def print_constraint(constraint):
     (left, relop, right) = constraint
     print(INDENT + split_list(left, MAX_TERMS_IN_LINE), relop, right)
@@ -661,7 +726,9 @@ def print_constraints(constraints):
     for constraint in constraints:
         print_constraint(constraint)
 
-# need to make the lower bound on raw stretch variables less than 0; -1 will work
+"""
+need to make the lower bound on raw stretch variables less than 0; -1 will work
+"""
 def print_bounds_on_raw_stretch_variables():
     for variable in _raw_stretch_variables:
         print(INDENT + "-1 <= " + variable + " <= 1")
@@ -677,7 +744,7 @@ def print_variables():
         print("Semi")
         print(INDENT + split_list(list(_continuous_variables), MAX_TERMS_IN_LINE))
 
-def main():
+if __name__ == '__main__':
     read_sgf(sys.stdin)
     # the following is not relevant for all objectives but couldn't hurt
     # makes logic a lot easier to do it up front
@@ -698,7 +765,7 @@ def main():
         constraints.extend(crossing_constraints())
     if args.objective == 'stretch' or args.objective == 'bn_stretch' \
             or args.stretch != None or args.bn_stretch != None \
-            or args.objective == 'quadratic':
+            or args.objective == 'quad_stretch':
         constraints.extend(raw_stretch_constraints())
         raw_stretch_constraints_added = True
     if args.objective == 'stretch' or args.objective == 'bn_stretch' \
@@ -712,7 +779,7 @@ def main():
         constraints.append(total_stretch_constraint())
     if args.objective == 'bn_stretch' or args.bn_stretch != None:
         constraints.extend(bottleneck_stretch_constraints())
-    if args.objective == 'quadratic' and not raw_stretch_constraints_added:
+    if args.objective == 'quad_stretch' and not raw_stretch_constraints_added:
         constraints.extend(raw_stretch_constraints())
     if args.objective == 'vertical' or args.vertical != None:
         constraints.extend(distance_definitions())
@@ -744,7 +811,7 @@ def main():
     print_comments()
 
     print("Min");
-    if args.objective == 'quadratic':
+    if args.objective == 'quad_stretch':
         print_quadratic_stretch_objective()
     else:
         print(INDENT + args.objective)
@@ -756,6 +823,4 @@ def main():
     print_variables()
     print("End")
 
-main()
-
-#  [Last modified: 2020 05 11 at 18:29:30 GMT]
+#  [Last modified: 2020 05 13 at 19:56:51 GMT]
