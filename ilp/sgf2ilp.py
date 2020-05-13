@@ -10,6 +10,9 @@ Variables are as follows:
     p_i_el       (integer) position of node i on layer el
     d_u_v_i      used to "linearize" the quadratic quantity (d_u_v)^2,
                   where d_u_v is the offset for edge uv
+    z_u_v        the displacement between vertices u and v for edge uv,
+                  assuming equal spacing of nodes (+ or -)
+    s_u_v        abs(z_u_v), the stretch of edge uv
 """
 
 import sys
@@ -71,9 +74,27 @@ The following code creates three global data structures that describe the graph
  _layer_list: _layer_list[i] is a list of nodes on layer i
 """
 
+--------- crossing constraints !!! ---------
+"""
+each entry in _node_dictionary is accessed by the (integer) id of the node
+each node has a 'layer' and two adjacency lists, 'up' and 'down',
+one for each neighboring layer
+"""
 _node_dictionary = {}
+
+"""
+each edge appears as a pair of node id's (integers) in _edge_list
+"""
 _edge_list = []
+
+"""
+_layer_list is a list of lists:
+   _layer_list[el] is a list of nodes on layer el (integers)
+"""
 _layer_list = []
+"""
+comments that appear in the sgf file: typically about how the graph was generated 
+"""
 _comments = []
 
 def read_sgf(input):
@@ -97,9 +118,12 @@ def process_node(line):
     global _node_dictionary
     global _layer_list
     line_fields = line.split()
-    node_id = line_fields[1]
+    node_id = int(line_fields[1])
     layer = int(line_fields[2])
-    _node_dictionary[node_id] = (str(layer), [], [])
+    _node_dictionary[node_id] = {}
+    _node_dictionary[node_id]['layer'] = layer
+    _node_dictionary[node_id]['up'] = []
+    _node_dictionary[node_id]['down'] = []
     number_of_layers = len(_layer_list)
     # make sure layer list has enough entries to accomodate the layer of the
     # new node; there have to be layer+1 at least
@@ -117,13 +141,13 @@ def process_edge( line ):
     global _edge_list
     global _node_dictionary
     line_fields = line.split()
-    source = line_fields[1]
-    target = line_fields[2]
+    source = int(line_fields[1])
+    target = int(line_fields[2])
     _edge_list.append((source, target))
     # add target to up_neighbors of source and source to the down_neighbors
     # of target
-    _node_dictionary[source][1].append(target)
-    _node_dictionary[target][2].append(source)
+    _node_dictionary[source]['up'].append(target)
+    _node_dictionary[target]['down'].append(source)
 
 """
 @return the first non-blank line in the input
@@ -192,11 +216,10 @@ def triangle_constraints():
     triangle_constraints = []
     # anti-symmetry constraints
     for i in _node_dictionary:
-        i_layer = _node_dictionary[i][0]
-        for j in _node_dictionary:
-            j_layer = _node_dictionary[j][0]
-            # add a constraint if i and j on same layer; only once per pair
-            if i_layer == j_layer and i < j:
+        layer = _node_dictionary[i]['layer']
+        for j in _layer_list[layer]:
+            # add a constraint for each pair i,j (once only)
+            if i < j:
                 x_i_j = "x_" + str(i) + "_" + str(j)
                 x_j_i = "x_" + str(j) + "_" + str(i)
                 current_constraint = (["+ " + x_i_j, "+ " + x_j_i], '=', '1')
@@ -208,25 +231,23 @@ def triangle_constraints():
     # x_i_j and x_j_k implies x_i_k
     # or x_i_k - x_i_j - x_j_k >= -1
     for i in _node_dictionary:
-        i_layer = _node_dictionary[i][0]
-        for j in _node_dictionary:
-            j_layer = _node_dictionary[j][0]
-            for k in _node_dictionary:
-                k_layer = _node_dictionary[k][0]
+        layer = _node_dictionary[i]['layer']
+        for j in _layer_list[layer]:
+            for k in _layer_list[layer]:
                 # add two constraints if the three nodes are on the same
                 # layer; only once per triple
-                if i_layer == j_layer == k_layer and i < j and j < k:
+                if i < j and j < k:
                     relop = '>='
                     right = '-1'
 
-                    left = ["+ x_" + i + "_" + k]
-                    left.append("- x_" + i + "_" + j)
-                    left.append("- x_" + j + "_" + k)
+                    left = ["+ x_" + str(i) + "_" + str(k)]
+                    left.append("- x_" + str(i) + "_" + str(j))
+                    left.append("- x_" + str(j) + "_" + str(k))
                     triangle_constraints.append((left, relop, right))
 
-                    left = ["+ x_" + i + "_" + j]
-                    left.append("- x_" + i + "_" + k)
-                    left.append("- x_" + k + "_" + j)
+                    left = ["+ x_" + str(i) + "_" + str(j)]
+                    left.append("- x_" + str(i) + "_" + str(k))
+                    left.append("- x_" + str(k) + "_" + str(j))
                     triangle_constraints.append((left, relop, right))
 
     # the above two variants suffice
@@ -240,8 +261,9 @@ def triangle_constraints():
  @return a list of position constraints given the node list and edge list
  p_i_el represents the position of node i in layer el
  if node i precedes node j on layer el then p_j_el - p_i_el >= 1, otherwise unconstrained
- can simulate unconstrained using multiplication of x_j_i by _max_layer_size
+ can simulate constrained using multiplication of x_j_i by _max_layer_size
  if contiguous p_i_el <= layer_size - 1, otherwise it's <= _max_layer_size - 1
+ @param contiguous True iff positions must be contiguous (False in case of verticality)
 """
 def position_constraints(contiguous):
     global _integer_variables
@@ -249,24 +271,25 @@ def position_constraints(contiguous):
     relop = '>='
     right = '1'
     for node_id in _node_dictionary:
-        layer = int(_node_dictionary[node_id][0])
-        position_variable = "p_" + node_id + "_" + str(layer)
+        layer = _node_dictionary[node_id]['layer']
+        # max_difference = maximum difference in position between two nodes
+        # on this layer; also the largest value of a position variable (0 based)
+        if contiguous:
+            max_difference = _layer_size[layer] - 1
+        else:
+            max_difference = _max_layer_size - 1
+        position_variable = "p_" + str(node_id) + "_" + str(layer)
+        position_constraints.append(([ position_variable ], '<=', max_difference))
         _integer_variables.append(position_variable)
-        for other_node_id in _node_dictionary:
-            other_layer = int(_node_dictionary[other_node_id][0])
-            if layer == other_layer and node_id != other_node_id:
+        for other_node_id in _layer_list[layer]:
+            if node_id != other_node_id:
                 other_position_variable = "p_" + other_node_id + "_" + str(layer)
                 left = []
                 left.append("+ " + other_position_variable)
                 left.append("- " + position_variable)
-                left.append("+ " + str(_max_layer_size) + " "
+                left.append("+ " + str(_max_difference) + " "
                             + "x_" + other_node_id + "_" + node_id)
                 position_constraints.append((left, relop, right))
-        if contiguous:
-            rightmost_position = _layer_size[layer] - 1
-        else:
-            rightmost_position = _max_layer_size - 1
-        position_constraints.append(([ position_variable ], '<=', rightmost_position))
     return position_constraints
 
 """
@@ -278,9 +301,10 @@ def edges_for_output():
     global _binary_variables
     edges = []
     for edge in _edge_list:
-        source = edge[0]
-        target = edge[1]
-        edge_variable = "c_" + source + "_" + target + "_"  + source + "_" + target
+        source_str = str(edge[0])
+        target_str = str(edge[1])
+        edge_variable = ("c_" + source_str + "_" + target_str
+                         + "_"  + source_str + "_" + target_str)
         edges.append((["+ " + edge_variable], "=", "0"))
         _binary_variables.append(edge_variable)
     return edges
@@ -298,13 +322,14 @@ def crossing_constraints():
     crossing_constraints = []
     relop = '>='
     right = '-1'
-    # for every pair of edges edge_1 and edge_2, where the two edges are in
-    # the same channel and do not have any common endpoints, generate the two
-    # relevant crossing constraints
+    # for every pair of nodes i_1, i_2 on layer el and every pair of nodes j_1, j_2
+    #  in the up list of i_1, i_2, respectively, where j_1 != j_2,
+    #  generate the two relevant crossing constraints
+    
     for index_1, edge_1 in enumerate(_edge_list):
         source_1 = edge_1[0]
         target_1 = edge_1[1]
-        channel_1 = _node_dictionary[target_1][0]
+        channel_1 = _node_dictionary[target_1]['layer']
         for index_2, edge_2 in enumerate(_edge_list):
             source_2 = edge_2[0]
             target_2 = edge_2[1]
@@ -823,4 +848,4 @@ if __name__ == '__main__':
     print_variables()
     print("End")
 
-#  [Last modified: 2020 05 13 at 19:56:51 GMT]
+#  [Last modified: 2020 05 13 at 21:33:46 GMT]
