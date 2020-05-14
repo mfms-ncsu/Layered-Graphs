@@ -33,15 +33,16 @@ parser = ArgumentParser(formatter_class=RawTextHelpFormatter,
                         description='Creates an ILP to minimize an objective based on an sgf representation of a layered graph',
                         epilog='reads sgf from standard input, prints lp file on standard output')
 parser.add_argument('--objective', choices={'total','bottleneck',
-                                            'stretch','bn_stretch',
-                                            'quad_stretch', 'vertical'},
+                                            'stretch','bn_stretch', 'quad_stretch',
+                                            'vertical', 'quad_vertical'},
                     default='total',
                     required=True,
                     help='minimize ...\n'
                     + ' total/bottleneck (total/bottleneck crossings)\n'
                     + ' stretch/bn_stretch (total/bottleneck edge length)\n'
-                    + ' quad_stretch (use quadratic programming to miminze total stretch)\n'
-                    + ' vertical (minimize non-verticality)\n')
+                    + ' quad_stretch (use quadratic programming to miminize total stretch)\n'
+                    + ' vertical (minimize non-verticality)\n'
+                    + ' quad_vertical (use quadratic programming to minimize non-verticality\n')
 parser.add_argument('--total', type=int,
                     help='constraint on the total number of crossings (default: None)')
 parser.add_argument('--bottleneck', type=int,
@@ -55,7 +56,9 @@ parser.add_argument('--vertical', type=int,
 parser.add_argument('--seed', type=int,
                     help='a random seed if ILP constraints are to be permuted (default: None)')
 parser.add_argument('--bipartite', type=int,
-                    help='max number of nodes in bipartite constraints for verticality (default: None, 0 means no limit)')
+                    help='max number of nodes in bipartite constraints for verticality'
+                    + '\n default: None, 0 means no limit'
+                    + '\n *not fully implemented*: only prints potential constraints')
 
 args = parser.parse_args()
 
@@ -74,7 +77,6 @@ The following code creates three global data structures that describe the graph
  _layer_list: _layer_list[i] is a list of nodes on layer i
 """
 
---------- crossing constraints !!! ---------
 """
 each entry in _node_dictionary is accessed by the (integer) id of the node
 each node has a 'layer' and two adjacency lists, 'up' and 'down',
@@ -99,6 +101,7 @@ _comments = []
 
 def read_sgf(input):
     global _comments
+    global _max_layer_size
     line = read_nonblank( input )
     while ( line ):
         type = line.split()[0]
@@ -109,6 +112,8 @@ def read_sgf(input):
         elif type == 'c':
             _comments.append(line[1:])
         line = read_nonblank(input)
+    # at this point the _layer_list will be complete
+    _max_layer_size = max([len(_layer_list[layer]) for layer in range(len(_layer_list))])
 
 """
 adds a _node_dictionary entry to map a node id to its layer and empty
@@ -166,20 +171,16 @@ def read_nonblank( input ):
  this will be 1/(L-1), where L is the number of nodes in layer i
 """
 def compute_layer_factors():
-    global _layer_size
-    global _max_layer_size
     global _layer_factor
     # first compute number of layers (layer numbers are 0-based) and the size
     # of each
     number_of_layers = len(_layer_list)
-    _layer_size = [len(layer) for layer in _layer_list]
-    _max_layer_size = max(_layer_size)
     # then the appropriate denominator for each layer
     denominator = [0] * number_of_layers
     for layer in range(number_of_layers):
-        this_layer_size = _layer_size[layer]
+        this_layer_size = len(_layer_list[layer])
         if this_layer_size < 1:
-            sys.exit("Error: layer " + layer + " has no nodes")
+            sys.exit("Error: layer " + str(layer) + " has no nodes")
         denominator[layer] = this_layer_size - 1
         # layers with only a single node should put that node in the center
         if denominator[layer] == 0:
@@ -206,6 +207,7 @@ _continuous_variables = []
 _crossing_variables = []
 _raw_stretch_variables = []
 _nonverticality_variables = []
+_raw_edge_verticality_variables = []
 
 """
  @return a list of constraints on relative position variables x_i_j, where
@@ -275,7 +277,7 @@ def position_constraints(contiguous):
         # max_difference = maximum difference in position between two nodes
         # on this layer; also the largest value of a position variable (0 based)
         if contiguous:
-            max_difference = _layer_size[layer] - 1
+            max_difference = len(_layer_list[layer]) - 1
         else:
             max_difference = _max_layer_size - 1
         position_variable = "p_" + str(node_id) + "_" + str(layer)
@@ -283,12 +285,12 @@ def position_constraints(contiguous):
         _integer_variables.append(position_variable)
         for other_node_id in _layer_list[layer]:
             if node_id != other_node_id:
-                other_position_variable = "p_" + other_node_id + "_" + str(layer)
+                other_position_variable = "p_" + str(other_node_id) + "_" + str(layer)
                 left = []
-                left.append("+ " + other_position_variable)
-                left.append("- " + position_variable)
-                left.append("+ " + str(_max_difference) + " "
-                            + "x_" + other_node_id + "_" + node_id)
+                left.append("+ " + str(other_position_variable))
+                left.append("- " + str(position_variable))
+                left.append("+ " + str(max_difference + 1) + " "
+                            + "x_" + str(other_node_id) + "_" + str(node_id))
                 position_constraints.append((left, relop, right))
     return position_constraints
 
@@ -315,87 +317,103 @@ def edges_for_output():
  layer and j,l are on the next layer; a crossing occurs if
       i precedes k and l precedes j
    or k precedes i and j precedes l
+ this function is a wrapper that identifies distinct pairs of nodes
+ on each layer
 """
 def crossing_constraints():
+    crossing_constraints = []
+    # for every pair of nodes i, k on each layer and every pair of nodes j, l
+    #  in the up list of i and k, respectively, where j != l,
+    #  generate the two relevant crossing constraints
+    
+    for layer_number in range(len(_layer_list) - 1):
+        # layers are numbered starting at 0 and nodes on last layers have no upward edges
+        layer_nodes = _layer_list[layer_number]
+        for i in layer_nodes:
+            for k in layer_nodes:
+                if i < k:       # only once per pair
+                    crossing_constraints.extend(generate_crossing_constraints(i, k))
+    return crossing_constraints
+    
+""" 
+ @return a list with the two crossing constraints for each edge directed upward from
+         nodes i and k
+ this function is a wrapper that identifies the edges that may be involved in crossings
+ """
+def generate_crossing_constraints(i, k):
+    crossing_constraints = []
+    for j in _node_dictionary[i]['up']:
+        for l in _node_dictionary[k]['up']:
+            if j != l:
+                crossing_constraints.extend(generate_two_crossing_constraints(i, j, k, l))
+    return crossing_constraints
+
+"""
+@return the two crossing constraints for edges ij and kl
+ and add the corresponding variables to the appropriate lists
+"""
+def generate_two_crossing_constraints(i, j, k, l):
     global _binary_variables
     global _crossing_variables
     crossing_constraints = []
     relop = '>='
     right = '-1'
-    # for every pair of nodes i_1, i_2 on layer el and every pair of nodes j_1, j_2
-    #  in the up list of i_1, i_2, respectively, where j_1 != j_2,
-    #  generate the two relevant crossing constraints
-    
-    for index_1, edge_1 in enumerate(_edge_list):
-        source_1 = edge_1[0]
-        target_1 = edge_1[1]
-        channel_1 = _node_dictionary[target_1]['layer']
-        for index_2, edge_2 in enumerate(_edge_list):
-            source_2 = edge_2[0]
-            target_2 = edge_2[1]
-            channel_2 = _node_dictionary[target_2][0]
-            # check if two edges in the same channel without common node
-            if channel_1 == channel_2 \
-                    and index_1 < index_2 \
-                    and source_1 != source_2 and target_1 != target_2:
-                crossing_variable = "c_" + source_1 + "_" + target_1 \
-                    + "_" + source_2 + "_" + target_2
-                _binary_variables.append(crossing_variable)
-                _crossing_variables.append(crossing_variable)
+    crossing_variable = ("c_" + str(i) + "_" + str(j)
+                         + "_" + str(k) + "_" + str(l))
+    _binary_variables.append(crossing_variable)
+    _crossing_variables.append(crossing_variable)    
 
-                left = ["+ " + crossing_variable]
-                # wrong order in the first layer
-                left.append("- x_" + str(source_2) + "_" + str(source_1))
-                # but correct on second
-                left.append("- x_" + str(target_1) + "_" + str(target_2))
-                crossing_constraints.append((left, relop, right))
+    left = ["+ " + crossing_variable]
+    # wrong order on the lower layer
+    left.append("- x_" + str(k) + "_" + str(i))
+    # but correct on the upper layer
+    left.append("- x_" + str(j) + "_" + str(l))
+    crossing_constraints.append((left, relop, right))
 
-                left = ["+ " + crossing_variable]
-                # wrong order in the second layer
-                left.append("- x_" + str(target_2) + "_" + str(target_1))
-                # but correct on first
-                left.append("- x_" + str(source_1) + "_" + str(source_2))
-                crossing_constraints.append((left, relop, right))
+    left = ["+ " + crossing_variable]
+    # wrong order on the upper layer
+    left.append("- x_" + str(l) + "_" + str(j))
+    # but correct on the lower layer
+    left.append("- x_" + str(i) + "_" + str(k))
+    crossing_constraints.append((left, relop, right))
     return crossing_constraints
-    
 
 """
  @return a list of bottleneck crossing constraints
  a bottleneck constraint has the form
     bottleneck - sum of all crossing variables for a particular edge >= 0
+ this function is a wrapper that calls on a function to generate a single constraint
 """
 def bottleneck_constraints():
     global _integer_variables
     _integer_variables.append("bottleneck")
+    constraints = []
+    for layer_number in range(len(_layer_list) - 1):
+        # layers are numbered starting at 0 and nodes on last layers have no upward edges
+        layer_nodes = _layer_list[layer_number]
+        for i in layer_nodes:
+            for j in _node_dictionary[i]['up']:
+                # ij is an edge (considered once)
+                add_bottleneck_constraint(constraints, i, j, layer_nodes)
+    return constraints
+
+"""
+adds a bottleneck constraint for edge ij, where i is among the layer_nodes to constraints
+"""
+def add_bottleneck_constraint(constraints, i, j, layer_nodes):
     relop = '>='
     right = '0'
-    bottleneck_constraints = []
-    for index_1, edge_1 in enumerate(_edge_list):
-        source_1 = edge_1[0]
-        target_1 = edge_1[1]
-        channel_1 = _node_dictionary[target_1][0]
-        # compile the left hand side for edges crossing this one
-        left = ["+ bottleneck"]
-        for index_2, edge_2 in enumerate(_edge_list):
-            source_2 = edge_2[0]
-            target_2 = edge_2[1]
-            channel_2 = _node_dictionary[target_2][0]
-            # check if two edges in the same channel without common node
-            if channel_1 == channel_2 \
-                    and source_1 != source_2 and target_1 != target_2:
-                if index_1 < index_2:
-                    crossing_variable = "c_" + str(source_1) + "_" + str(target_1) \
-                        + "_" + str(source_2) + "_" + str(target_2)
-                else:
-                    crossing_variable = "c_" + str(source_2) + "_" + str(target_2) \
-                        + "_" + str(source_1) + "_" + str(target_1)
+    left = ["+ bottleneck"]
+    for k in layer_nodes:
+        if i < k:
+            for l in _node_dictionary[k]['up']:
+                crossing_variable = ("c_" + str(i) + "_" + str(j)
+                                         + "_" + str(k) + "_" + str(l))
                 left.append("- " + crossing_variable)
-        # add bottleneck constraint if it there's at least one potentially
-        # crossing edge in the channel
-        if len(left) > 1:
-            bottleneck_constraints.append((left, relop, right))
-
-    return bottleneck_constraints
+    # add bottleneck constraint if it there's at least one potentially
+    # crossing edge in the channel
+    if len(left) > 1:
+        constraints.append((left, relop, right))
 
 """
  @return a single constraint that captures the fact that the total >= the
@@ -428,8 +446,8 @@ def stretch_constraints():
         right = str(-TOLERANCE)
         source = edge[0]
         target = edge[1]
-        stretch_variable = "s_" + source + "_" + target
-        raw_variable = "z_" + source + "_" + target
+        stretch_variable = "s_" + str(source) + "_" + str(target)
+        raw_variable = "z_" + str(source) + "_" + str(target)
         _continuous_variables.append(stretch_variable)
         _stretch_variables.append(stretch_variable)
         # standard tricks for absolute value
@@ -443,7 +461,7 @@ def stretch_constraints():
         stretch_constraints.append((left, relop, right))
         # introduce binary indicator variable: b_i_j = 0 if z_i_j is positive
         # and 1 if z_i_j is negative
-        indicator_variable = "b_" + source + "_" + target
+        indicator_variable = "b_" + str(source) + "_" + str(target)
         _binary_variables.append(indicator_variable)
         # ensure s_i_j <= z_i_j if b_i_j = 0 (modulo tolerance)
         left = ["+ " + raw_variable]
@@ -477,12 +495,12 @@ def raw_stretch_constraints():
     for edge in _edge_list:
         source = edge[0]
         target = edge[1]
-        raw_stretch_variable = "z_" + source + "_" + target
+        raw_stretch_variable = "z_" + str(source) + "_" + str(target)
         _raw_stretch_variables.append(raw_stretch_variable)
-        source_layer = int(_node_dictionary[source][0])
-        target_layer = int(_node_dictionary[target][0])
-        source_position_variable = "p_" + source + "_" + str(source_layer)
-        target_position_variable = "p_" + target + "_" + str(target_layer)
+        source_layer = _node_dictionary[source]['layer']
+        target_layer = _node_dictionary[target]['layer']
+        source_position_variable = "p_" + str(source) + "_" + str(source_layer)
+        target_position_variable = "p_" + str(target) + "_" + str(target_layer)
         left = ["+" + raw_stretch_variable]
         left.append("+ " + str(_layer_factor[source_layer])
                     + " " + source_position_variable)
@@ -512,10 +530,10 @@ def linear_distance_constraints(u, v):
     global _integer_variables
     linearized_distance_constraints = []
     relop = '<='
-    distance_variable = "d_" + u + "_" + v + "_0"
+    distance_variable = "d_" + str(u) + "_" + str(v) + "_0"
     for i in range(1, _max_layer_size):
         right = str(i)
-        linear_variable = "d_" + u + "_" + v + "_" + str(i)
+        linear_variable = "d_" + str(u) + "_" + str(v) + "_" + str(i)
         _integer_variables.append(linear_variable)
         left = ["+ " + distance_variable]
         left.append("- " + linear_variable)
@@ -537,11 +555,11 @@ def distance_definitions():
     for edge in _edge_list:
         source = edge[0]
         target = edge[1]
-        source_layer = _node_dictionary[source][0]
-        target_layer = _node_dictionary[target][0]
-        source_position_variable = "p_" + source + "_" + source_layer
-        target_position_variable = "p_" + target + "_" + target_layer
-        distance_variable = "d_" + source + "_" + target + "_0"
+        source_layer = _node_dictionary[source]['layer']
+        target_layer = _node_dictionary[target]['layer']
+        source_position_variable = "p_" + str(source) + "_" + str(source_layer)
+        target_position_variable = "p_" + str(target) + "_" + str(target_layer)
+        distance_variable = "d_" + str(source) + "_" + str(target) + "_0"
         _integer_variables.append(distance_variable)
         left = ["+ " + distance_variable]
         left.append("+ " + source_position_variable)
@@ -573,16 +591,42 @@ def edge_nonverticalities():
 
 def edge_nonverticality_constraint(u, v):
     global _nonverticality_variables
-    quadratic_variable = 'q_' + u + '_' + v
+    quadratic_variable = 'q_' + str(u) + '_' + str(v)
     _nonverticality_variables.append(quadratic_variable)
     relop = '='
     right = '0'
-    prefix = 'd_' + u + "_" + v + "_"
+    prefix = 'd_' + str(u) + "_" + str(v) + "_"
     left = ['+ ' + prefix + '0']
     for i in range(1, _max_layer_size):
         left.append('+ 2 ' + prefix + str(i))
     left.append('- ' + quadratic_variable)
     return (left, relop, right)
+
+"""
+ @return a set of constraints that give value to d_u_v for each edge uv,
+         the difference in position of u and v; can be negative
+  these are used for quadratic programming formulation of non-verticality
+"""
+def raw_edge_nonverticalities():
+    global _raw_edge_verticality_variables
+    global _integer_variables
+    position_constraints = []
+    relop = '='
+    right = '0'
+    for edge in _edge_list:
+        source = edge[0]
+        target = edge[1]
+        source_layer = _node_dictionary[source]['layer']
+        target_layer = _node_dictionary[target]['layer']
+        source_position_variable = 'p_' + str(source) + '_' + str(source_layer)
+        target_position_variable = 'p_' + str(target) + '_' + str(target_layer)
+        distance_variable = 'd_' + str(source) + "_" + str(target)
+        _raw_edge_verticality_variables.append(distance_variable)
+        left = ['+ ' + source_position_variable]
+        left.append('- ' + target_position_variable)
+        left.append('- ' + distance_variable)
+        position_constraints.append((left, relop, right))
+    return position_constraints
 
 """
  sets the variable vertical = sum of all q_u_v's
@@ -603,10 +647,10 @@ def total_nonverticality():
 def verticality_lower_bounds():
     lower_bounds = []
     for node in _node_dictionary:
-        up_neighbors = _node_dictionary[node][1]
+        up_neighbors = _node_dictionary[node]['up']
         lower_bounds\
             .extend(verticality_bounds(node, up_neighbors))
-        down_neighbors = _node_dictionary[node][2]
+        down_neighbors = _node_dictionary[node]['down']
         lower_bounds\
             .extend(verticality_bounds(node, down_neighbors))
     return lower_bounds
@@ -619,10 +663,10 @@ def verticality_bounds(node, neighbors):
         for i in range(0, int(degree / 2)):
             right = str((int(degree / 2) - i)
                         * (int(degree / 2 + 1/2) - i))
-            left = ["+ d_" + node + "_" + neighbor + "_" + str(i) 
+            left = ["+ d_" + str(node) + "_" + str(neighbor) + "_" + str(i) 
                     for neighbor in neighbors]
             bounds.append((left, relop, right))
-            left = ["+ d_" + neighbor + "_" + node + "_" + str(i) 
+            left = ["+ d_" + str(neighbor) + "_" + str(node) + "_" + str(i) 
                     for neighbor in neighbors]
             bounds.append((left, relop, right))
     return bounds
@@ -724,21 +768,21 @@ def print_comments():
     for comment in _comments:
         print("\\ " + comment)
 
-def print_quadratic_stretch_objective():
-    quadratic_variables_squared = ["+" + x + "^2" for x in _raw_stretch_variables]
-    print(INDENT + "[ " +  split_list(quadratic_variables_squared, MAX_TERMS_IN_LINE) + " ]/2")
-
 """
- prints an objective representing total nonverticality The "[" and "]/2" at
- beginning and end of the list, respectively, are needed for quadratic
- expressions in CPLEX.
+ the following two functions, print_quadratic_X_objective,
+ print an objective representing the sum of squares of X variables.
+ The "[" and "]/2" at beginning and end of the list, respectively,
+ are needed for quadratic expressions in CPLEX.
  Note: need to make coefficients = 2; CPLEX divides them by 2 for some
  reason, but only in the objective function.
 """
-def print_verticality_objective():
-    print(INDENT + "[ " \
-              + split_list(verticality_variables_squared, MAX_TERMS_IN_LINE) \
-              + " ]/2" )
+def print_quadratic_stretch_objective():
+    quadratic_variables_squared = ["+ 2 " + x + "^2" for x in _raw_stretch_variables]
+    print(INDENT + "[ " +  split_list(quadratic_variables_squared, MAX_TERMS_IN_LINE) + " ]/2")
+
+def print_quadratic_verticality_objective():
+    quadratic_variables_squared = ["+ 2 " + x + "^2" for x in _raw_edge_verticality_variables]
+    print(INDENT + "[ " +  split_list(quadratic_variables_squared, MAX_TERMS_IN_LINE) + " ]/2")
 
 """
 Generic functions for printing constraints
@@ -756,7 +800,15 @@ need to make the lower bound on raw stretch variables less than 0; -1 will work
 """
 def print_bounds_on_raw_stretch_variables():
     for variable in _raw_stretch_variables:
-        print(INDENT + "-1 <= " + variable + " <= 1")
+        print(INDENT, "-1 <=", variable, "<= 1")
+
+"""
+ditto for raw verticality variables
+"""
+def print_bounds_on_raw_verticality_variables():
+    bound_str = str(_max_layer_size)
+    for variable in _raw_edge_verticality_variables:
+        print(INDENT, "-", bound_str, "<=", variable, "<=", bound_str)
 
 def print_variables():
     print("Binary")
@@ -771,9 +823,6 @@ def print_variables():
 
 if __name__ == '__main__':
     read_sgf(sys.stdin)
-    # the following is not relevant for all objectives but couldn't hurt
-    # makes logic a lot easier to do it up front
-    compute_layer_factors()
     constraints = triangle_constraints()
     # always need to print values of position variables to allow translation
     # back to an sgf file that captures the optimum order
@@ -791,6 +840,7 @@ if __name__ == '__main__':
     if args.objective == 'stretch' or args.objective == 'bn_stretch' \
             or args.stretch != None or args.bn_stretch != None \
             or args.objective == 'quad_stretch':
+        compute_layer_factors()
         constraints.extend(raw_stretch_constraints())
         raw_stretch_constraints_added = True
     if args.objective == 'stretch' or args.objective == 'bn_stretch' \
@@ -815,7 +865,10 @@ if __name__ == '__main__':
         if args.bipartite != None:
             constraints.extend(bipartite_constraints(args.bipartite))
             sys.exit()
-
+    if args.objective == 'quad_vertical':
+        constraints.extend(raw_edge_nonverticalities())
+    
+            
     # add specific constraints for each objective if appropriate
     if args.total != None:
         constraints.append((["+ total"], "<=", str(args.total)))
@@ -838,14 +891,17 @@ if __name__ == '__main__':
     print("Min");
     if args.objective == 'quad_stretch':
         print_quadratic_stretch_objective()
+    elif args.objective == 'quad_vertical':
+        print_quadratic_verticality_objective()
     else:
         print(INDENT + args.objective)
     print("st")
     print_constraints(constraints)
-    if _raw_stretch_variables != []:
+    if _raw_stretch_variables != [] or _raw_edge_verticality_variables != []:
         print("Bounds")
         print_bounds_on_raw_stretch_variables()
+        print_bounds_on_raw_verticality_variables()
     print_variables()
     print("End")
 
-#  [Last modified: 2020 05 13 at 21:33:46 GMT]
+#  [Last modified: 2020 05 14 at 17:56:57 GMT]
