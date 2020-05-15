@@ -36,13 +36,13 @@ parser = ArgumentParser(formatter_class=RawTextHelpFormatter,
                         epilog='reads sgf from standard input, prints lp file on standard output')
 parser.add_argument('--objective', choices=['total','bottleneck',
                                             'stretch','bn_stretch', 'quad_stretch',
-                                            'vertical', 'quad_vertical'],
+                                            'vertical', 'bn_vertical', 'quad_vertical'],
                     required=True,
                     help='minimize ...\n'
                     + ' total/bottleneck (total/bottleneck crossings)\n'
                     + ' stretch/bn_stretch (total/bottleneck edge length)\n'
                     + ' quad_stretch (use quadratic programming to miminize total stretch)\n'
-                    + ' vertical (minimize non-verticality)\n'
+                    + ' vertical/bn_vertical (minimize total/bottleneck non-verticality)\n'
                     + ' quad_vertical (use quadratic programming to minimize non-verticality\n')
 parser.add_argument('--total', type=int,
                     help='constraint on the total number of crossings (default: None)')
@@ -54,6 +54,8 @@ parser.add_argument('--bn_stretch', type=float,
                     help='constraint on the maximum length of any edge (default: None)')
 parser.add_argument('--vertical', type=int,
                     help='constraint on the total non-verticality (default: None)')
+parser.add_argument('--bn_vertical', type=int,
+                    help='constraint on the maximum non-verticality of any edge (default: None)')
 parser.add_argument('--seed', type=int,
                     help='a random seed if ILP constraints are to be permuted (default: None)')
 parser.add_argument('--bipartite', type=int,
@@ -704,9 +706,24 @@ def bottleneck_stretch_constraints():
     _continuous_variables.append("bn_stretch")
     bottleneck_stretch_constraints = []
     for stretch_variable in _stretch_variables:
-        left = ["+ bn_stretch", "-" + stretch_variable]
+        left = ["+ bn_stretch", "-", stretch_variable]
         bottleneck_stretch_constraints.append((left, relop, right))
     return bottleneck_stretch_constraints
+
+"""
+ @return a list of bottleneck verticality constraints, i.e., bn_vertical is >=
+ each distance variable.
+"""
+def bottleneck_vertical_constraints():
+    global _integer_variables
+    relop = '>='
+    right = '0'
+    _integer_variables.append("bn_vertical")
+    constraints = []
+    for distance_variable in _distance_variables:
+        left = ["+ bn_vertical", "-", distance_variable]
+        constraints.append((left, relop, right))
+    return constraints
 
 """
  permutes the left hand side of each constraint as well as the order of the
@@ -817,7 +834,6 @@ if __name__ == '__main__':
             or args.objective == 'quad_stretch':
         compute_layer_factors()
         constraints.extend(raw_stretch_constraints())
-        raw_stretch_constraints_added = True
     if args.objective == 'stretch' or args.objective == 'bn_stretch' \
             or args.stretch != None or args.bn_stretch != None:
         constraints.extend(stretch_constraints())
@@ -829,8 +845,6 @@ if __name__ == '__main__':
         constraints.append(total_stretch_constraint())
     if args.objective == 'bn_stretch' or args.bn_stretch != None:
         constraints.extend(bottleneck_stretch_constraints())
-    if args.objective == 'quad_stretch' and not raw_stretch_constraints_added:
-        constraints.extend(raw_stretch_constraints())
     if args.objective == 'vertical' or args.vertical != None:
         constraints.extend(distance_definitions())
         constraints.extend(linearized_distances())
@@ -840,9 +854,11 @@ if __name__ == '__main__':
         if args.bipartite != None:
             constraints.extend(bipartite_constraints(args.bipartite))
             sys.exit()
+    if args.objective == 'bn_vertical' or args.bn_vertical != None:
+        constraints.extend(distance_definitions())
+        constraints.extend(bottleneck_vertical_constraints())
     if args.objective == 'quad_vertical':
         constraints.extend(distance_definitions())
-    
             
     # add specific constraints for each objective if appropriate
     if args.total != None:
@@ -855,6 +871,8 @@ if __name__ == '__main__':
         constraints.append((["+ bn_stretch"], "<=", str(args.bn_stretch)))
     if args.vertical != None:
         constraints.append((["+ vertical"], "<=", str(args.vertical)))
+    if args.bn_vertical != None:
+        constraints.append((["+ bn_vertical"], "<=", str(args.bn_vertical)))
 
     if args.seed != None:
         random.seed(args.seed)
@@ -878,4 +896,4 @@ if __name__ == '__main__':
     print_variables()
     print("End")
 
-#  [Last modified: 2020 05 15 at 19:25:56 GMT]
+#  [Last modified: 2020 05 15 at 21:11:01 GMT]
