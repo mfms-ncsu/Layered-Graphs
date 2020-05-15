@@ -9,7 +9,8 @@ Variables are as follows:
     c_i_j_k_el   1 if edge i,j crosses edge k,el; 0 otherwise
     p_i_el       (integer) position of node i on layer el
     d_u_v_i      used to "linearize" the quadratic quantity (d_u_v)^2,
-                  where d_u_v is the offset for edge uv
+                  where d_u_v = d_u_v_0 is the offset for edge uv
+    q_u_v        "linearized" version of (d_u_v)^2
     z_u_v        the displacement between vertices u and v for edge uv,
                   assuming equal spacing of nodes (+ or -)
     s_u_v        abs(z_u_v), the stretch of edge uv
@@ -27,7 +28,7 @@ from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter # to allow newlines in help messages
 
 TOLERANCE = 0                   # for stretch constraints
-MAX_TERMS_IN_LINE = 100
+MAX_TERMS_IN_LINE = 20
 INDENT = "  "
 
 parser = ArgumentParser(formatter_class=RawTextHelpFormatter,
@@ -207,7 +208,7 @@ _continuous_variables = []
 _crossing_variables = []
 _raw_stretch_variables = []
 _nonverticality_variables = []
-_raw_edge_verticality_variables = []
+_distance_variables = []
 
 """
  @return a list of constraints on relative position variables x_i_j, where
@@ -548,6 +549,7 @@ def linear_distance_constraints(u, v):
 """
 def distance_definitions():
     global _integer_variables
+    global _distance_variables
     distance_constraints = []
     relop = '>='
     right = '0'
@@ -560,6 +562,7 @@ def distance_definitions():
         target_position_variable = "p_" + str(target) + "_" + str(target_layer)
         distance_variable = "d_" + str(source) + "_" + str(target) + "_0"
         _integer_variables.append(distance_variable)
+        _distance_variables.append(distance_variable)
         left = ["+ " + distance_variable]
         left.append("+ " + source_position_variable)
         left.append("- " + target_position_variable)
@@ -600,32 +603,6 @@ def edge_nonverticality_constraint(u, v):
         left.append('+ 2 ' + prefix + str(i))
     left.append('- ' + quadratic_variable)
     return (left, relop, right)
-
-"""
- @return a set of constraints that give value to d_u_v for each edge uv,
-         the difference in position of u and v; can be negative
-  these are used for quadratic programming formulation of non-verticality
-"""
-def raw_edge_nonverticalities():
-    global _raw_edge_verticality_variables
-    global _integer_variables
-    position_constraints = []
-    relop = '='
-    right = '0'
-    for edge in _edge_list:
-        source = edge[0]
-        target = edge[1]
-        source_layer = _node_dictionary[source]['layer']
-        target_layer = _node_dictionary[target]['layer']
-        source_position_variable = 'p_' + str(source) + '_' + str(source_layer)
-        target_position_variable = 'p_' + str(target) + '_' + str(target_layer)
-        distance_variable = 'd_' + str(source) + "_" + str(target)
-        _raw_edge_verticality_variables.append(distance_variable)
-        left = ['+ ' + source_position_variable]
-        left.append('- ' + target_position_variable)
-        left.append('- ' + distance_variable)
-        position_constraints.append((left, relop, right))
-    return position_constraints
 
 """
  sets the variable vertical = sum of all q_u_v's
@@ -786,7 +763,7 @@ def print_quadratic_stretch_objective():
     print(INDENT + "[ " +  split_list(quadratic_variables_squared, MAX_TERMS_IN_LINE) + " ]/2")
 
 def print_quadratic_verticality_objective():
-    quadratic_variables_squared = ["+ 2 " + x + "^2" for x in _raw_edge_verticality_variables]
+    quadratic_variables_squared = ["+ 2 " + x + "^2" for x in _distance_variables]
     print(INDENT + "[ " +  split_list(quadratic_variables_squared, MAX_TERMS_IN_LINE) + " ]/2")
 
 """
@@ -807,14 +784,6 @@ def print_bounds_on_raw_stretch_variables():
     for variable in _raw_stretch_variables:
         print(INDENT, "-1 <=", variable, "<= 1")
 
-"""
-ditto for raw verticality variables
-"""
-def print_bounds_on_raw_verticality_variables():
-    bound_str = str(_max_layer_size)
-    for variable in _raw_edge_verticality_variables:
-        print(INDENT, "-", bound_str, "<=", variable, "<=", bound_str)
-
 def print_variables():
     print("Binary")
     print(INDENT + split_list(list(_binary_variables), MAX_TERMS_IN_LINE))
@@ -831,7 +800,9 @@ if __name__ == '__main__':
     constraints = triangle_constraints()
     # always need to print values of position variables to allow translation
     # back to an sgf file that captures the optimum order
-    if args.objective == 'vertical' or args.vertical != None:
+    if ( args.objective == 'vertical'
+         or args.objective == 'quad_vertical'
+         or args.vertical != None ):
         constraints.extend(position_constraints(False))
     else:
         constraints.extend(position_constraints(True))
@@ -870,7 +841,7 @@ if __name__ == '__main__':
             constraints.extend(bipartite_constraints(args.bipartite))
             sys.exit()
     if args.objective == 'quad_vertical':
-        constraints.extend(raw_edge_nonverticalities())
+        constraints.extend(distance_definitions())
     
             
     # add specific constraints for each objective if appropriate
@@ -901,11 +872,10 @@ if __name__ == '__main__':
         print(INDENT + args.objective)
     print("st")
     print_constraints(constraints)
-    if _raw_stretch_variables != [] or _raw_edge_verticality_variables != []:
+    if _raw_stretch_variables != []:
         print("Bounds")
         print_bounds_on_raw_stretch_variables()
-        print_bounds_on_raw_verticality_variables()
     print_variables()
     print("End")
 
-#  [Last modified: 2020 05 15 at 18:23:22 GMT]
+#  [Last modified: 2020 05 15 at 19:25:56 GMT]
