@@ -13,6 +13,7 @@ Variables are as follows:
     z_u_v        the displacement between vertices u and v for edge uv,
                   assuming equal spacing of nodes (+ or -)
     s_u_v        abs(z_u_v), the stretch of edge uv
+    e_u_v        dummy variables, so that edges can be deduced by sol2sgf.py
 """
 
 import sys
@@ -32,10 +33,9 @@ INDENT = "  "
 parser = ArgumentParser(formatter_class=RawTextHelpFormatter,
                         description='Creates an ILP to minimize an objective based on an sgf representation of a layered graph',
                         epilog='reads sgf from standard input, prints lp file on standard output')
-parser.add_argument('--objective', choices={'total','bottleneck',
+parser.add_argument('--objective', choices=['total','bottleneck',
                                             'stretch','bn_stretch', 'quad_stretch',
-                                            'vertical', 'quad_vertical'},
-                    default='total',
+                                            'vertical', 'quad_vertical'],
                     required=True,
                     help='minimize ...\n'
                     + ' total/bottleneck (total/bottleneck crossings)\n'
@@ -295,8 +295,8 @@ def position_constraints(contiguous):
     return position_constraints
 
 """
-@return a list of trivial constraints of the form "c_i_j_i_j = 0", one for
- each edge ij, so that each edge is guaranteed to be included when the
+@return a list of trivial constraints of the form "e_u_v = 0", one for
+ each edge uv, so that each edge is guaranteed to be included when the
  solution is parsed by sol2sgf.py
 """
 def edges_for_output():
@@ -305,8 +305,7 @@ def edges_for_output():
     for edge in _edge_list:
         source_str = str(edge[0])
         target_str = str(edge[1])
-        edge_variable = ("c_" + source_str + "_" + target_str
-                         + "_"  + source_str + "_" + target_str)
+        edge_variable = ("e_" + source_str + "_" + target_str)
         edges.append((["+ " + edge_variable], "=", "0"))
         _binary_variables.append(edge_variable)
     return edges
@@ -774,7 +773,13 @@ def print_comments():
  The "[" and "]/2" at beginning and end of the list, respectively,
  are needed for quadratic expressions in CPLEX.
  Note: need to make coefficients = 2; CPLEX divides them by 2 for some
- reason, but only in the objective function.
+       reason, but only in the objective function.
+"""
+
+"""
+ Note: Quadratic stretch will not necessarily be the same as stretch
+       - some of the raw stretch variables are fractions
+       in fact, the optimum solution need not be the same
 """
 def print_quadratic_stretch_objective():
     quadratic_variables_squared = ["+ 2 " + x + "^2" for x in _raw_stretch_variables]
@@ -830,9 +835,8 @@ if __name__ == '__main__':
         constraints.extend(position_constraints(False))
     else:
         constraints.extend(position_constraints(True))
-    # always need to print at least one variable for each edge so that the
-    # solution sgf file gets the edges right; in this case it's a silly constraint
-    # that looks like an edge crossing itself - that's what sol2sgf.py expects
+    # sol2sgf.py expects a dummy variable e_u_v for each edge uv with e_u_v = 0
+    #  in order to output edges in the sgf file
     constraints.extend(edges_for_output())
     if args.objective == 'total' or args.objective == 'bottleneck' \
             or args.total != None or args.bottleneck != None:
@@ -904,4 +908,4 @@ if __name__ == '__main__':
     print_variables()
     print("End")
 
-#  [Last modified: 2020 05 14 at 17:56:57 GMT]
+#  [Last modified: 2020 05 15 at 18:23:22 GMT]
