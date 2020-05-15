@@ -818,6 +818,7 @@ if __name__ == '__main__':
     # always need to print values of position variables to allow translation
     # back to an sgf file that captures the optimum order
     if ( args.objective == 'vertical'
+         or args.objective == 'bn_vertical'
          or args.objective == 'quad_vertical'
          or args.vertical != None ):
         constraints.extend(position_constraints(False))
@@ -896,4 +897,4 @@ if __name__ == '__main__':
     print_variables()
     print("End")
 
-#  [Last modified: 2020 05 15 at 21:11:01 GMT]
+#  [Last modified: 2020 05 15 at 21:48:23 GMT]
