@@ -1,0 +1,144 @@
+<html> <head>
+<title>Scripts for creating and processing layered graph data</title>
+</head>
+
+<body>
+<h2 align="center">Scripts for creating and processing layered graph data</h2>
+
+<pre>
+  Note: A conversion script from sgf to the Galant format for layered graphsD  is in
+     https://github.com/mfms-ncsu/galant
+  directory Conversion-Scripts
+</pre>
+<h3>Files in lexicographic order</h3>
+<hr>
+<ul>
+<li>
+<strong><a href="0-index.html">0-index.html</a> --</strong><br>
+<pre>
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="channelDegrees.py">channelDegrees.py</a> --</strong><br>
+<pre>
+  Takes an sgf file and prints statistics about degrees
+  of nodes relative to the upper and lower layers of each channel
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="collectParetoPoints.py">collectParetoPoints.py</a> --</strong><br>
+<pre>
+Designed to gather multiple Pareto points into a single Pareto list;
+ it's a simple filter - stdin to stdout - for now
+
+input is a sequence of lines of the form (Pareto output from min_crossings)
+  x1^y1;x2^y2;...
+output has one Pareto point per line - format is tab separated
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="create-lattice.py">create-lattice.py</a> --</strong><br>
+<pre>
+ Creates a .dot and .ord file for a layered dag
+ representing a lattice on a set of a specified number of elements.
+ Nodes are numbered so that the binary representation of each node number is
+ a bit vector for the corresponding subset.
+
+@todo make this work for sgf files
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="layeredGraph.py">layeredGraph.py</a> --</strong><br>
+<pre>
+    Maintains all information about a proper layered graph:
+    - list of node id's (in order they were added)
+    - mapping from a node id (a string, usually encoding an integer)
+      to information about a node
+    - layer and position of each node
+    - list of (id's of) neighbors above and below each node
+    - list of (id's of) nodes on each layer
+    - list of edges (in order they were added)
+    - graph name and comments
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="mlcm2sgf.py">mlcm2sgf.py</a> --</strong><br>
+<pre>
+ Translates from mlcm format, as documented at
+ http://www-lehre.informatik.uni-osnabrueck.de/theoinf/index/research/mlcm
+ and described below to sgf format, also described below.
+
+mlcm (multi-level crossing minimization) was used in the experiments
+descibed in M. Chimani, P. Hungerlaender, M. Juenger, P. Mutzel. An SDP
+Approach to Multi-level Crossing Minimization. ACM Journal of Experimental
+Algorithmics, Volume 17(3), Article 3.3, 2012. It goes as follows:
+
+<Number-of-Levels>
+<Number-of-Edges-Between-First-and-Second-Level>
+<Number-of-Edges-Between-Second-and-Third-Level>
+...
+<Number-of-Nodes-on-First-Level>
+<Number-of-Nodes-on-Second-Level>
+...
+<Index-of-Node-on-First-Layer> <Index-of-Node-on-Second-Level>
+<Index-of-Node-on-First-Layer> <Index-of-Node-on-Second-Level>
+...
+<Index-of-Node-on-Second-Layer> <Index-of-Node-on-Third-Level>
+...
+
+The node indices start at 0 on each level, i.e., each level has a node
+numbered 0, a node numbered 1, etc. Numbers determine the order, which is
+optimal in the files provided at the web site.
+
+sfg format is as follows:
+
+   c comment line 1
+   ...
+   c comment line k
+
+   t graph_name
+
+   n id_1 layer_1 position_1
+   n id_2 layer_2 position_2
+   ...
+   n id_n layer_n position_n
+
+   e source_1 target_1
+   ...
+   e source_m target_m
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="ralay.py">ralay.py</a> --</strong><br>
+<pre>
+ralay.py - offers a mechanism for producing layered graphs with
+different variances with respect to number of nodes per layer, number of
+dummy nodes, degrees of nodes, shapes, etc.. Output is in sgf format, which
+can be converted to dot or graphml, as desired. Graphs are guaranteed to be
+connected (and interesting) because each node has indegree 1 (unless on layer 0)
+and outdegree 1 (unless on the highest layer).
+
+@author Matthias Stallmann
+@date 2018/6/18
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="raleigh_notes.md">raleigh_notes.md</a> --</strong><br>
+<pre>
+  Detailed description of how ralay.py works.
+</pre>
+</li>
+<hr><br>
+</ul>
+<address>
+<a href="http://people.engr.ncsu.edu/mfms/">Matthias F. (Matt) Stallmann</a><br>
+Created: Mon May 18 11:14:14 EDT 2020
+</address>
+</body> </html>
