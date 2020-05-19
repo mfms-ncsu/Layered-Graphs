@@ -35,15 +35,16 @@ parser = ArgumentParser(formatter_class=RawTextHelpFormatter,
                         description='Creates an ILP to minimize an objective based on an sgf representation of a layered graph',
                         epilog='reads sgf from standard input, prints lp file on standard output')
 parser.add_argument('--objective', choices=['total','bottleneck',
-                                            'stretch','bn_stretch', 'quad_stretch',
-                                            'vertical', 'bn_vertical', 'quad_vertical'],
+                                            'vertical', 'bn_vertical', 'quad_vertical',
+                                            'stretch','bn_stretch', 'quad_stretch'],
                     required=True,
                     help='minimize ...\n'
                     + ' total/bottleneck (total/bottleneck crossings)\n'
-                    + ' stretch/bn_stretch (total/bottleneck edge length)\n'
-                    + ' quad_stretch (use quadratic programming to miminize total stretch)\n'
                     + ' vertical/bn_vertical (minimize total/bottleneck non-verticality)\n'
-                    + ' quad_vertical (use quadratic programming to minimize non-verticality\n')
+                    + ' quad_vertical (use quadratic programming to minimize non-verticality\n'
+                    + ' stretch/bn_stretch (total/bottleneck edge length with evenly spaced nodes)\n'
+                    + ' quad_stretch (use quadratic programming to miminize total stretch)\n'
+)
 parser.add_argument('--total', type=int,
                     help='constraint on the total number of crossings (default: None)')
 parser.add_argument('--bottleneck', type=int,
@@ -897,4 +898,4 @@ if __name__ == '__main__':
     print_variables()
     print("End")
 
-#  [Last modified: 2020 05 15 at 21:48:23 GMT]
+#  [Last modified: 2020 05 19 at 15:23:34 GMT]

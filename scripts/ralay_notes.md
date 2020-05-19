@@ -1,3 +1,5 @@
+[//]: # Detailed description of how ralay.py works.
+
 Some notes on generation of a random layered graph using ralay.py (for **ra**ndom **lay**ered graph).
 ========================================
 **Command line**
