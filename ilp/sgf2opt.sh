@@ -21,11 +21,9 @@ if [ $# -ne 3 ]; then
     echo "Produces files of the form, in the same directory as the input"
     echo "  FILE-TAG.lp (ILP for the appropriate problem)"
     echo "  FILE-TAG.out (the cplex output when the ILP is solved)"
-    echo "  FILE-TAG.sgf, (the sgf file with the optimum order)"
-    echo "If TAG is one of x = t, b, v, bv, s, bs"
-    echo "  the files represent total/bottleneck crossings, no-verticality, stretch"
-    echo "If TAG has the form xEk_y"
-    echo "  then y is minimized given that the x has (minimum) value k"
+    echo "  FILE-TAG.sgf (the sgf file with the optimum order)"
+    echo "TAG is either one of the objectives or, in case of the restricted run,"
+    echo " x_v_y, where x is OBJECTIVE_1, v its optimal value, and y is OBJECTIVE_2"
     echo "Output gives an account of the cplex runs and the following information:"
     echo " [OBJECTIVE1 | Objective2]    	[the two objectives]"
     echo " [Value1 | Value2 | Value2E1] 	[the relevant values of CPLEX runs]"
@@ -110,8 +108,8 @@ run_cplex() {
         echo -n "done solving $cplex_input_file, "
         date -u
     fi
-    min_objective=`fgrep value $cplex_output_file | cut -f 2`
-    status=`fgrep StatusCode $cplex_output_file | cut -f 2`
+    min_objective=`grep '^value' $cplex_output_file | cut -f 2`
+    status=`grep '^StatusCode' $cplex_output_file | cut -f 2`
     echo "minimum value for $objective is $min_objective, status is $status"
     if [ -n "$min_objective" ]; then
         echo "converting solution to sgf for optimal order"
@@ -181,4 +179,4 @@ fi
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 echo
 
-#  [Last modified: 2020 05 20 at 15:21:23 GMT]
+#  [Last modified: 2020 05 20 at 19:45:07 GMT]
