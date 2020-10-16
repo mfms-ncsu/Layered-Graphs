@@ -151,6 +151,9 @@ void updateCrossingsForLayer( int layer )
     updateCrossingsBetweenLayers( layer + 1 );
 }
 
+/**
+ * This does not appear to be used
+ */
 void updatePositionsForLayer( int layer )
 {
   Layerptr layer_ptr = layers[ layer ];
@@ -432,4 +435,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2019 11 25 at 21:52:50 GMT] */
+/*  [Last modified: 2020 10 16 at 20:12:49 GMT] */

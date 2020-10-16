@@ -8,15 +8,17 @@ Options to get rid of and add/modify.
 
 *** Modify ***
 
+- an option to specify the desired objective(s), independent of heuristic, so that output focuses on those only; this would be independent of Pareto output; probably need to rethink output: currently best x is reported for all possible x and all stages
+
 - the -h option so that a sequence of heuristics, separated by commas, can be specified
 
 - the -i and -r options should also be comma separated so that different heuristics can have different numbers of iterations or time limits; need to look into which of these has precedence if both are specified; also, may need to use '_' to indicate that the corresponding heuristic does not use the option: for example, one heuristic may run for a number of iterations while another has a time limit
 
 - the -R option for randomization also needs comma-separated arguments; here we need to distinguish between actual seed, use seed from previous heuristic, if any, no seed, and no randomness; maybe should not have the "use seed from previous" option -- too complicated, but can use, e.g., -1 for no randomness
 
-- might need a global iteration count to be used with the -c option and reported with each mimimum or Pareto point
+- might need a global iteration count to be used with the -c option and reported with each minimum or Pareto point
 
-- output is not conducive to csv because each minimum or Pareto point comes with an iteration number that is reported on the same line; need to think in terms of a conversion script and/or separate lines for the iteration reports
+- output is not conducive to csv because each minimum or Pareto point comes with an iteration number that is reported on the same line; need to think in terms of a conversion script and/or separate lines for the iteration reports [* may be okay if important info comes immediately after separator (comma) *]
 
 *** Add ***
 
@@ -39,3 +41,27 @@ Then the program would
     - copy the struct, filling in the iteration field with 1000
     - run barycenter consulting the current struct for runtime and iterations
     - repeat the process for "mce" using the same global variable for the copy
+
+----------------------------------------
+Code to examine/modify
+
+anywhere the position attribute of a node is initialized or updated
+
+anywhere the index of a node in its layer array is initialized or updated; it's not clear whether this needs to be consistent with the position attribute; perhaps the layer array merely serves as a list
+
+no_improvement() should focus on specific objectives; actually this is hardly used since all heuristics improve various objectives beyond the point where the current iteration may fail to do so
+
+-----------------------------------------
+Issues that need to be addressed
+
+- in crossings.c, the function updatePositionsForLayer(), gives nodes consecutive position numbers based on their sorted order; but this function does not appear to be called from anywhere
+
+- other places where node->position is altered
+        - restore_order() in order.c, to recreate a specific ordering for, e.g., output or thw next stage
+        - in reposition_node() in sifting.c, to put a node into a new position and shift other nodes left or right as needed; not clear that sifting would be useful for verticality, unless a special variant is created (move each chosen node into its most vertical position)
+        - there are lots of places various heuristics rely on node->position, but ...
+
+Best strategy may be to have a flag alerting the software that verticality is to be optimized, and either disable position-based heuristics or invoke variants.
+
+The current software is clunky in that it tracks several objectives throughout, instead of just one (two in case of Pareto optimization). Better to specify one or two objectives up front and completely ignore the rest.
+
