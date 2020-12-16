@@ -33,7 +33,50 @@ char graph_name[MAX_NAME_LENGTH];
 // initial allocated size of layer array (will double as needed)
 static int layer_capacity = MIN_LAYER_CAPACITY;
 
-// The input algorithm is as follows:
+/**
+ * Input algorithm for sgf files:
+ *  0. Allocate hash table and do other initialization
+ *  1. Read comments and header information
+ *      - allocate master lists for nodes, edges, and layers
+ *  2. Read nodes; for each node
+ *      (a) create a struct for it (and pointer)
+ *      (b) fill in name (id as text), id, layer, position
+ *      (c) increment the number of nodes for its layer
+ *      (d) put it in the hash table so the ptr can be gotten from id
+ *      (e) add it to the master node list
+ *  3. Read edges; for each edge
+ *      (a) create a struct for it (and pointer)
+ *      (b) retrieve (ptrs to) endpoints from the hash table
+ *      (c) fill in source and target, checking for layers
+ *      (d) increment up and down degrees for the endpoints
+ *      (e) add it to the master edge list
+ *  4. Allocate the node list for each layer; number of nodes is known
+ *  5. Traverse the master node list; for each node
+ *      - allocate arrays for up and down edges
+ *      - add the node to its layer
+ *  6. Traverse the master edge list; for each edge
+ *      - add it to the arrays for up and down edges of endpoints
+ *  7. Deallocate hash table
+ *
+ * Notes
+ *  - use FILE * instead of file name; this allows use of pipes to run
+ * multiple heuristics in sequence
+ *  - functions in sgf.[ch] are lightweight; each requires that the
+ * client allocate and deallocate a struct for the relevant info (or
+ * use a static one throughout)
+ */
+
+/**
+ * Creates a new node with the given id number
+ *   and performs 2. (a)-(e) above
+ * @param id the id number of the node
+ * @param layer the layer of the node
+ * @param position the position of the node on its layer
+ * @return (a pointer to) the newly created node
+ */
+Nodeptr makeNumberedNode(int id, int layer, int position);
+
+// The input algorithm (for dot and ord files) is as follows:
 //   1. Read the ord file (first pass) and
 //       (a) create each layer and expand the 'layers' array as needed
 //       (b) count the number of nodes on each layer and store in
@@ -69,10 +112,10 @@ Nodeptr makeNode( const char * name );
 void addNodeToLayer( Nodeptr node, int layer );
 
 /**
- * Creates a new layer; the number is assumed to be the next available layer
- * number, i.e., layers are always created in ascending numerical order
+ * Creates a layer with the given number if it does not already exist;
+ * expands the layer array as needed
  */
-void makeLayer();
+void makeLayer(int layer);
 
 /**
  * Adds an edge to the graph. The edge comes directly from the dot
@@ -80,7 +123,12 @@ void makeLayer();
  * no such assumption is made here.  A fatal error occurs if the nodes are
  * not on adjacent layers.
  */
-void addEdge( const char * name1, const char * name2 );
+void addEdgeUsingNames( const char * name1, const char * name2 );
+
+/**
+ * does the actual work of adding an edge once the node pointers are
+ * known; can be called directly when reading an sgf file
+ */
 
 Nodeptr makeNode( const char * name )
 {
@@ -103,6 +151,30 @@ Nodeptr makeNode( const char * name )
   return new_node;
 }
 
+/**
+ * assumes master_node_list has been allocated to accommodate number
+ * of nodes in header (sgf)
+ */
+static void addToNodeList(Nodeptr node) {
+    static int index = 0;
+    master_node_list[index++] = node;
+}
+
+Nodeptr makeNumberedNode(int id, int layer, int position) {
+    Nodeptr new_node = (Nodeptr) malloc(sizeof(struct node_struct));
+    char * name = malloc(MAX_ID_SIZE);
+    sprintf(name, "%d", id);
+    new_node->name = name;
+    new_node->id = id;
+    new_node->layer = layer;
+    new_node->position = position;
+    new_node->up_edges = new_node->down_edges = NULL;
+    appendNodeToLayer(new_node, layer);
+    insertInHashTable(name, new_node);
+    addToNodeList(new_node);
+    return new_node;
+}
+
 void addNodeToLayer( Nodeptr node, int layer )
 {
   static int current_layer = 0;
@@ -117,25 +189,23 @@ void addNodeToLayer( Nodeptr node, int layer )
   layers[ layer ]->nodes[ current_position++ ] = node;
 }
 
-void makeLayer()
-{
-  Layerptr new_layer = (Layerptr) malloc( sizeof(struct layer_struct) );
-  new_layer->number_of_nodes = 0;
-  new_layer->nodes = NULL;
-  if( number_of_layers >= layer_capacity )
-    {
-      layer_capacity *= 2;
-      layers
-        = (Layerptr *) realloc( layers, layer_capacity * sizeof(Layerptr) );
+void makeLayer(int layer) {
+    while ( layer >= number_of_layers ) {
+        Layerptr new_layer = (Layerptr) malloc( sizeof(struct layer_struct) );
+        new_layer->number_of_nodes = 0;
+        new_layer->nodes = NULL;
+        number_of_layers++;
+        layers
+            = (Layerptr *) realloc(layers, number_of_layers * sizeof(Layerptr));
+        layers[number_of_layers] = new_layer;
     }
-  layers[ number_of_layers++ ] = new_layer;
 }
 
-void addEdge( const char * name1, const char * name2 )
+void addEdge(const char * name1, const char * name2)
 {
   static int num_edges_so_far = 0;
-  Nodeptr node1 = getFromHashTable( name1 );
-  Nodeptr node2 = getFromHashTable( name2 );
+  Nodeptr node1 = getFromHashTable(name1);
+  Nodeptr node2 = getFromHashTable(name2);
   if ( node1->layer == node2->layer ) {
     fprintf( stderr, "FATAL: addEdge, nodes on same layer.\n" );
     fprintf( stderr, " Nodes %s and %s are on layer %d.\n",
@@ -143,8 +213,15 @@ void addEdge( const char * name1, const char * name2 )
     abort();
   }
 
-  // a warning about missing nodes was already issued in the first pass
-  if ( node1 == NULL || node2 == NULL ) return;
+  if ( node1 == NULL ) {
+      fprintf(stderr, "FATAL: addEdge, missing node %s\n", node1->name);
+      abort();
+  }
+
+  if ( node2 == NULL ) {
+      fprintf(stderr, "FATAL: addEdge, missing node %s\n", node2->name);
+      abort();
+  }
 
   Nodeptr upper_node
     = ( node1->layer > node2->layer ) ? node1 : node2;
@@ -161,9 +238,21 @@ void addEdge( const char * name1, const char * name2 )
   new_edge->up_node = upper_node;
   new_edge->down_node = lower_node;
   new_edge->fixed = false;
-  upper_node->down_edges[ upper_node->down_degree++ ] = new_edge;
-  lower_node->up_edges[ lower_node->up_degree++ ] = new_edge;
-  master_edge_list[ num_edges_so_far++ ] = new_edge;
+  // these arrays will not be allocated when addEdge() is called while
+  // reading an sgf file; we need to be careful to fill them later
+  /**
+   * @todo this is awkward; would be much better to split this long
+   * function into three pieces: check for errors, allocate the edge,
+   * add to lists and/or update degrees
+   */
+  if ( upper_node->down_edges != NULL
+       && lower_node->up_edges != NULL ) {
+      upper_node->down_edges[upper_node->down_degree] = new_edge;
+      lower_node->up_edges[lower_node->up_degree] = new_edge;
+  }
+  upper_node->down_degree++;
+  lower_node->up_degree++;
+  master_edge_list[num_edges_so_far++] = new_edge;
 }
 
 /**
@@ -205,7 +294,7 @@ static void allocateLayers( const char * ord_file )
           abort();
         }
       expected_layer++;
-      makeLayer();
+      makeLayer(layer);
       int node_count = 0;
       while ( nextNode( in, name_buf ) )
         {
@@ -320,7 +409,7 @@ void createEdges( const char * dot_file )
   char dst_buf[MAX_NAME_LENGTH];
   while ( nextEdge( in, src_buf, dst_buf ) )
     {
-      addEdge( src_buf, dst_buf );
+      addEdgeUsingNames( src_buf, dst_buf );
     }
   fclose( in );
 }
@@ -507,4 +596,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2019 11 25 at 21:52:48 GMT] */
+/*  [Last modified: 2020 12 16 at 21:11:54 GMT] */

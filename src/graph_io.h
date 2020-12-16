@@ -41,6 +41,7 @@ void writeOrd( const char * ord_file );
 /**
  * Writes a dot file with the given name.
  * @param dot_file_name the output file name (including .dot extension)
+ * @param graph_name name of graph
  * @param header_information what will go into the file before the '{' that
  * starts the list of edges (including the graph name)
  * @param edge_list array of (indices of) the edges to be written
@@ -55,19 +56,23 @@ void writeDot( const char * dot_file_name,
 
 /**
  * Writes the current graph to an sgf file with the given name.
+ * @param sgf_file_name the output file name (including .dot extension)
+ * @param graph_name name of graph
+ * @param header_information what will go into the file as comments
+ * @param node_list array of nodes (with relevant information)
+ * @param node_list_length length of node list
+ * @param edge_list array of edges (with source and target information)
+ * @param edge_list_length length of the edge list
  */
-void writeSgf(const char * sgf_file_name);
-
-/**
- * Renumbers nodes, i.e., assigns id's, based on their order of appearance in
- * a dot file. This is useful if converting to sgf format -- see
- * dot_and_ord_to_sgf.c; the node number will not depend on the order in the
- * ord file and different orderings will have the same node numbers so that
- * they can be compared.
- * @todo not implemented and not clear that it needs to be
- */
-void renumberNodesUsingDotFile( const char * dot_file );
+void writeSgf(const char * sgf_file_name,
+              const char * graph_name,
+              const char * header_information,
+              const Nodeptr * node_list,
+              int node_list_length
+              const Edgeptr * edge_list,
+              int edge_list_length
+              );
 
 #endif
 
-/*  [Last modified: 2020 05 11 at 15:57:17 GMT] */
+/*  [Last modified: 2020 12 16 at 15:22:20 GMT] */

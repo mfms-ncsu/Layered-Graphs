@@ -1,10 +1,31 @@
 Options to get rid of and add/modify.
 
+*** Reorganize ***
+
+Consider runtime options that assume three stages: preprocessing (e.g., dfs), sorting (e.g., barycenter), and the main heuristic. The latter is determined not by the heuristic itself, but by its characteristics.
+
+- cost function:
+	max crossings for edges with given endpoint(s), as in mce
+	total crossings
+	something more sophisticated
+
+- choice of vertex:
+	by degree as in sifting
+	max crossings edge or node
+	best cost decrease
+	whether or not to randomize in case of ties (clearly good for mce, mcn, sifting)
+
+- other
+	stopping criterion (time, iterations, lack of improvement)
+	restart mechanism (not a priority, but could be bary or dfs)
+
 *** Get rid of ***
 
 - sifting variations (-s)
 - mce variations (-e)
 - the -g option; made obsolete by naming heuristics differently
+- various parallel versions of barycenter
+- termination based on lack of improvement for barycenter variations
 
 *** Modify ***
 

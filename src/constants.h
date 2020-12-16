@@ -23,6 +23,11 @@
 #define CAPACITY_INCREMENT 32
 
 /**
+ * maximum number of digits in a node id (for sgf) + 1
+ */
+#define MAX_ID_SIZE 10
+
+/**
  * Used with sorting heuristics to indicate whether weights are computed
  * based on edges above, below, or on both sides of a layer to be
  * sorted. This is referred to as 'orientation' in the thesis 
@@ -31,4 +36,4 @@ typedef enum { UPWARD, DOWNWARD, BOTH } Orientation;
 
 #endif
 
-/*  [Last modified: 2019 12 13 at 21:06:57 GMT] */
+/*  [Last modified: 2020 12 16 at 16:56:28 GMT] */
