@@ -47,7 +47,7 @@ void writeOrd( const char * ord_file );
  * @param edge_list array of (indices of) the edges to be written
  * @param edge_list_length length of the edge list
  */
-void writeDot( const char * dot_file_name,
+void writeDot(const char * dot_file_name,
                const char * graph_name,
                const char * header_information,
                const Edgeptr * edge_list,
@@ -68,11 +68,11 @@ void writeSgf(const char * sgf_file_name,
               const char * graph_name,
               const char * header_information,
               const Nodeptr * node_list,
-              int node_list_length
+              int node_list_length,
               const Edgeptr * edge_list,
               int edge_list_length
               );
 
 #endif
 
-/*  [Last modified: 2020 12 16 at 15:22:20 GMT] */
+/*  [Last modified: 2020 12 17 at 18:21:33 GMT] */

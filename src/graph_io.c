@@ -112,10 +112,10 @@ Nodeptr makeNode( const char * name );
 void addNodeToLayer( Nodeptr node, int layer );
 
 /**
- * Creates a layer with the given number if it does not already exist;
- * expands the layer array as needed
+ * Creates a new layer with the next number; layers are created in
+ * numerical sequence (used in first pass of reading .ord file)
  */
-void makeLayer(int layer);
+void makeLayer();
 
 /**
  * Adds an edge to the graph. The edge comes directly from the dot
@@ -123,7 +123,7 @@ void makeLayer(int layer);
  * no such assumption is made here.  A fatal error occurs if the nodes are
  * not on adjacent layers.
  */
-void addEdgeUsingNames( const char * name1, const char * name2 );
+void addEdge( const char * name1, const char * name2 );
 
 /**
  * does the actual work of adding an edge once the node pointers are
@@ -169,7 +169,6 @@ Nodeptr makeNumberedNode(int id, int layer, int position) {
     new_node->layer = layer;
     new_node->position = position;
     new_node->up_edges = new_node->down_edges = NULL;
-    appendNodeToLayer(new_node, layer);
     insertInHashTable(name, new_node);
     addToNodeList(new_node);
     return new_node;
@@ -189,16 +188,18 @@ void addNodeToLayer( Nodeptr node, int layer )
   layers[ layer ]->nodes[ current_position++ ] = node;
 }
 
-void makeLayer(int layer) {
-    while ( layer >= number_of_layers ) {
-        Layerptr new_layer = (Layerptr) malloc( sizeof(struct layer_struct) );
-        new_layer->number_of_nodes = 0;
-        new_layer->nodes = NULL;
-        number_of_layers++;
-        layers
-            = (Layerptr *) realloc(layers, number_of_layers * sizeof(Layerptr));
-        layers[number_of_layers] = new_layer;
+void makeLayer()
+{
+  Layerptr new_layer = (Layerptr) malloc( sizeof(struct layer_struct) );
+  new_layer->number_of_nodes = 0;
+  new_layer->nodes = NULL;
+  if( number_of_layers >= layer_capacity )
+    {
+      layer_capacity *= 2;
+      layers
+        = (Layerptr *) realloc( layers, layer_capacity * sizeof(Layerptr) );
     }
+  layers[ number_of_layers++ ] = new_layer;
 }
 
 void addEdge(const char * name1, const char * name2)
@@ -294,7 +295,7 @@ static void allocateLayers( const char * ord_file )
           abort();
         }
       expected_layer++;
-      makeLayer(layer);
+      makeLayer();
       int node_count = 0;
       while ( nextNode( in, name_buf ) )
         {
@@ -409,7 +410,7 @@ void createEdges( const char * dot_file )
   char dst_buf[MAX_NAME_LENGTH];
   while ( nextEdge( in, src_buf, dst_buf ) )
     {
-      addEdgeUsingNames( src_buf, dst_buf );
+      addEdge( src_buf, dst_buf );
     }
   fclose( in );
 }
@@ -596,4 +597,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2020 12 16 at 21:11:54 GMT] */
+/*  [Last modified: 2020 12 17 at 20:26:58 GMT] */
