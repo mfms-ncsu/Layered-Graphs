@@ -12,11 +12,11 @@ PROGRAMS = minimization create_random_dag add_edges dot_and_ord_to_sgf
 
 # object files common to all heuristics
 OBJECTS = sifting.o dfs.o sorting.o heuristics.o barycenter.o crossings.o\
-	crossing_utilities.o graph_io.o dot.o ord.o hash.o Statistics.o stats.o\
+	crossing_utilities.o graph_io.o dot.o ord.o sgf.o hash.o Statistics.o stats.o\
 	order.o priority_edges.o swap.o median.o channel.o stretch.o timing.o random.o
 
 # object files used by programs that generate random instances
-CREATION_OBJECTS = check_edge_duplication.o random_dag.o random_tree.o graph_io.o Statistics.o dot.o ord.o hash.o
+CREATION_OBJECTS = check_edge_duplication.o random_dag.o random_tree.o graph_io.o Statistics.o dot.o ord.o sgf.o hash.o
 
 # header files common to all heuristics; also make sure recompilation takes
 # place if there are changes to the makefile
@@ -43,7 +43,7 @@ add_edges: add_edges.o $(CREATION_OBJECTS)\
 ; $(CC) $(OFLAGS) add_edges.o $(CREATION_OBJECTS) -lm -o add_edges
 
 dot_and_ord_to_sgf: dot_and_ord_to_sgf.o graph_io.o dot.o ord.o hash.o\
-; $(CC) $(OFLAGS) dot_and_ord_to_sgf.o dot.o graph_io.o ord.o hash.o -o dot_and_ord_to_sgf 
+; $(CC) $(OFLAGS) dot_and_ord_to_sgf.o dot.o graph_io.o ord.o sgf.o hash.o -o dot_and_ord_to_sgf 
 
 graph_input_test: graph_input_test.o dot.o ord.o hash.o\
 ; $(CC) $(DFLAGS) graph_input_test.o dot.o ord.o hash.o -o graph_input_test

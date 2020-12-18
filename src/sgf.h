@@ -28,17 +28,18 @@
 #define SGF_H
 
 #include<stdio.h>
+#include<stdlib.h>
 #include<stdbool.h>
 
 /**
- * structure for storing node information available in an sgf file
+ * structure for storing information about node just read from file
  */
-struct sgf_node_struct { int id; int layer; int position; };
+struct sgf_node_struct { int id; int layer; int position; } sgf_node;
 
 /**
- * structure for storing edge information available in an sgf file
+ * structure for storing information about edge just read from file
  */
-struct sgf_edge_struct { int source; int target };
+struct sgf_edge_struct { int source; int target; } sgf_edge;
 
 /**
  * reads from 'in' past the comments
@@ -72,21 +73,21 @@ int getNumberOfEdges();
 int getNumberOfLayers();
 
 /**
- * put node id, layer, and position into the preallocated sgf_node
+ * put node id, layer, and position into sgf_node
  * @return true if there is a next node
  * @assume the tag line has been read, i.e., getNameFromSgfFile(),
  * getNumberOfNodes(), getNumberOfEdges(), and getNumberOfLayers() have
  * already been called
  */
-bool getNextNode(FILE * in, struct sgf_node_struct * sgf_node);
+bool getNextNode();
 
 /**
- * put source and target into the preallocated edge
+ * put source and target into sgf_edge
  * @return true if there is a next edge
  * @assume all nodes have been read from the file using getNumberOfNodes()
  */
-bool getNextEdge(File * in, struct sgf_edge_struct * sgf_edge);
+bool getNextEdge();
 
 #endif
 
-/*  [Last modified: 2019 12 16 at 20:44:57 GMT] */
+/*  [Last modified: 2020 12 18 at 17:29:46 GMT] */

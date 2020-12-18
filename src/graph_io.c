@@ -13,6 +13,7 @@
 #include"defs.h"
 #include"dot.h"
 #include"ord.h"
+#include"sgf.h"
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -34,9 +35,22 @@ char graph_name[MAX_NAME_LENGTH];
 static int layer_capacity = MIN_LAYER_CAPACITY;
 
 /**
+ * Adds an edge to the graph; (currently) used by both sgf and dot
+ * input.
+ * Names come directly from the dot file; for sgf, they are strings
+ * representing numbers.
+ * Although instances usually direct edges from lower to higher layers,
+ * no such assumption is made here.  A fatal error occurs if the nodes are
+ * not on adjacent layers.
+ * Also (re)allocates the adjacency lists for the endpoints and adds
+ * the edge to them while incrementing the number
+ */
+void addEdge(const char * name1, const char * name2);
+
+/**
  * Input algorithm for sgf files:
- *  0. Allocate hash table and do other initialization
  *  1. Read comments and header information
+ *      - allocate hash table
  *      - allocate master lists for nodes, edges, and layers
  *  2. Read nodes; for each node
  *      (a) create a struct for it (and pointer)
@@ -66,6 +80,27 @@ static int layer_capacity = MIN_LAYER_CAPACITY;
  * use a static one throughout)
  */
 
+static char name_buffer[MAX_NAME_LENGTH];
+
+/**
+ * utility function that converts a number to a string
+ * @return a pointer to the buffer - have to use strcpy to use the
+ * string since buffer contents will change
+ */
+static char * nameFromId(int id) {
+    sprintf(name_buffer, "%d", id);
+    return name_buffer;
+}
+
+/**
+ * assumes master_node_list has been allocated to accommodate number
+ * of nodes in header (sgf)
+ */
+void addToNodeList(Nodeptr node) {
+    static int index = 0;
+    master_node_list[index++] = node;
+}
+
 /**
  * Creates a new node with the given id number
  *   and performs 2. (a)-(e) above
@@ -74,7 +109,94 @@ static int layer_capacity = MIN_LAYER_CAPACITY;
  * @param position the position of the node on its layer
  * @return (a pointer to) the newly created node
  */
-Nodeptr makeNumberedNode(int id, int layer, int position);
+Nodeptr makeNumberedNode(int id, int layer, int position) {
+    Nodeptr new_node = (Nodeptr) malloc(sizeof(struct node_struct));
+    strcpy(new_node->name, nameFromId(id));
+    new_node->id = id;
+    new_node->layer = layer;
+    new_node->position = position;
+    new_node->up_edges = new_node->down_edges = NULL;
+    insertInHashTable(new_node->name, new_node);
+    addToNodeList(new_node);
+    return new_node;
+}
+
+/**
+ * Creates the struct for each node using makeNumberedNode() and adds
+ * (a pointer to) it to the master list
+ */
+void readSgfNodes(void) {
+    while ( getNextNode() ) {
+        makeNumberedNode(sgf_node.id, sgf_node.layer, sgf_node.position);
+    }
+}
+
+/**
+ * Creates the struct for each edge and adds (a pointer to) it to the
+ * master list; uses addEdge to do sanity checks and retrieve node
+ * pointers
+ */
+void readSgfEdges(void) {
+    while ( getNextEdge() ) {
+        char source_name[MAX_NAME_LENGTH];
+        strcpy(source_name, nameFromId(sgf_edge.source));
+        char target_name[MAX_NAME_LENGTH];
+        strcpy(target_name, nameFromId(sgf_edge.target));
+        addEdge(source_name, target_name);
+    }
+}
+
+void allocateNodeListsForLayers(void) {
+    for ( int layer_num = 0; layer_num < number_of_layers; layer_num++ ) {
+        Layerptr layer = layers[layer_num];
+        layer->nodes = (Nodeptr *) calloc(layer->number_of_nodes, sizeof(Nodeptr));
+    }
+}
+
+/**
+ * traverses master node list twice, once to compute the number of
+ * nodes on each layer for allocation purposes and a second time to
+ * add each node to its layer
+ * @todo might be better to use the same approach as with edges and
+ * adjacency lists, i.e., use realloc and put the nodes on the layers
+ * as we make them rather than using a separate function
+ */
+void addNodesToLayers(void) {
+    for ( int index = 0; index < number_of_nodes; index++ ) {
+        int layer_num = master_node_list[index]->layer;
+        layers[layer_num]->number_of_nodes++;
+    }
+    allocateNodeListsForLayers();
+    // number of nodes added so far
+    int * current_num_nodes = calloc(number_of_layers, sizeof(int));
+    for ( int layer_num = 0; layer_num < number_of_layers; layer_num++ ) {
+        current_num_nodes[layer_num] = 0;
+    }
+    for ( int index = 0; index < number_of_nodes; index++ ) {
+        Nodeptr node = master_node_list[index];
+        int layer_num = node->layer;
+        layers[layer_num]->nodes[current_num_nodes[layer_num]++] = node;
+    }
+    free(current_num_nodes);
+}
+
+void readSgf(FILE * sgf_stream) {
+    initSgf(sgf_stream);
+    getNameFromSgfFile(graph_name);
+    number_of_nodes = getNumberOfNodes();
+    number_of_edges = getNumberOfEdges();
+    number_of_layers = getNumberOfLayers();
+    initHashTable(number_of_nodes);
+    master_node_list = (Nodeptr *) calloc(number_of_nodes, sizeof(Nodeptr));
+    master_edge_list = (Edgeptr *) calloc(number_of_edges, sizeof(Edgeptr));
+    layers = (Layerptr *) calloc(number_of_layers, sizeof(Layerptr));
+    readSgfNodes();
+    readSgfEdges();
+    allocateNodeListsForLayers();
+    addNodesToLayers();
+    removeHashTable();
+}
+
 
 // The input algorithm (for dot and ord files) is as follows:
 //   1. Read the ord file (first pass) and
@@ -117,19 +239,6 @@ void addNodeToLayer( Nodeptr node, int layer );
  */
 void makeLayer();
 
-/**
- * Adds an edge to the graph. The edge comes directly from the dot
- * file. Although instances usually direct edges from lower to higher layers,
- * no such assumption is made here.  A fatal error occurs if the nodes are
- * not on adjacent layers.
- */
-void addEdge( const char * name1, const char * name2 );
-
-/**
- * does the actual work of adding an edge once the node pointers are
- * known; can be called directly when reading an sgf file
- */
-
 Nodeptr makeNode( const char * name )
 {
   static int current_id = 0;
@@ -149,29 +258,6 @@ Nodeptr makeNode( const char * name )
   insertInHashTable( name, new_node );
   master_node_list[ new_node->id ] = new_node;
   return new_node;
-}
-
-/**
- * assumes master_node_list has been allocated to accommodate number
- * of nodes in header (sgf)
- */
-static void addToNodeList(Nodeptr node) {
-    static int index = 0;
-    master_node_list[index++] = node;
-}
-
-Nodeptr makeNumberedNode(int id, int layer, int position) {
-    Nodeptr new_node = (Nodeptr) malloc(sizeof(struct node_struct));
-    char * name = malloc(MAX_ID_SIZE);
-    sprintf(name, "%d", id);
-    new_node->name = name;
-    new_node->id = id;
-    new_node->layer = layer;
-    new_node->position = position;
-    new_node->up_edges = new_node->down_edges = NULL;
-    insertInHashTable(name, new_node);
-    addToNodeList(new_node);
-    return new_node;
 }
 
 void addNodeToLayer( Nodeptr node, int layer )
@@ -246,13 +332,14 @@ void addEdge(const char * name1, const char * name2)
    * function into three pieces: check for errors, allocate the edge,
    * add to lists and/or update degrees
    */
-  if ( upper_node->down_edges != NULL
-       && lower_node->up_edges != NULL ) {
-      upper_node->down_edges[upper_node->down_degree] = new_edge;
-      lower_node->up_edges[lower_node->up_degree] = new_edge;
-  }
-  upper_node->down_degree++;
-  lower_node->up_degree++;
+  upper_node->down_edges
+      = realloc(upper_node->down_edges,
+                (upper_node->down_degree + 1) * sizeof(Edgeptr));
+  lower_node->up_edges
+      = realloc(lower_node->up_edges,
+                (lower_node->up_degree + 1) * sizeof(Edgeptr));
+  upper_node->down_edges[upper_node->down_degree++] = new_edge;
+  lower_node->up_edges[lower_node->up_degree++] = new_edge;
   master_edge_list[num_edges_so_far++] = new_edge;
 }
 
@@ -597,4 +684,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2020 12 17 at 20:26:58 GMT] */
+/*  [Last modified: 2020 12 18 at 17:27:25 GMT] */

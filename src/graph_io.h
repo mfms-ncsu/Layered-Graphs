@@ -8,6 +8,7 @@
  */
 
 #include<stdbool.h>
+#include<stdio.h>
 
 #ifndef GRAPH_IO_H
 #define GRAPH_IO_H
@@ -23,9 +24,9 @@
 void readDotAndOrd( const char * dot_file, const char * ord_file );
 
 /**
- * Reads a graph from an sgf file.
+ * Reads a graph from the given stream
  */
-void readSgf(const char * sgf_file);
+void readSgf(FILE * sgf_stream);
 
 /**
  * Prints the graph in a verbose format on standard output for debugging
@@ -75,4 +76,4 @@ void writeSgf(const char * sgf_file_name,
 
 #endif
 
-/*  [Last modified: 2020 12 17 at 18:21:33 GMT] */
+/*  [Last modified: 2020 12 18 at 15:23:42 GMT] */
