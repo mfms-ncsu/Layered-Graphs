@@ -320,8 +320,6 @@ int main( int argc, char * argv[] )
   // names: dot and ord, respectively
   argc -= optind;
   argv += optind;
-  printf("argc = %d\n", argc);
-  printf("argv[0] = %s\n", argv[0]);
 
   /**
    * @todo Allow either one or two arguments; extract base name and
@@ -363,7 +361,6 @@ int main( int argc, char * argv[] )
       readDotAndOrd( dot_file_name, ord_file_name );
   } // end, dot and ord input
   else if ( argc == 1 ) {
-      fprintf(stderr, "sgf\n");
       char * sgf_file_name = argv[0];
       FILE * sgf_file = fopen(sgf_file_name, "r");
       readSgf(sgf_file);
@@ -532,7 +529,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2020 12 19 at 14:23:59 GMT] */
+/*  [Last modified: 2020 12 19 at 18:48:19 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */

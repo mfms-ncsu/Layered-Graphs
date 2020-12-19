@@ -21,6 +21,11 @@ FILE * in_stream;
 static char local_buffer[MAX_NAME_LENGTH];
 
 /**
+ * was the last read successful, NULL if not
+ */
+static char * success;
+
+/**
  * storage for items on the tag line
  */
 static char local_name[MAX_NAME_LENGTH];
@@ -33,13 +38,19 @@ static int local_layers;
  */
 void initSgf(FILE * in) {
     in_stream = in;
-    fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
-    while ( local_buffer[0] == 'c' ) {
-        fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
+    success = fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
+    while ( success != NULL && local_buffer[0] == 'c' ) {
+        success = fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
     }
     // assert: first char of local_buffer should be 't' at this point
-    sscanf(local_buffer, "t %s %d %d %d",
-           local_name, &local_nodes, &local_edges, &local_layers);
+    if ( success == NULL ) {
+        printf("FATAL: no graph information.\n");
+    }
+    int num_read = sscanf(local_buffer, "t %s %d %d %d",
+                          local_name, &local_nodes, &local_edges, &local_layers);
+    if ( num_read != 4 ) {
+        printf("FATAL: bad header information '%s'\n", local_buffer);
+    }
 }
 
 /**
@@ -77,10 +88,14 @@ int getNumberOfLayers() {
  * @return true if there is a next node
  */
 bool getNextNode() {
-    fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
-    if ( strlen(local_buffer) > 0 && local_buffer[0] == 'n' ) {
-        sscanf(local_buffer, "n %d %d %d",
+    success = fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
+    if ( success != NULL && strlen(local_buffer) > 0 && local_buffer[0] == 'n' ) {
+        int num_values = sscanf(local_buffer, "n %d %d %d",
                &(sgf_node.id), &(sgf_node.layer), &(sgf_node.position));
+        if ( num_values != 3 ) {
+            printf("FATAL, incomplete node information '%s'\n", local_buffer);
+            abort();
+        }
         return true;
     }
     return false;
@@ -89,15 +104,21 @@ bool getNextNode() {
 /**
  * put source and target into the preallocated edge
  * @return true if there is a next edge
+ * CAUTION: the first edge has already been read, so we process the
+ * local buffer first, then read the next edge
  */
 bool getNextEdge() {
-    char * success = fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
     if ( success != NULL && strlen(local_buffer) > 0 && local_buffer[0] == 'e' ) {
-        sscanf(local_buffer, "e %d %d",
+        int num_values = sscanf(local_buffer, "e %d %d",
                &(sgf_edge.source), &(sgf_edge.target));
+        if ( num_values != 2 ) {
+            printf("FATAL, incomplete edge information %s\n", local_buffer);
+            abort();
+        }
+        success = fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
         return true;
     }
     return false;
 }
 
-/*  [Last modified: 2020 12 19 at 15:25:55 GMT] */
+/*  [Last modified: 2020 12 19 at 18:41:51 GMT] */

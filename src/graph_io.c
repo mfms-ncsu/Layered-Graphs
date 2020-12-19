@@ -161,7 +161,6 @@ void readSgfEdges(void) {
         strcpy(target_name, nameFromId(sgf_edge.target));
         addEdge(source_name, target_name);
     }
-    printf("done reading edges\n");
 }
 
 void allocateNodeListsForLayers(void) {
@@ -203,7 +202,6 @@ void addNodesToLayers(void) {
  */
 void allocateLayers(void) {
     for ( int layer_num = 0; layer_num < number_of_layers; layer_num++ ) {
-        printf("allocate layer: num = %d\n", layer_num);
         layers[layer_num] = (Layerptr) malloc(sizeof(struct layer_struct));
         layers[layer_num]->number_of_nodes = 0;
         layers[layer_num]->nodes = NULL;
@@ -212,19 +210,12 @@ void allocateLayers(void) {
 }
 
 void readSgf(FILE * sgf_stream) {
-    printf("readSgf\n");
     initSgf(sgf_stream);
-    printf("initialized\n");
     getNameFromSgfFile(graph_name);
-    printf("name = %s\n", graph_name);
     number_of_nodes = getNumberOfNodes();
-    printf("num_nodes = %d\n", number_of_nodes);
     number_of_edges = getNumberOfEdges();
-    printf("num_edges = %d\n", number_of_edges);
     number_of_layers = getNumberOfLayers();
-    printf("num_layers = %d\n", number_of_layers);
     initHashTable(number_of_nodes);
-    printf("hash\n");
     master_node_list = (Nodeptr *) calloc(number_of_nodes, sizeof(Nodeptr));
     master_edge_list = (Edgeptr *) calloc(number_of_edges, sizeof(Edgeptr));
     layers = (Layerptr *) calloc(number_of_layers, sizeof(Layerptr));
@@ -234,7 +225,6 @@ void readSgf(FILE * sgf_stream) {
     allocateNodeListsForLayers();
     addNodesToLayers();
     removeHashTable();
-    printGraph();
 }
 
 
@@ -716,10 +706,9 @@ void printGraph()
   printf("+++ begin-graph %s nodes=%d, edges = %d, layers=%d\n",
          graph_name, number_of_nodes, number_of_edges, number_of_layers);
   int layer = 0;
-  for( ; layer < number_of_layers; layer++ )
-    {
+  for( ; layer < number_of_layers; layer++ ) {
       printLayer( layer );
-    }
+  }
   printf(" ---- edges ----\n");
   for ( int index = 0; index < number_of_edges; index++ ) {
       printEdge(master_edge_list[index]);
@@ -740,4 +729,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2020 12 19 at 16:14:29 GMT] */
+/*  [Last modified: 2020 12 19 at 18:47:08 GMT] */
