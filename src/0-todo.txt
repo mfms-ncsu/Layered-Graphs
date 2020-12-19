@@ -43,7 +43,14 @@ Consider runtime options that assume three stages: preprocessing (e.g., dfs), so
 
 *** Add ***
 
-- facilities for reading and writing sgf files; the program would base the I/O method on the extension(s) of the input file(s)
+- script to convert from format used by recent papers to sgf
+
+(* done *) - facilities for reading and writing sgf files; the program would base the I/O method on the extension(s) of the input file(s); still to do
+
+   * read and store sgf comments
+   * allow standard input for sgf with '-' instead of file name
+   * sgf output where an ord file is written (if sgf input was used)
+   * allow standard output to be specified (not clear what the convention should be)
 
 - ability to have positions that are not consecutive on a layer, in order to be able to minimize non-verticality, both directly and as a Pareto option
 

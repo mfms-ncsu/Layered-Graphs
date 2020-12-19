@@ -1,3 +1,4 @@
-# want the .dot and .ord files in TestData to be included
+# want the .dot, .ord, and .sgf files in TestData to be included
 !*.dot
 !*.ord
+!*.sgf

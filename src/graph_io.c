@@ -41,6 +41,8 @@ void printGraph();
 // initial allocated size of layer array (will double as needed)
 static int layer_capacity = MIN_LAYER_CAPACITY;
 
+int countIsolatedNodes();
+
 /**
  * Adds an edge to the graph; (currently) used by both sgf and dot
  * input.
@@ -224,6 +226,7 @@ void readSgf(FILE * sgf_stream) {
     readSgfEdges();
     allocateNodeListsForLayers();
     addNodesToLayers();
+    number_of_isolated_nodes = countIsolatedNodes();
     removeHashTable();
 }
 
@@ -543,7 +546,7 @@ void createEdges( const char * dot_file )
  * @return number of nodes whose up_degree and
  * down_degree are both zero
  */
-static int countIsolatedNodes()
+int countIsolatedNodes()
 {
   /**
    * @todo
@@ -729,4 +732,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2020 12 19 at 18:47:08 GMT] */
+/*  [Last modified: 2020 12 19 at 21:24:56 GMT] */

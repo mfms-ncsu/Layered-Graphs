@@ -1,5 +1,5 @@
-++++++++++ Testing min_crossings Fri Dec 18 17:42:43 UTC 2020 ++++++++++++
-========= running experiments with TestData/c_2000_2100_25_4-rnd-004-scr, 2020-12-18-1742 ===============
+++++++++++ Testing min_crossings Sat Dec 19 21:26:17 UTC 2020 ++++++++++++
+========= running experiments with TestData/c_2000_2100_25_4-rnd-004-scr.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,c_2000_2100_25_4-rnd-004
@@ -20,7 +20,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 2000
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.651
+Runtime,0.691
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,3267,iteration,6841
@@ -59,7 +59,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 2000
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.620
+Runtime,0.649
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,4310,iteration,78
@@ -94,11 +94,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.895, graph c_2000_2100_25_4-rnd-004
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.911, graph c_2000_2100_25_4-rnd-004
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,2.901
+Runtime,2.915
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,3807,iteration,9743
@@ -133,11 +133,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.089, graph c_2000_2100_25_4-rnd-004
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.088, graph c_2000_2100_25_4-rnd-004
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,2.092
+Runtime,2.091
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,4796,iteration,9650
@@ -172,11 +172,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.983, graph c_2000_2100_25_4-rnd-004
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.259, graph c_2000_2100_25_4-rnd-004
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,4.987
+Runtime,5.264
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,6959,iteration,8727
@@ -211,11 +211,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.459, graph c_2000_2100_25_4-rnd-004
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.363, graph c_2000_2100_25_4-rnd-004
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,3.463
+Runtime,3.368
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,3921,iteration,9766
@@ -250,11 +250,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.741, graph c_2000_2100_25_4-rnd-004
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.596, graph c_2000_2100_25_4-rnd-004
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,5.745
+Runtime,5.600
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,7046,iteration,8734
@@ -275,7 +275,7 @@ Pareto,107.391113^7073;107.448279^7066;107.448279^7064;107.459295^7048;107.46350
 
 ===================================================
 
-========= running experiments with TestData/c_2000_2100_50_8-rnd-019-scr, 2020-12-18-1742 ===============
+========= running experiments with TestData/c_2000_2100_50_8-rnd-019-scr.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,c_2000_2100_50_8-rnd-019
@@ -296,7 +296,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 2000
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.550
+Runtime,0.538
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,1555,iteration,435
@@ -334,7 +334,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 2000
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.535
+Runtime,0.544
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,1794,iteration,2567
@@ -369,11 +369,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.552, graph c_2000_2100_50_8-rnd-019
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.576, graph c_2000_2100_50_8-rnd-019
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,2.556
+Runtime,2.580
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,1471,iteration,8983
@@ -411,7 +411,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 2000
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,1.813
+Runtime,1.852
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,1812,iteration,5607
@@ -446,11 +446,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.247, graph c_2000_2100_50_8-rnd-019
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.235, graph c_2000_2100_50_8-rnd-019
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,4.250
+Runtime,4.239
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,3292,iteration,8564
@@ -485,11 +485,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.010, graph c_2000_2100_50_8-rnd-019
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.109, graph c_2000_2100_50_8-rnd-019
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,3.013
+Runtime,3.112
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,1370,iteration,9050
@@ -524,11 +524,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.846, graph c_2000_2100_50_8-rnd-019
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.884, graph c_2000_2100_50_8-rnd-019
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,4.851
+Runtime,4.889
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,3348,iteration,8584
@@ -549,7 +549,7 @@ Pareto,157.201567^3362;157.240976^3358;157.268070^3354;157.281508^3348, 9957;896
 
 ===================================================
 
-========= running experiments with TestData/c_2000_2500_100_8-rnd-014-scr, 2020-12-18-1742 ===============
+========= running experiments with TestData/c_2000_2500_100_8-rnd-014-scr.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,c_2000_2500_100_8-rnd-014
@@ -570,7 +570,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 2000
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.599
+Runtime,0.596
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,5373,iteration,8820
@@ -605,11 +605,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mod_bary
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.570, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.593, graph c_2000_2500_100_8-rnd-014
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.575
+Runtime,0.597
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,5388,iteration,4510
@@ -644,11 +644,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.787, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.779, graph c_2000_2500_100_8-rnd-014
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.791
+Runtime,1.784
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,4102,iteration,9478
@@ -683,11 +683,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.283, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.328, graph c_2000_2500_100_8-rnd-014
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,1.287
+Runtime,1.333
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,5199,iteration,8528
@@ -722,11 +722,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.051, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.028, graph c_2000_2500_100_8-rnd-014
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,4.055
+Runtime,4.033
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,6928,iteration,6874
@@ -761,11 +761,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.488, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.586, graph c_2000_2500_100_8-rnd-014
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,2.493
+Runtime,2.591
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,4157,iteration,9532
@@ -800,11 +800,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.732, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.760, graph c_2000_2500_100_8-rnd-014
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,4.737
+Runtime,4.765
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,6995,iteration,6833
@@ -825,7 +825,7 @@ Pareto,330.771565^7015;330.771565^7008;330.771565^7006;330.776636^7002;330.90763
 
 ===================================================
 
-========= running experiments with TestData/ex_10, 2020-12-18-1742 ===============
+========= running experiments with TestData/ex_10.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,ex_10
@@ -846,7 +846,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 10
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.013
+Runtime,0.012
 StartCrossings,18
 PreCrossings,17
 HeuristicCrossings,14,iteration,2
@@ -885,7 +885,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 10
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.013
+Runtime,0.014
 StartCrossings,18
 PreCrossings,17
 HeuristicCrossings,13,iteration,1
@@ -924,7 +924,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 10
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.060
+Runtime,0.066
 StartCrossings,18
 PreCrossings,17
 HeuristicCrossings,4,iteration,15
@@ -1041,7 +1041,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 10
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.062
+Runtime,0.064
 StartCrossings,18
 PreCrossings,17
 HeuristicCrossings,10,iteration,11
@@ -1080,7 +1080,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 10
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.024
+Runtime,0.025
 StartCrossings,18
 PreCrossings,17
 HeuristicCrossings,4,iteration,7
@@ -1101,7 +1101,7 @@ Pareto,2.500000^4, 7
 
 ===================================================
 
-========= running experiments with TestData/ex_20, 2020-12-18-1742 ===============
+========= running experiments with TestData/ex_20.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,ex_20
@@ -1122,7 +1122,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 20
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.020
+Runtime,0.019
 StartCrossings,71
 PreCrossings,44
 HeuristicCrossings,31,iteration,10
@@ -1200,7 +1200,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 20
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.093
+Runtime,0.094
 StartCrossings,71
 PreCrossings,44
 HeuristicCrossings,40,iteration,10
@@ -1239,7 +1239,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 20
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.063
+Runtime,0.066
 StartCrossings,71
 PreCrossings,44
 HeuristicCrossings,31,iteration,17
@@ -1278,7 +1278,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 20
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.044
+Runtime,0.049
 StartCrossings,71
 PreCrossings,44
 HeuristicCrossings,38,iteration,16
@@ -1317,7 +1317,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 20
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.116
+Runtime,0.114
 StartCrossings,71
 PreCrossings,44
 HeuristicCrossings,29,iteration,121
@@ -1356,7 +1356,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 20
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.060
+Runtime,0.063
 StartCrossings,71
 PreCrossings,44
 HeuristicCrossings,32,iteration,26
@@ -1377,7 +1377,7 @@ Pareto,8.750000^32, 41
 
 ===================================================
 
-========= running experiments with TestData/g_0500_09_11, 2020-12-18-1742 ===============
+========= running experiments with TestData/g_0500_09_11.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,g_0500_09_11
@@ -1398,7 +1398,7 @@ dfs done, number_of_components = 39, size_of_largest_component = 439
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.209
+Runtime,0.215
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,369,iteration,167
@@ -1437,7 +1437,7 @@ dfs done, number_of_components = 39, size_of_largest_component = 439
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.197
+Runtime,0.209
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,185,iteration,6036
@@ -1476,7 +1476,7 @@ dfs done, number_of_components = 39, size_of_largest_component = 439
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.206
+Runtime,1.241
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,343,iteration,6853
@@ -1515,7 +1515,7 @@ dfs done, number_of_components = 39, size_of_largest_component = 439
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.821
+Runtime,0.944
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,326,iteration,4064
@@ -1554,7 +1554,7 @@ dfs done, number_of_components = 39, size_of_largest_component = 439
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.115
+Runtime,1.119
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,1253,iteration,5732
@@ -1593,7 +1593,7 @@ dfs done, number_of_components = 39, size_of_largest_component = 439
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.348
+Runtime,1.394
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,341,iteration,3107
@@ -1632,7 +1632,7 @@ dfs done, number_of_components = 39, size_of_largest_component = 439
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.231
+Runtime,1.268
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,1254,iteration,8045
@@ -1653,7 +1653,7 @@ Pareto,61.192256^1254, 8045
 
 ===================================================
 
-========= running experiments with TestData/g_0500_09_20, 2020-12-18-1742 ===============
+========= running experiments with TestData/g_0500_09_20.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,g_0500_09_20
@@ -1674,7 +1674,7 @@ dfs done, number_of_components = 11, size_of_largest_component = 489
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.446
+Runtime,0.441
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,12282,iteration,8417
@@ -1713,7 +1713,7 @@ dfs done, number_of_components = 11, size_of_largest_component = 489
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.427
+Runtime,0.438
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,11799,iteration,9505
@@ -1749,11 +1749,11 @@ MedianDegree,3.5
 dfs done, number_of_components = 11, size_of_largest_component = 489
 === Running heuristic mce
 *** standard termination here: iteration 5893 crossings 14280 edge_crossings 71 graph g_0500_09_20 ***
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.576, graph g_0500_09_20
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.704, graph g_0500_09_20
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.578
+Runtime,1.706
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,13639,iteration,9829
@@ -1788,11 +1788,11 @@ MedianDegree,3.5
 --- Running preprocessor dfs
 dfs done, number_of_components = 11, size_of_largest_component = 489
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.097, graph g_0500_09_20
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.142, graph g_0500_09_20
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,1.098
+Runtime,1.142
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,10047,iteration,9768
@@ -1831,7 +1831,7 @@ dfs done, number_of_components = 11, size_of_largest_component = 489
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,2.260
+Runtime,2.271
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,12889,iteration,6970
@@ -1870,7 +1870,7 @@ dfs done, number_of_components = 11, size_of_largest_component = 489
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,2.024
+Runtime,2.260
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,13658,iteration,4110
@@ -1906,11 +1906,11 @@ MedianDegree,3.5
 dfs done, number_of_components = 11, size_of_largest_component = 489
 === Running heuristic mse
 *** standard termination here: iteration 5893 crossings 11981 edge_crossings 110 graph g_0500_09_20 ***
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.619, graph g_0500_09_20
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.794, graph g_0500_09_20
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,2.621
+Runtime,2.795
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,11963,iteration,9945
@@ -1931,7 +1931,7 @@ Pareto,123.640067^11972;123.658586^11965;123.658586^11963, 9981;9934;9945
 
 ===================================================
 
-========= running experiments with TestData/g_0500_09_40, 2020-12-18-1742 ===============
+========= running experiments with TestData/g_0500_09_40.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,g_0500_09_40
@@ -1952,7 +1952,7 @@ dfs done, number_of_components = 3, size_of_largest_component = 498
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,1.279
+Runtime,1.273
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,79085,iteration,7195
@@ -1991,7 +1991,7 @@ dfs done, number_of_components = 3, size_of_largest_component = 498
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,1.179
+Runtime,1.182
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,77261,iteration,4468
@@ -2030,7 +2030,7 @@ dfs done, number_of_components = 3, size_of_largest_component = 498
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,3.002
+Runtime,3.102
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,102225,iteration,1334
@@ -2065,11 +2065,11 @@ MedianDegree,8.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 3, size_of_largest_component = 498
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.028, graph g_0500_09_40
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.031, graph g_0500_09_40
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,2.029
+Runtime,2.032
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,71643,iteration,9758
@@ -2108,7 +2108,7 @@ dfs done, number_of_components = 3, size_of_largest_component = 498
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,6.886
+Runtime,7.060
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,79662,iteration,9792
@@ -2147,7 +2147,7 @@ dfs done, number_of_components = 3, size_of_largest_component = 498
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,5.019
+Runtime,4.944
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,101890,iteration,5798
@@ -2186,7 +2186,7 @@ dfs done, number_of_components = 3, size_of_largest_component = 498
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,8.655
+Runtime,8.694
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,80144,iteration,4935
@@ -2207,7 +2207,7 @@ Pareto,395.099327^80153;395.099327^80148;395.099327^80144, 4983;5055;4935
 
 ===================================================
 
-========= running experiments with TestData/grafo10394, 2020-12-18-1742 ===============
+========= running experiments with TestData/grafo10394.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,grafo10394
@@ -2228,7 +2228,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 158
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.062
+Runtime,0.059
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,112,iteration,2192
@@ -2267,7 +2267,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 158
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.061
+Runtime,0.068
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,110,iteration,8486
@@ -2306,7 +2306,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 158
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.453
+Runtime,0.521
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,103,iteration,8566
@@ -2384,7 +2384,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 158
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.294
+Runtime,0.336
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,219,iteration,204
@@ -2423,7 +2423,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 158
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.508
+Runtime,0.559
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,102,iteration,8543
@@ -2462,7 +2462,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 158
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.347
+Runtime,0.371
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,218,iteration,21
@@ -2483,7 +2483,7 @@ Pareto,20.425749^228;25.829376^218, 497;10001
 
 ===================================================
 
-========= running experiments with TestData/grafo10676, 2020-12-18-1742 ===============
+========= running experiments with TestData/grafo10676.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,grafo10676
@@ -2504,7 +2504,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 115
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.104
+Runtime,0.114
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,531,iteration,6603
@@ -2543,7 +2543,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 115
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.094
+Runtime,0.102
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,510,iteration,4683
@@ -2582,7 +2582,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 115
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.026
+Runtime,1.066
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,345,iteration,6271
@@ -2621,7 +2621,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 115
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,0.702
+Runtime,0.744
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,406,iteration,1543
@@ -2660,7 +2660,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 115
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.561
+Runtime,0.563
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,684,iteration,355
@@ -2699,7 +2699,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 115
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.080
+Runtime,1.143
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,485,iteration,5600
@@ -2738,7 +2738,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 115
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.594
+Runtime,0.597
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,684,iteration,355
@@ -2759,7 +2759,7 @@ Pareto,12.098039^684, 355
 
 ===================================================
 
-========= running experiments with TestData/increase, 2020-12-18-1742 ===============
+========= running experiments with TestData/increase.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,increase
@@ -2819,7 +2819,7 @@ dfs done, number_of_components = 3, size_of_largest_component = 7
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.013
+Runtime,0.012
 StartCrossings,13
 PreCrossings,3
 HeuristicCrossings,1,iteration,1
@@ -2858,7 +2858,7 @@ dfs done, number_of_components = 3, size_of_largest_component = 7
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.073
+Runtime,0.072
 StartCrossings,13
 PreCrossings,3
 HeuristicCrossings,1,iteration,3
@@ -2936,7 +2936,7 @@ dfs done, number_of_components = 3, size_of_largest_component = 7
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.022
+Runtime,0.020
 StartCrossings,13
 PreCrossings,3
 HeuristicCrossings,1,iteration,2
@@ -3014,7 +3014,7 @@ dfs done, number_of_components = 3, size_of_largest_component = 7
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.022
+Runtime,0.024
 StartCrossings,13
 PreCrossings,3
 HeuristicCrossings,1,iteration,2
@@ -3035,7 +3035,7 @@ Pareto,1.035714^1, 2
 
 ===================================================
 
-========= running experiments with TestData/north20.50_GKNV-scr, 2020-12-18-1742 ===============
+========= running experiments with TestData/north20.50_GKNV-scr.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,north20.50_GKNV
@@ -3056,7 +3056,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.057
+Runtime,0.050
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,55,iteration,50
@@ -3095,7 +3095,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.064
+Runtime,0.048
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,41,iteration,278
@@ -3134,7 +3134,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.349
+Runtime,0.353
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,69,iteration,5707
@@ -3173,7 +3173,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.245
+Runtime,0.248
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,52,iteration,693
@@ -3212,7 +3212,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.188
+Runtime,0.187
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,87,iteration,159
@@ -3251,7 +3251,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.379
+Runtime,0.405
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,68,iteration,3611
@@ -3290,7 +3290,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.224
+Runtime,0.237
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,87,iteration,159
@@ -3311,7 +3311,7 @@ Pareto,14.236039^89;14.315526^88;15.102705^87, 225;205;159
 
 ===================================================
 
-========= running experiments with TestData/north42.32_GKNV-scr, 2020-12-18-1742 ===============
+========= running experiments with TestData/north42.32_GKNV-scr.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,north42.32_GKNV
@@ -3371,7 +3371,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 42
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.029
+Runtime,0.030
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,46,iteration,21
@@ -3410,7 +3410,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 42
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.179
+Runtime,0.187
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,49,iteration,218
@@ -3449,7 +3449,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 42
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.127
+Runtime,0.136
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,46,iteration,37
@@ -3488,7 +3488,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 42
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.082
+Runtime,0.088
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,51,iteration,28
@@ -3527,7 +3527,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 42
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.197
+Runtime,0.211
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,48,iteration,127
@@ -3587,7 +3587,7 @@ Pareto,10.225108^51, 29
 
 ===================================================
 
-========= running experiments with TestData/north95.0_UPR-scr, 2020-12-18-1742 ===============
+========= running experiments with TestData/north95.0_UPR-scr.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,north95.0_UPR
@@ -3647,7 +3647,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 186
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.048
+Runtime,0.047
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,3,iteration,156
@@ -3686,7 +3686,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 186
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.126
+Runtime,0.129
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,4,iteration,14
@@ -3725,7 +3725,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 186
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.097
+Runtime,0.100
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,4,iteration,261
@@ -3764,7 +3764,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 186
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.263
+Runtime,0.270
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,9,iteration,76
@@ -3803,7 +3803,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 186
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.174
+Runtime,0.176
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,3,iteration,202
@@ -3842,7 +3842,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 186
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.337
+Runtime,0.341
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,9,iteration,76
@@ -3863,7 +3863,7 @@ Pareto,43.478571^10;43.550000^9, 79;76
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_0_0-019, 2020-12-18-1742 ===============
+========= running experiments with TestData/r_100_120_10_0_0-019.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,r_100_120_10_0p0_0p0_19
@@ -3884,7 +3884,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.048
+Runtime,0.042
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,58,iteration,47
@@ -3923,7 +3923,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.044
+Runtime,0.043
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,51,iteration,722
@@ -3962,7 +3962,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.216
+Runtime,0.243
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,55,iteration,638
@@ -4001,7 +4001,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.154
+Runtime,0.184
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,58,iteration,934
@@ -4040,7 +4040,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.155
+Runtime,0.175
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,100,iteration,360
@@ -4079,7 +4079,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.250
+Runtime,0.291
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,49,iteration,6724
@@ -4118,7 +4118,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.188
+Runtime,0.222
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,105,iteration,144
@@ -4139,7 +4139,7 @@ Pareto,15.888889^105, 1351
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_0_0-026, 2020-12-18-1742 ===============
+========= running experiments with TestData/r_100_120_10_0_0-026.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,r_100_120_10_0p0_0p0_26
@@ -4160,7 +4160,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.046
+Runtime,0.055
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,71,iteration,26
@@ -4199,7 +4199,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.047
+Runtime,0.050
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,44,iteration,7120
@@ -4238,7 +4238,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.217
+Runtime,0.253
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,52,iteration,6911
@@ -4277,7 +4277,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.154
+Runtime,0.173
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,63,iteration,587
@@ -4316,7 +4316,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.154
+Runtime,0.178
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,101,iteration,12
@@ -4352,11 +4352,11 @@ MedianDegree,2.0
 dfs done, number_of_components = 1, size_of_largest_component = 100
 === Running heuristic mce
 *** standard termination here: iteration 301 crossings 91 edge_crossings 4 graph r_100_120_10_0p0_0p0_26 ***
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.254, graph r_100_120_10_0p0_0p0_26
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.296, graph r_100_120_10_0p0_0p0_26
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.254
+Runtime,0.296
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,52,iteration,8201
@@ -4395,7 +4395,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.188
+Runtime,0.215
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,95,iteration,145
@@ -4416,7 +4416,7 @@ Pareto,16.000000^96;16.111111^95, 208;205
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_0_1p5-017, 2020-12-18-1742 ===============
+========= running experiments with TestData/r_100_120_10_0_1p5-017.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,r_100_120_10_0p0_1p5_17
@@ -4437,7 +4437,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.044
+Runtime,0.049
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,45,iteration,25
@@ -4476,7 +4476,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.041
+Runtime,0.049
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,58,iteration,158
@@ -4515,7 +4515,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.227
+Runtime,0.262
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,55,iteration,430
@@ -4554,7 +4554,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.156
+Runtime,0.193
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,48,iteration,120
@@ -4593,7 +4593,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.165
+Runtime,0.179
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,126,iteration,404
@@ -4632,7 +4632,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.262
+Runtime,0.299
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,48,iteration,1510
@@ -4671,7 +4671,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.191
+Runtime,0.223
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,107,iteration,905
@@ -4692,7 +4692,7 @@ Pareto,23.000000^109;23.111111^107, 1265;907
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_0_1p5-032, 2020-12-18-1742 ===============
+========= running experiments with TestData/r_100_120_10_0_1p5-032.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,r_100_120_10_0p0_1p5_32
@@ -4752,7 +4752,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.042
+Runtime,0.048
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,29,iteration,41
@@ -4791,7 +4791,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.207
+Runtime,0.259
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,50,iteration,214
@@ -4830,7 +4830,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.154
+Runtime,0.186
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,69,iteration,132
@@ -4869,7 +4869,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.158
+Runtime,0.177
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,110,iteration,244
@@ -4908,7 +4908,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.252
+Runtime,0.311
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,42,iteration,1211
@@ -4947,7 +4947,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.191
+Runtime,0.221
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,115,iteration,320
@@ -4968,7 +4968,7 @@ Pareto,23.555556^116;23.777778^115, 1152;361
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_1p5_0-010, 2020-12-18-1742 ===============
+========= running experiments with TestData/r_100_120_10_1p5_0-010.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,r_100_120_10_1p5_0p0_10
@@ -4989,7 +4989,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.047
+Runtime,0.048
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,35,iteration,68
@@ -5028,7 +5028,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.044
+Runtime,0.048
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,33,iteration,1502
@@ -5067,7 +5067,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.291
+Runtime,0.335
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,49,iteration,301
@@ -5106,7 +5106,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.233
+Runtime,0.238
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,41,iteration,189
@@ -5145,7 +5145,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.166
+Runtime,0.190
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,63,iteration,169
@@ -5184,7 +5184,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.323
+Runtime,0.370
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,33,iteration,1931
@@ -5223,7 +5223,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.202
+Runtime,0.231
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,52,iteration,43
@@ -5244,7 +5244,7 @@ Pareto,14.286178^57;15.156061^52, 210;10001
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_1p5_0-024, 2020-12-18-1742 ===============
+========= running experiments with TestData/r_100_120_10_1p5_0-024.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,r_100_120_10_1p5_0p0_24
@@ -5265,7 +5265,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.043
+Runtime,0.047
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,53,iteration,163
@@ -5304,7 +5304,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.042
+Runtime,0.048
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,61,iteration,202
@@ -5343,7 +5343,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.319
+Runtime,0.365
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,70,iteration,401
@@ -5382,7 +5382,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.211
+Runtime,0.251
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,23,iteration,282
@@ -5421,7 +5421,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.167
+Runtime,0.196
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,65,iteration,3204
@@ -5460,7 +5460,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.338
+Runtime,0.413
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,64,iteration,3240
@@ -5499,7 +5499,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.204
+Runtime,0.232
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,65,iteration,3714
@@ -5520,7 +5520,7 @@ Pareto,18.414414^74;18.414414^65, 368;3714
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_1p5_1p5-016, 2020-12-18-1742 ===============
+========= running experiments with TestData/r_100_120_10_1p5_1p5-016.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,r_100_120_10_1p5_1p5_16
@@ -5541,7 +5541,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.049
+Runtime,0.047
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,12,iteration,20
@@ -5580,7 +5580,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.044
+Runtime,0.051
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,15,iteration,232
@@ -5619,7 +5619,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.260
+Runtime,0.332
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,13,iteration,410
@@ -5658,7 +5658,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.175
+Runtime,0.212
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,25,iteration,129
@@ -5697,7 +5697,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.165
+Runtime,0.188
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,74,iteration,219
@@ -5736,7 +5736,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.290
+Runtime,0.353
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,11,iteration,3609
@@ -5775,7 +5775,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.196
+Runtime,0.225
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,74,iteration,225
@@ -5796,7 +5796,7 @@ Pareto,25.949603^74, 225
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_1p5_1p5-023, 2020-12-18-1742 ===============
+========= running experiments with TestData/r_100_120_10_1p5_1p5-023.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,r_100_120_10_1p5_1p5_23
@@ -5817,7 +5817,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.040
+Runtime,0.043
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,107,iteration,18
@@ -5856,7 +5856,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.041
+Runtime,0.046
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,105,iteration,112
@@ -5895,7 +5895,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.307
+Runtime,0.361
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,177,iteration,126
@@ -5934,7 +5934,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.210
+Runtime,0.253
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,166,iteration,130
@@ -5973,7 +5973,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.184
+Runtime,0.215
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,279,iteration,140
@@ -6012,7 +6012,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.341
+Runtime,0.396
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,148,iteration,1628
@@ -6051,7 +6051,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 100
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.231
+Runtime,0.259
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,279,iteration,134
@@ -6072,7 +6072,7 @@ Pareto,26.571887^295;26.571887^293;26.617341^292;26.976140^279, 3663;670;583;134
 
 ===================================================
 
-========= running experiments with TestData/rome8685.74_GKNV-scr, 2020-12-18-1742 ===============
+========= running experiments with TestData/rome8685.74_GKNV-scr.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,rome8685.74_GKNV
@@ -6093,7 +6093,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 91
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.048
+Runtime,0.054
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,85,iteration,159
@@ -6132,7 +6132,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 91
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.046
+Runtime,0.054
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,83,iteration,2276
@@ -6171,7 +6171,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 91
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.431
+Runtime,0.498
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,75,iteration,3390
@@ -6210,7 +6210,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 91
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.296
+Runtime,0.355
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,102,iteration,608
@@ -6249,7 +6249,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 91
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.206
+Runtime,0.228
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,133,iteration,149
@@ -6288,7 +6288,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 91
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.476
+Runtime,0.535
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,76,iteration,6373
@@ -6327,7 +6327,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 91
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.239
+Runtime,0.271
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,133,iteration,149
@@ -6348,7 +6348,7 @@ Pareto,10.118240^134;10.118240^133, 335;237
 
 ===================================================
 
-========= running experiments with TestData/rome8896.60_GKNV-scr, 2020-12-18-1742 ===============
+========= running experiments with TestData/rome8896.60_GKNV-scr.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,rome8896.60_GKNV
@@ -6369,7 +6369,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 107
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.047
+Runtime,0.053
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,47,iteration,187
@@ -6408,7 +6408,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 107
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.047
+Runtime,0.055
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,38,iteration,364
@@ -6447,7 +6447,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 107
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.396
+Runtime,0.456
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,56,iteration,1327
@@ -6486,7 +6486,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 107
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.270
+Runtime,0.318
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,62,iteration,399
@@ -6525,7 +6525,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 107
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.207
+Runtime,0.232
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,119,iteration,264
@@ -6564,7 +6564,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 107
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.421
+Runtime,0.487
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,32,iteration,8506
@@ -6603,7 +6603,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 107
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.243
+Runtime,0.290
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,119,iteration,264
@@ -6624,7 +6624,7 @@ Pareto,15.434069^119, 10001
 
 ===================================================
 
-========= running experiments with TestData/t_0500_09_01, 2020-12-18-1742 ===============
+========= running experiments with TestData/t_0500_09_01.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,t_0500_09_01
@@ -6645,7 +6645,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.220
+Runtime,0.275
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,111,iteration,191
@@ -6684,7 +6684,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.218
+Runtime,0.262
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,132,iteration,5479
@@ -6723,7 +6723,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.383
+Runtime,1.720
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,159,iteration,8316
@@ -6762,7 +6762,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.978
+Runtime,1.128
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,222,iteration,4990
@@ -6801,7 +6801,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.194
+Runtime,1.380
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,400,iteration,45
@@ -6837,11 +6837,11 @@ MedianDegree,2.0
 dfs done, number_of_components = 1, size_of_largest_component = 500
 === Running heuristic mce
 *** standard termination here: iteration 4001 crossings 189 edge_crossings 5 graph t_0500_09_01 ***
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.522, graph t_0500_09_01
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.749, graph t_0500_09_01
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.522
+Runtime,1.750
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,164,iteration,7003
@@ -6880,7 +6880,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.311
+Runtime,1.531
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,400,iteration,45
@@ -6901,7 +6901,7 @@ Pareto,13.062130^432;13.189512^429;15.629019^427;15.699030^424;15.712212^423;15.
 
 ===================================================
 
-========= running experiments with TestData/t_0500_22_01, 2020-12-18-1742 ===============
+========= running experiments with TestData/t_0500_22_01.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,t_0500_22_01
@@ -6922,7 +6922,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.136
+Runtime,0.164
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,51,iteration,190
@@ -6961,7 +6961,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.134
+Runtime,0.163
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,25,iteration,5957
@@ -7000,7 +7000,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.677
+Runtime,0.801
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,47,iteration,5166
@@ -7039,7 +7039,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.495
+Runtime,0.569
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,79,iteration,2850
@@ -7078,7 +7078,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.794
+Runtime,0.909
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,130,iteration,45
@@ -7117,7 +7117,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.784
+Runtime,0.918
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,29,iteration,8618
@@ -7156,7 +7156,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 500
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.903
+Runtime,1.052
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,130,iteration,45
@@ -7177,7 +7177,7 @@ Pareto,22.010852^226;24.845779^225;24.864352^224;24.892160^223;24.924688^222;25.
 
 ===================================================
 
-========= running experiments with TestData/tree_100, 2020-12-18-1742 ===============
+========= running experiments with TestData/tree_100.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,tree_100
@@ -7198,7 +7198,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 200
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.163
+Runtime,0.187
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,566,iteration,24
@@ -7237,7 +7237,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 200
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.162
+Runtime,0.186
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,588,iteration,48
@@ -7276,7 +7276,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 200
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.231
+Runtime,1.442
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,522,iteration,8361
@@ -7315,7 +7315,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 200
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.898
+Runtime,0.956
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,471,iteration,1353
@@ -7354,7 +7354,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 200
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.582
+Runtime,1.786
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,839,iteration,3
@@ -7390,11 +7390,11 @@ MedianDegree,2.0
 dfs done, number_of_components = 1, size_of_largest_component = 200
 === Running heuristic mce
 *** standard termination here: iteration 2001 crossings 630 edge_crossings 23 graph tree_100 ***
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.262, graph tree_100
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.460, graph tree_100
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.263
+Runtime,1.460
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,539,iteration,9379
@@ -7433,7 +7433,7 @@ dfs done, number_of_components = 1, size_of_largest_component = 200
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.591
+Runtime,1.835
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,839,iteration,3
@@ -7454,7 +7454,7 @@ Pareto,6.494949^962;8.464646^954;8.525253^946;8.545455^945;8.686869^891;8.878788
 
 ===================================================
 
-========= running experiments with TestData/u_100_20_105_5-rnd-031-scr, 2020-12-18-1742 ===============
+========= running experiments with TestData/u_100_20_105_5-rnd-031-scr.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,u_100_20_105_5-rnd-031
@@ -7475,7 +7475,7 @@ dfs done, number_of_components = 18, size_of_largest_component = 1972
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.465
+Runtime,0.588
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,329,iteration,1648
@@ -7510,11 +7510,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 18, size_of_largest_component = 1972
 === Running heuristic mod_bary
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.475, graph u_100_20_105_5-rnd-031
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.579, graph u_100_20_105_5-rnd-031
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.479
+Runtime,0.584
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,312,iteration,8381
@@ -7552,7 +7552,7 @@ dfs done, number_of_components = 18, size_of_largest_component = 1972
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.909
+Runtime,1.119
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,432,iteration,8647
@@ -7587,11 +7587,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 18, size_of_largest_component = 1972
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.738, graph u_100_20_105_5-rnd-031
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.874, graph u_100_20_105_5-rnd-031
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,0.740
+Runtime,0.876
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,474,iteration,9259
@@ -7629,7 +7629,7 @@ dfs done, number_of_components = 18, size_of_largest_component = 1972
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,3.070
+Runtime,3.585
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,1389,iteration,8677
@@ -7667,7 +7667,7 @@ dfs done, number_of_components = 18, size_of_largest_component = 1972
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.400
+Runtime,1.665
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,471,iteration,8704
@@ -7702,11 +7702,11 @@ MedianDegree,1.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 18, size_of_largest_component = 1972
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.578, graph u_100_20_105_5-rnd-031
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.153, graph u_100_20_105_5-rnd-031
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,3.582
+Runtime,4.158
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,1383,iteration,6327
@@ -7727,7 +7727,7 @@ Pareto,184.052632^1407;184.157895^1401;184.263158^1396;184.421053^1393;184.63157
 
 ===================================================
 
-========= running experiments with TestData/u_25_80_125_1-rnd-007-scr, 2020-12-18-1742 ===============
+========= running experiments with TestData/u_25_80_125_1-rnd-007-scr.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,u_25_80_125_1-rnd-007
@@ -7748,7 +7748,7 @@ dfs done, number_of_components = 25, size_of_largest_component = 1958
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.757
+Runtime,0.951
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,13699,iteration,7560
@@ -7787,7 +7787,7 @@ dfs done, number_of_components = 25, size_of_largest_component = 1958
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.726
+Runtime,0.917
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,13832,iteration,5779
@@ -7822,11 +7822,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 25, size_of_largest_component = 1958
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.541, graph u_25_80_125_1-rnd-007
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.593, graph u_25_80_125_1-rnd-007
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,2.546
+Runtime,2.597
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,16508,iteration,9934
@@ -7861,11 +7861,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 25, size_of_largest_component = 1958
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.741, graph u_25_80_125_1-rnd-007
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.810, graph u_25_80_125_1-rnd-007
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,1.744
+Runtime,1.813
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,13661,iteration,9877
@@ -7900,11 +7900,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 25, size_of_largest_component = 1958
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.025, graph u_25_80_125_1-rnd-007
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.249, graph u_25_80_125_1-rnd-007
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,5.028
+Runtime,5.252
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,17781,iteration,9046
@@ -7939,11 +7939,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 25, size_of_largest_component = 1958
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.134, graph u_25_80_125_1-rnd-007
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.236, graph u_25_80_125_1-rnd-007
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,3.138
+Runtime,3.241
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,16141,iteration,9852
@@ -7978,11 +7978,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 25, size_of_largest_component = 1958
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.743, graph u_25_80_125_1-rnd-007
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 6.106, graph u_25_80_125_1-rnd-007
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,5.748
+Runtime,6.111
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,17357,iteration,8900
@@ -8003,7 +8003,7 @@ Pareto,206.405063^17364;206.924051^17362;206.936709^17357, 9967;8966;8900
 
 ===================================================
 
-========= running experiments with TestData/u_50_40_105_1-rnd-009-scr, 2020-12-18-1742 ===============
+========= running experiments with TestData/u_50_40_105_1-rnd-009-scr.sgf, 2020-12-19-2126 ===============
 ################################################################
 ########### min_crossings, release 1.1, 2016/05/23 #############
 GraphName,u_50_40_105_1-rnd-009
@@ -8024,7 +8024,7 @@ dfs done, number_of_components = 27, size_of_largest_component = 1943
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.479
+Runtime,0.541
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,920,iteration,4261
@@ -8059,11 +8059,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic mod_bary
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.478, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.540, graph u_50_40_105_1-rnd-009
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.481
+Runtime,0.544
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,1120,iteration,5570
@@ -8098,11 +8098,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.328, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.389, graph u_50_40_105_1-rnd-009
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.333
+Runtime,1.394
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,1776,iteration,9446
@@ -8137,11 +8137,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.998, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.049, graph u_50_40_105_1-rnd-009
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,1.001
+Runtime,1.052
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,1877,iteration,8705
@@ -8176,11 +8176,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.255, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.368, graph u_50_40_105_1-rnd-009
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,3.260
+Runtime,3.372
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,2966,iteration,209
@@ -8215,11 +8215,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.818, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.869, graph u_50_40_105_1-rnd-009
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.822
+Runtime,1.872
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,1897,iteration,9474
@@ -8254,11 +8254,11 @@ MedianDegree,2.0
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.768, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.796, graph u_50_40_105_1-rnd-009
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,3.773
+Runtime,3.800
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,2966,iteration,213

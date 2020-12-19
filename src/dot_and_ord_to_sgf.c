@@ -82,19 +82,9 @@ static void write_sgf( void ) {
   }
 
   // add lines for the edges
-  for( int layer = 0; layer < number_of_layers - 1; layer++ ) {
-    for(
-        int node_position = 0;
-        node_position < layers[ layer ]->number_of_nodes;
-        node_position++ ) {
-      Nodeptr node = layers[ layer ]->nodes[ node_position ];
-      for( int edge_position = 0;
-           edge_position < node->up_degree;
-           edge_position++ ) {
-        Edgeptr edge = node->up_edges[ edge_position ];
-        printf( "e %d %d\n", node->id, edge->up_node->id );
-      }
-    }
+  for( int index = 0; index < number_of_edges; index++ ) {
+      Edgeptr edge = master_edge_list[index];
+      printf( "e %d %d\n", edge->down_node->id, edge->up_node->id );
   }
 }
 
@@ -113,4 +103,4 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2019 11 25 at 21:52:49 GMT] */
+/*  [Last modified: 2020 12 19 at 21:06:53 GMT] */
