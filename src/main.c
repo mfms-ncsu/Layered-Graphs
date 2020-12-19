@@ -320,45 +320,61 @@ int main( int argc, char * argv[] )
   // names: dot and ord, respectively
   argc -= optind;
   argv += optind;
+  printf("argc = %d\n", argc);
+  printf("argv[0] = %s\n", argv[0]);
 
   /**
    * @todo Allow either one or two arguments; extract base name and
    * extension; if only one file and extension is .sgf, read sgf; otherwise
    * read dot and ord.
    */
-  if( argc != 2 )
-    {
-      printf( "Wrong number of filenames (%d)\n", argc );
+  if ( argc == 2 ) {
+      const char * dot_file_name = argv[0];
+      const char * ord_file_name = argv[1];
+
+      // handle special case where user specified an empty (_) base name for output
+      /**
+       * @todo need to handle the same situation for sgf, but that can wait
+       */
+      if ( produce_output
+           && strlen(output_base_name) == 1
+           && * output_base_name == '_' ) {
+          free( output_base_name );
+          char buffer[MAX_NAME_LENGTH];
+          strcpy( buffer, dot_file_name );
+#ifdef DEBUG
+          printf( "output special case: buffer = %s, dot_file_name = %s\n",
+                  buffer, dot_file_name );
+#endif
+          char * base_name_ptr = base_name( buffer );
+#ifdef DEBUG
+          printf( "output special case: buffer = %s, base = %s\n",
+                  buffer, base_name_ptr );
+#endif
+          output_base_name
+              = (char *) calloc( strlen(base_name_ptr) + 1, sizeof(char) );
+          strcpy( output_base_name, base_name_ptr ); 
+      } // end, produce output
+
+      // read graph
+      /**
+       * @todo use streams instead of names
+       */
+      readDotAndOrd( dot_file_name, ord_file_name );
+  } // end, dot and ord input
+  else if ( argc == 1 ) {
+      fprintf(stderr, "sgf\n");
+      char * sgf_file_name = argv[0];
+      FILE * sgf_file = fopen(sgf_file_name, "r");
+      readSgf(sgf_file);
+      fclose(sgf_file);
+  }
+  else {
+      printf("Wrong number of filenames (%d)\n", argc);
+      printf("Need either one sgf file or a dot and ord file\n");
       printUsage();
-      exit( EXIT_FAILURE );
-    }
-  const char * dot_file_name = argv[0];
-  const char * ord_file_name = argv[1];
-
-  // handle special case where user specified an empty (_) base name for output
-  if ( produce_output
-       && strlen(output_base_name) == 1
-       && * output_base_name == '_' )
-    {
-      free( output_base_name );
-      char buffer[MAX_NAME_LENGTH];
-      strcpy( buffer, dot_file_name );
-#ifdef DEBUG
-      printf( "output special case: buffer = %s, dot_file_name = %s\n",
-              buffer, dot_file_name );
-#endif
-      char * base_name_ptr = base_name( buffer );
-#ifdef DEBUG
-      printf( "output special case: buffer = %s, base = %s\n",
-              buffer, base_name_ptr );
-#endif
-      output_base_name
-        = (char *) calloc( strlen(base_name_ptr) + 1, sizeof(char) );
-      strcpy( output_base_name, base_name_ptr ); 
-    }
-
-  // read graph
-  readDotAndOrd( dot_file_name, ord_file_name );
+      exit(EXIT_FAILURE);
+  }
 
   // create list of favored edges if appropriate
   // do the allocations unconditionally to avoid having to check for
@@ -366,9 +382,11 @@ int main( int argc, char * argv[] )
   //
   // @todo this is a test version only - treats all edges along paths
   // emanating from middle node of middle layer as favored
+  /**
+   * @todo this part is not likely to be useful
+   */
   initPriorityEdges();
-  if ( favored_edges )
-    {
+  if ( favored_edges ) {
       Layerptr middle_layer = layers[ number_of_layers / 2 ];
       int middle_node_position = middle_layer->number_of_nodes / 2;
       Nodeptr middle_node = middle_layer->nodes[ middle_node_position ];
@@ -385,7 +403,7 @@ int main( int argc, char * argv[] )
                              );
       writeDot( file_name_buffer, graph_name_buffer, comment_buffer,
                 favoredEdges(), numberOfFavoredEdges() );
-    }
+  }
 
   print_graph_statistics( stdout );
 
@@ -514,7 +532,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2019 11 25 at 22:00:12 GMT] */
+/*  [Last modified: 2020 12 19 at 14:23:59 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */

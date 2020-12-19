@@ -80,13 +80,17 @@ void initHashTable( int number_of_items )
 
 void insertInHashTable( const char * name, Nodeptr node )
 {
-  unsigned int index = getIndex( name );
-  if( hash_table[index] != NULL )
-    {
+  unsigned int index = getIndex(name);
+  if ( index < 0 ) {
+      fprintf( stderr, "insertInHashTable: No room for '%s' in table\n",
+               name );
+      abort();
+  }
+  if ( hash_table[index] != NULL ) {
       fprintf( stderr, "insertInHashTable: Entry for '%s' already exists\n",
                name );
       abort();
-    }
+  }
   hash_table[index] = node;
 #ifdef DEBUG
   printf("*** insert: name='%s' node->name='%s' position=%u"
@@ -100,6 +104,11 @@ void insertInHashTable( const char * name, Nodeptr node )
 Nodeptr getFromHashTable( const char * name )
 {
   unsigned int index = getIndex( name );
+  if ( index < 0 ) {
+      fprintf( stderr, "getFromInHashTable: Entry for '%s' not found\n",
+               name );
+      abort();
+  }
   return hash_table[index];
 }
 
@@ -173,14 +182,15 @@ static unsigned int hashIndex( const char * name )
 static unsigned int getIndex( const char * name )
 {
   number_of_accesses++;
-  unsigned int index = hashIndex( name );
+  unsigned int index = hashIndex(name);
   number_of_probes++;
-  while( hash_table[ index ] != NULL
-         && strcmp( name, hash_table[ index ]->name ) != 0 )
-    {
+  while( index < modulus
+         && hash_table[index] != NULL
+         && strcmp( name, hash_table[ index ]->name ) != 0 ) {
       index = (index + 1) % modulus;
       number_of_probes++;
-    }
+  }
+  if ( index == modulus ) index = -1;
   return index;
 }
 
@@ -199,4 +209,4 @@ int main()
 }
 #endif
 
-/*  [Last modified: 2008 12 29 at 16:35:13 GMT] */
+/*  [Last modified: 2020 12 19 at 14:42:31 GMT] */

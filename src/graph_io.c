@@ -31,6 +31,13 @@ int number_of_isolated_nodes = 0;
 Layerptr * layers = NULL;
 char graph_name[MAX_NAME_LENGTH];
 
+// for debugging
+
+void printNode(Nodeptr node);
+void printEdge(Edgeptr edge);
+void printLayer(int layer);
+void printGraph();
+
 // initial allocated size of layer array (will double as needed)
 static int layer_capacity = MIN_LAYER_CAPACITY;
 
@@ -110,12 +117,22 @@ void addToNodeList(Nodeptr node) {
  * @return (a pointer to) the newly created node
  */
 Nodeptr makeNumberedNode(int id, int layer, int position) {
+#ifdef DEBUG
+    printf("-> makeNumberedNode: id = %d, layer = %d, position = %d\n",
+           id, layer, position);
+#endif
     Nodeptr new_node = (Nodeptr) malloc(sizeof(struct node_struct));
-    strcpy(new_node->name, nameFromId(id));
+    char * name = malloc(strlen(nameFromId(id)) + 1);
+    strcpy(name, nameFromId(id));
+    new_node->name = name;
     new_node->id = id;
     new_node->layer = layer;
     new_node->position = position;
     new_node->up_edges = new_node->down_edges = NULL;
+    new_node->up_degree = new_node->down_degree = 0;
+    new_node->up_crossings = new_node->down_crossings = 0;
+    new_node->marked = new_node->fixed = false;
+    new_node->preorder_number = -1;
     insertInHashTable(new_node->name, new_node);
     addToNodeList(new_node);
     return new_node;
@@ -144,6 +161,7 @@ void readSgfEdges(void) {
         strcpy(target_name, nameFromId(sgf_edge.target));
         addEdge(source_name, target_name);
     }
+    printf("done reading edges\n");
 }
 
 void allocateNodeListsForLayers(void) {
@@ -180,21 +198,43 @@ void addNodesToLayers(void) {
     free(current_num_nodes);
 }
 
+/**
+ * creates a layer struct for each layer, assuming array 'layers' is allocated
+ */
+void allocateLayers(void) {
+    for ( int layer_num = 0; layer_num < number_of_layers; layer_num++ ) {
+        printf("allocate layer: num = %d\n", layer_num);
+        layers[layer_num] = (Layerptr) malloc(sizeof(struct layer_struct));
+        layers[layer_num]->number_of_nodes = 0;
+        layers[layer_num]->nodes = NULL;
+        layers[layer_num]->fixed = false;
+    }
+}
+
 void readSgf(FILE * sgf_stream) {
+    printf("readSgf\n");
     initSgf(sgf_stream);
+    printf("initialized\n");
     getNameFromSgfFile(graph_name);
+    printf("name = %s\n", graph_name);
     number_of_nodes = getNumberOfNodes();
+    printf("num_nodes = %d\n", number_of_nodes);
     number_of_edges = getNumberOfEdges();
+    printf("num_edges = %d\n", number_of_edges);
     number_of_layers = getNumberOfLayers();
+    printf("num_layers = %d\n", number_of_layers);
     initHashTable(number_of_nodes);
+    printf("hash\n");
     master_node_list = (Nodeptr *) calloc(number_of_nodes, sizeof(Nodeptr));
     master_edge_list = (Edgeptr *) calloc(number_of_edges, sizeof(Edgeptr));
     layers = (Layerptr *) calloc(number_of_layers, sizeof(Layerptr));
+    allocateLayers();
     readSgfNodes();
     readSgfEdges();
     allocateNodeListsForLayers();
     addNodesToLayers();
     removeHashTable();
+    printGraph();
 }
 
 
@@ -290,6 +330,9 @@ void makeLayer()
 
 void addEdge(const char * name1, const char * name2)
 {
+#ifdef DEBUG
+    printf("-> addEdge: %s, %s\n", name1, name2);
+#endif
   static int num_edges_so_far = 0;
   Nodeptr node1 = getFromHashTable(name1);
   Nodeptr node2 = getFromHashTable(name2);
@@ -324,6 +367,7 @@ void addEdge(const char * name1, const char * name2)
   Edgeptr new_edge = malloc( sizeof(struct edge_struct) );
   new_edge->up_node = upper_node;
   new_edge->down_node = lower_node;
+  new_edge->crossings = 0;
   new_edge->fixed = false;
   // these arrays will not be allocated when addEdge() is called while
   // reading an sgf file; we need to be careful to fill them later
@@ -341,6 +385,9 @@ void addEdge(const char * name1, const char * name2)
   upper_node->down_edges[upper_node->down_degree++] = new_edge;
   lower_node->up_edges[lower_node->up_degree++] = new_edge;
   master_edge_list[num_edges_so_far++] = new_edge;
+#ifdef DEBUG
+    printf("<- addEdge: %s, %s\n", name1, name2);
+#endif
 }
 
 /**
@@ -359,7 +406,7 @@ static void setNumberOfNodes( int layer, int number )
  * and maps their names to (pointers to) their records. Counts the total
  * number of nodes.
  */
-static void allocateLayers( const char * ord_file )
+static void allocateLayersFromOrdFile( const char * ord_file )
 {
   FILE * in = fopen( ord_file, "r" );
   if( in == NULL )
@@ -541,7 +588,7 @@ void readDotAndOrd( const char * dot_file, const char * ord_file )
   number_of_nodes = 0;
   number_of_edges = 0;
   number_of_layers = 0;
-  allocateLayers( ord_file );
+  allocateLayersFromOrdFile( ord_file );
   master_node_list = (Nodeptr *) calloc( number_of_nodes, sizeof(Nodeptr) );
   initHashTable( number_of_nodes );
   assignNodesToLayers( ord_file );
@@ -624,7 +671,7 @@ void writeDot( const char * dot_file_name,
 
 // --------------- Debugging output --------------
 
-static void printNode( Nodeptr node )
+void printNode( Nodeptr node )
 {
   printf("    [%3d ] %s layer=%d position=%d up=%d down=%d up_x=%d down_x=%d\n",
          node->id, node->name, node->layer, node->position,
@@ -648,7 +695,12 @@ static void printNode( Nodeptr node )
   printf("\n");
 }
 
-static void printLayer( int layer )
+void printEdge(Edgeptr edge) {
+    printf(" -- edge: %s, %s\n", edge->down_node->name, edge->up_node->name);
+    printf("   crossings = %d, fixed = %d\n", edge->crossings, edge->fixed);
+}
+
+void printLayer( int layer )
 {
   printf("  --- layer %d nodes=%d fixed=%d\n",
          layer, layers[layer]->number_of_nodes, layers[layer]->fixed );
@@ -661,13 +713,17 @@ static void printLayer( int layer )
 
 void printGraph()
 {
-  printf("+++ begin-graph %s nodes=%d, layers=%d\n",
-         graph_name, number_of_nodes, number_of_layers);
+  printf("+++ begin-graph %s nodes=%d, edges = %d, layers=%d\n",
+         graph_name, number_of_nodes, number_of_edges, number_of_layers);
   int layer = 0;
   for( ; layer < number_of_layers; layer++ )
     {
       printLayer( layer );
     }
+  printf(" ---- edges ----\n");
+  for ( int index = 0; index < number_of_edges; index++ ) {
+      printEdge(master_edge_list[index]);
+  }
   printf("=== end-graph\n");
 }
 
@@ -684,4 +740,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2020 12 18 at 17:27:25 GMT] */
+/*  [Last modified: 2020 12 19 at 16:14:29 GMT] */

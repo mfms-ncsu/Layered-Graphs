@@ -291,6 +291,7 @@ Edgeptr maxCrossingsEdgeStatic( void ) {
   int max_crossings = -1;
   for ( int i = 0; i < number_of_edges; i++ ) {
     Edgeptr edge = master_edge_list[i];
+    printf("edge = %s\n", edge);
     if( edge->crossings > max_crossings ) { 
       max_crossings = edge->crossings;
       max_crossings_edge = edge;
@@ -435,4 +436,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2020 10 16 at 20:12:49 GMT] */
+/*  [Last modified: 2020 12 19 at 15:59:46 GMT] */

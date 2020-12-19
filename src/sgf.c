@@ -21,6 +21,14 @@ FILE * in_stream;
 static char local_buffer[MAX_NAME_LENGTH];
 
 /**
+ * storage for items on the tag line
+ */
+static char local_name[MAX_NAME_LENGTH];
+static int local_nodes;
+static int local_edges;
+static int local_layers;
+
+/**
  * reads from 'in' past the comments
  */
 void initSgf(FILE * in) {
@@ -30,14 +38,16 @@ void initSgf(FILE * in) {
         fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
     }
     // assert: first char of local_buffer should be 't' at this point
+    sscanf(local_buffer, "t %s %d %d %d",
+           local_name, &local_nodes, &local_edges, &local_layers);
 }
 
 /**
  * places the name of the graph into buffer, which must be preallocated
  * @assume local_buffer contents start with 't' 
  */
-void getNameFromSgfFile(char * buffer) {
-    sscanf(local_buffer, "t %s", buffer);
+void getNameFromSgfFile(char * name_buffer) {
+    strcpy(name_buffer, local_name);
 }
 
 /**
@@ -45,27 +55,21 @@ void getNameFromSgfFile(char * buffer) {
  * @assume name has been read from local buffer
  */
 int getNumberOfNodes() {
-    int retval;
-    sscanf(local_buffer, "%d", &retval);
-    return retval;
+    return local_nodes;
 }
 
 /**
  * @return number of edges
  */
 int getNumberOfEdges() {
-    int retval;
-    sscanf(local_buffer, "%d", &retval);
-    return retval;
+    return local_edges;
 }
 
 /**
  * @return number of layers
  */
 int getNumberOfLayers() {
-    int retval;
-    sscanf(local_buffer, "%d", &retval);
-    return retval;
+    return local_layers;
 }
 
 /**
@@ -87,8 +91,8 @@ bool getNextNode() {
  * @return true if there is a next edge
  */
 bool getNextEdge() {
-    fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
-    if ( strlen(local_buffer) > 0 && local_buffer[0] == 'e' ) {
+    char * success = fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
+    if ( success != NULL && strlen(local_buffer) > 0 && local_buffer[0] == 'e' ) {
         sscanf(local_buffer, "e %d %d",
                &(sgf_edge.source), &(sgf_edge.target));
         return true;
@@ -96,4 +100,4 @@ bool getNextEdge() {
     return false;
 }
 
-/*  [Last modified: 2020 12 18 at 17:34:18 GMT] */
+/*  [Last modified: 2020 12 19 at 15:25:55 GMT] */
