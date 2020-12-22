@@ -21,7 +21,6 @@
 #include"graph.h"
 #include"crossings.h"
 #include"channel.h"
-#include"priority_edges.h"
 #include"Statistics.h"
 #include"timing.h"
 
@@ -184,9 +183,6 @@ void init_crossing_stats( void )
   init_specific_crossing_stats_int( & max_edge_crossings, "EdgeCrossings" );
   init_specific_crossing_stats_double( & total_stretch, "Stretch" );
   init_specific_crossing_stats_double( & bottleneck_stretch, "BottleneckStretch" );
-#ifdef FAVORED
-  init_specific_crossing_stats( & favored_edge_crossings, "FavoredCrossings" );
-#endif
   if ( pareto_objective != NO_PARETO )
     init_pareto_list();
 }
@@ -197,9 +193,6 @@ void capture_beginning_stats( void )
   max_edge_crossings.at_beginning = maxEdgeCrossings();
   total_stretch.at_beginning = totalStretch();
   bottleneck_stretch.at_beginning = maxEdgeStretch();
-#ifdef FAVORED
-  favored_edge_crossings.at_beginning = priorityEdgeCrossings();
-#endif
 }
 
 void capture_preprocessing_stats( void )
@@ -208,9 +201,6 @@ void capture_preprocessing_stats( void )
   max_edge_crossings.after_preprocessing = maxEdgeCrossings();
   total_stretch.after_preprocessing = totalStretch();
   bottleneck_stretch.after_preprocessing = maxEdgeStretch();
-#ifdef FAVORED
-  favored_edge_crossings.after_preprocessing = priorityEdgeCrossings();
-#endif
 }
 
 void capture_heuristic_stats( void )
@@ -219,9 +209,6 @@ void capture_heuristic_stats( void )
   max_edge_crossings.after_heuristic = max_edge_crossings.best;
   total_stretch.after_heuristic = total_stretch.best;
   bottleneck_stretch.after_heuristic = bottleneck_stretch.best;
-#ifdef FAVORED
-  favored_edge_crossings.after_heuristic = priority_edge_crossings.best;
-#endif
 }
 
 void capture_post_processing_stats( void )
@@ -234,11 +221,6 @@ void capture_post_processing_stats( void )
   max_edge_crossings.after_post_processing = max_edge_crossings.best;
   total_stretch.after_post_processing = total_stretch.best;
   bottleneck_stretch.after_post_processing = bottleneck_stretch.best;
-#ifdef FAVORED
-  // ditto for favored edge crossings
-  favored_edge_crossings.after_post_processing =
-    favored_edge_crossings.after_heuristic;
-#endif
 }
 
 void update_best_int( CROSSING_STATS_INT * stats, Orderptr order,
@@ -285,9 +267,6 @@ void update_best_all( void )
   update_best_double( & total_stretch, best_total_stretch_order, totalStretch );
   update_best_double( & bottleneck_stretch,
                       best_bottleneck_stretch_order, maxEdgeStretch );
-#ifdef FAVORED
-  update_best( & favored_edge_crossings, best_favored_crossings_order, priorityEdgeCrossings );
-#endif
   if ( pareto_objective == BOTTLENECK_TOTAL )
     pareto_list = pareto_insert( maxEdgeCrossings(),
                                  numberOfCrossings(),
@@ -539,9 +518,6 @@ void print_run_statistics( FILE * output_stream )
   print_crossing_stats_int( output_stream, max_edge_crossings );
   print_crossing_stats_double( output_stream, total_stretch );
   print_crossing_stats_double( output_stream, bottleneck_stretch );
-#ifdef FAVORED
-  print_crossing_stats_int( output_stream, favored_edge_crossings );
-#endif
   if ( pareto_objective != NO_PARETO ) {
     fprintf( output_stream, "Pareto,");
     print_pareto_list( pareto_list, output_stream );
@@ -549,4 +525,4 @@ void print_run_statistics( FILE * output_stream )
   }
 }
 
-/*  [Last modified: 2019 09 27 at 16:00:13 GMT] */
+/*  [Last modified: 2020 12 22 at 22:29:43 GMT] */

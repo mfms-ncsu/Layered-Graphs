@@ -13,7 +13,7 @@ PROGRAMS = minimization create_random_dag add_edges dot_and_ord_to_sgf
 # object files common to all heuristics
 OBJECTS = sifting.o dfs.o sorting.o heuristics.o barycenter.o crossings.o\
 	crossing_utilities.o graph_io.o dot.o ord.o sgf.o hash.o Statistics.o stats.o\
-	order.o priority_edges.o swap.o median.o channel.o stretch.o timing.o random.o
+	order.o swap.o median.o channel.o stretch.o timing.o random.o
 
 # object files used by programs that generate random instances
 CREATION_OBJECTS = check_edge_duplication.o random_dag.o random_tree.o graph_io.o Statistics.o dot.o ord.o sgf.o hash.o
@@ -22,7 +22,7 @@ CREATION_OBJECTS = check_edge_duplication.o random_dag.o random_tree.o graph_io.
 # place if there are changes to the makefile
 HEADERS = makefile defs.h constants.h crossings.h graph.h graph_io.h dot.h ord.h\
 	crossing_utilities.h heuristics.h barycenter.h sorting.h dfs.h sifting.h\
-	Statistics.h stats.h order.h priority_edges.h swap.h median.h timing.h\
+	Statistics.h stats.h order.h swap.h median.h timing.h\
 	random.h channel.h stretch.h makefile
 
 # headers used by programs that generate random instances

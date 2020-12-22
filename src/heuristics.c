@@ -33,7 +33,6 @@
 #include"graph_io.h"
 #include"sifting.h"
 #include"stats.h"
-#include"priority_edges.h"
 #include"swap.h"
 #include"timing.h"
 #include"random.h"
@@ -146,17 +145,11 @@ static bool no_improvement( void )
   bool better_max_edge_crossings = has_improved_int( & max_edge_crossings );
   bool better_total_stretch = has_improved_double( & total_stretch );
   bool better_bottleneck_stretch = has_improved_double( & bottleneck_stretch );
-#ifdef FAVORED
-  bool better_favored_edge_crossings = has_improved( & favored_edge_crossings );
-#endif
   return
     ! better_total_crossings
     && ! better_max_edge_crossings
     && ! better_total_stretch
     && ! better_bottleneck_stretch
-#ifdef FAVORED
-    && ! better_favored_edge_crossings
-#endif
     ;
 } 
 
@@ -986,4 +979,4 @@ void swapping( void )
 
 #endif // ! defined(TEST)
 
-/*  [Last modified: 2020 03 15 at 19:02:46 GMT] */
+/*  [Last modified: 2020 12 22 at 22:28:28 GMT] */

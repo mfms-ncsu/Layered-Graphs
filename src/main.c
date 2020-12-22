@@ -26,7 +26,6 @@
 #include"crossings.h"
 #include"channel.h"
 #include"order.h"
-#include"priority_edges.h"
 #include"timing.h"
 #include"random.h"
 
@@ -384,35 +383,6 @@ int main( int argc, char * argv[] )
       exit(EXIT_FAILURE);
   }
 
-  // create list of favored edges if appropriate
-  // do the allocations unconditionally to avoid having to check for
-  // 'favored_edges' everywhere
-  //
-  // @todo this is a test version only - treats all edges along paths
-  // emanating from middle node of middle layer as favored
-  /**
-   * @todo this part is not likely to be useful
-   */
-  initPriorityEdges();
-  if ( favored_edges ) {
-      Layerptr middle_layer = layers[ number_of_layers / 2 ];
-      int middle_node_position = middle_layer->number_of_nodes / 2;
-      Nodeptr middle_node = middle_layer->nodes[ middle_node_position ];
-      createFanoutList( middle_node );
-      // create an actual file name and graph name here when the test version
-      // is successful
-      char file_name_buffer[MAX_NAME_LENGTH];
-      char graph_name_buffer[MAX_NAME_LENGTH];
-      char comment_buffer[MAX_NAME_LENGTH];
-      createFavoredEdgeInfo( 
-                            file_name_buffer,
-                            graph_name_buffer,
-                            comment_buffer
-                             );
-      writeDot( file_name_buffer, graph_name_buffer, comment_buffer,
-                favoredEdges(), numberOfFavoredEdges() );
-  }
-
   print_graph_statistics( stdout );
 
   initCrossings();
@@ -511,13 +481,6 @@ int main( int argc, char * argv[] )
       writeOrd( output_file_name );
   }
 
-#ifdef FAVORED
-  // write file with best order for favored edge crossings
-  restore_order( best_favored_crossings_order );
-  createOrdFileName( output_file_name, "-favored" );
-  writeOrd( output_file_name );
-#endif
-
   print_run_statistics( stdout );
 
   // deallocate all order structures
@@ -529,10 +492,6 @@ int main( int argc, char * argv[] )
   free( best_total_stretch_order );
   cleanup_order( best_bottleneck_stretch_order );
   free( best_bottleneck_stretch_order );
-#ifdef FAVORED
-  cleanup_order( best_favored_crossings_order );
-  free( best_favored_crossings_order );
-#endif
 
   /**
    * @todo Need functions to deallocate everything (in the appropriate modules)
@@ -540,7 +499,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2020 12 22 at 22:13:10 GMT] */
+/*  [Last modified: 2020 12 22 at 22:27:53 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */
