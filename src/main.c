@@ -77,11 +77,15 @@ static bool do_post_processing = false;
  */
 static void printUsage( void )
 {
-  printf( "Usage: minimization [opts] file.dot file.ord\n" );
-  printf( " where opts is one or more of the following\n" );
+  printf( "Usage: minimization [opts] [file(s)]\n"
+          " the file(s) part is\n"
+          "   * missing - read from stdin and assume sgf format (only if -I is an opt)\n"
+          "   * one file name - assumed to be an sgf file\n"
+          "   * two file names - assumed to be a dot and an ord file\n");
+  printf( " the opts are zero or more of the following\n" );
   printf(
+         "  -I read from standard input, assume sgf format"
          "  -h (median | bary | mod_bary | mcn | sifting | mce | mce_s | mse\n"
-         "     | static_bary | alt_bary | up_down_bary | rotate_bary | slab_bary {parallel barycenter versions})\n"
          "     [main heuristic - default none]\n"
          "  -p (bfs | dfs | mds) [preprocessing - default none]\n"
          "  -z if post processing (repeated swaps until no improvement) is desired\n"
@@ -90,17 +94,15 @@ static void printUsage( void )
          "     after each pass of mod_bary, mce, mcn, mse, sifting, etc.\n"
          "     to break ties differently when sorting; SEED is an integer seed\n"
          "  -r SECONDS = maximum runtime [stop if no improvement]\n"
-         "  -c ITERATION [capture the order after this iteration in a file]\n"
+         "  -c ITERATION [capture the order after this iteration in a file or stdout]\n"
          "  -P PARETO_OBJECTIVES (b_t | s_t | b_s) pair of objectives for Pareto optima\n"
          "      b = bottleneck, t = total, s = stretch (default = none)\n"
-         "  -o BASE produce file(s) with name(s) BASE-h.ord, where h is the heuristic used\n"
-         "     -o _ (underscore) means use the base name of the dot file\n"
-         "  -w (none | avg | left) [adjust weights in barycenter, default left, but avg in parallel versions]\n"
-         "  -b average the averages of the two neighboring layers when computing barycenter weights\n"
-         "     [this is the default for parallel versions]\n"
+         "  -w BASE produce file(s) with name(s) BASE-h.sgf, where h is the heuristic used\n"
+         "     -w _ (underscore) means use the base name of the input file\n"
+         "     -w out means use stdout and suppress the usual output\n"
+         "            unless -P is used, in which case the line with Pareto optima\n"
+         "            is prepended as a comment\n"
          "  -s (layer | degree | random) [sifting variation - see paper]\n"
-         "  -e (nodes | edges | early | one_node )\n"
-         "     [mce variation - default is nodes: pass ends when all nodes are marked]\n"
          "  -g (total | max) [what sifting is based on] [default: total for sifting, mcn; max for mce]\n"
          "      [not implemented yet]\n"
          "  -v to get verbose information about the graph\n"
@@ -184,8 +186,9 @@ static void runHeuristic( void )
 
 /**
  * As of now, the main program does the following seqence of events -
- * -# Read the DOT file
- * -# Read the ORD file
+ * -# If there are two args, treat them as a dot and ord file and read
+ * -# If there is one arg, treat it as an sgf file and read
+ * -# If there are no args, use standard input if
  * -# Display the attributes of the graph
  * -# Count the number of crossings.
  * -# Apply a preprocess and a heuristic (both optional) on the graph
@@ -197,17 +200,30 @@ static void runHeuristic( void )
 int main( int argc, char * argv[] )
 {
   printf("################################################################\n");
-  printf("########### min_crossings, release 1.1, 2016/05/23 #############\n");
+  printf("########### minimization, release 1.1, 2020/12/22 #############\n");
+
+  // user specified stdin with -I option
+  bool stdin_requested = false;
+  // user specified stdout with '-w out' option
+  bool stdout_requested = false;
 
   int seed = 0;
   int ch = -1;
 
   // process command-line options; these must come before the file arguments
-  // note: options that have an arg are followed by : but others are not
-  while ( (ch = getopt(argc, argv, "bc:e:fgh:i:k:o:p:P:R:r:s:t:vw:zm:")) != -1)
+  // note: options that have an arg are followed by : but others are
+  // not
+  /**
+   * @todo add a -o option to specify which objective to use when
+   * creating output
+   */
+  while ( (ch = getopt(argc, argv, "c:fgh:Ii:p:P:R:r:s:t:vw:z")) != -1)
     {
       switch(ch)
         {
+        case 'I':
+            stdin_requested = true;
+            break;
         case 'h':
           heuristic = optarg;
           break;
@@ -252,19 +268,16 @@ int main( int argc, char * argv[] )
           break;
 
         case 'w':
-          if( strcmp( optarg, "none" ) == 0 ) adjust_weights = NONE;
-          else if( strcmp( optarg, "avg" ) == 0 ) adjust_weights = AVG; 
-          else if( strcmp( optarg, "left" ) == 0 ) adjust_weights = LEFT;
-          else
-            {
-              printf( "Bad value '%s' for option -w\n", optarg );
-              printUsage();
-              exit( EXIT_FAILURE );
-            }
+          produce_output = true;
+          if ( strcmp(optarg, "out") == 0 ) {
+              stdout_requested = true;
+          }
+          else {
+              output_base_name = calloc(strlen(optarg) + 1, sizeof(char));
+              strcpy(output_base_name, optarg);
+          }
           break;
-        case 'b':
-          balanced_weight = true;
-          break;
+
         case 's':
           if( strcmp( optarg, "layer" ) == 0 ) sift_option = LAYER;
           else if( strcmp( optarg, "degree" ) == 0 ) sift_option = DEGREE; 
@@ -276,18 +289,7 @@ int main( int argc, char * argv[] )
               exit( EXIT_FAILURE );
             }
           break;
-        case 'e':
-          if( strcmp( optarg, "nodes" ) == 0 ) mce_option = NODES;
-          else if( strcmp( optarg, "edges" ) == 0 ) mce_option = EDGES; 
-          else if( strcmp( optarg, "early" ) == 0 ) mce_option = EARLY;
-          else if( strcmp( optarg, "one_node" ) == 0 ) mce_option = ONE_NODE;
-          else
-            {
-              printf( "Bad value '%s' for option -e\n", optarg );
-              printUsage();
-              exit( EXIT_FAILURE );
-            }
-          break;
+
         case 'g':
           if( strcmp( optarg, "total" ) == 0 ) sifting_style = TOTAL;
           else if( strcmp( optarg, "max" ) == 0 ) sifting_style = MAX; 
@@ -297,17 +299,15 @@ int main( int argc, char * argv[] )
             exit( EXIT_FAILURE );
           }
           break;
-        case 'o':
-          produce_output = true;
-          output_base_name = calloc( strlen(optarg) + 1, sizeof(char) );
-          strcpy( output_base_name, optarg );
-          break;
+
         case 'v':
           verbose = true;
           break;
+
         case 't':
           trace_freq = atoi( optarg );
           break;
+
         default:
           printUsage();
           exit( EXIT_FAILURE );
@@ -366,9 +366,19 @@ int main( int argc, char * argv[] )
       readSgf(sgf_file);
       fclose(sgf_file);
   }
+  else if ( argc == 0 ) {
+      if ( stdin_requested ) {
+          readSgf(stdin);
+      }
+      else {
+          printf("Need to specify -I to request stdin if no files on command line\n");
+          printf("or need either one sgf file or a dot and ord file\n");
+          printUsage();
+          exit(EXIT_FAILURE);
+      }
+  }
   else {
-      printf("Wrong number of filenames (%d)\n", argc);
-      printf("Need either one sgf file or a dot and ord file\n");
+      printf("Wrong number of filename arguments (%d)\n", argc);
       printUsage();
       exit(EXIT_FAILURE);
   }
@@ -529,7 +539,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2020 12 19 at 18:48:19 GMT] */
+/*  [Last modified: 2020 12 22 at 21:49:39 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */
