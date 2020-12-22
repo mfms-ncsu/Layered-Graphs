@@ -53,6 +53,12 @@ bool randomize_order = false;
 bool balanced_weight = false;
 bool produce_output = false;
 char * output_base_name = NULL;
+// user specified stdin with -I option
+bool stdin_requested = false;
+// user specified stdout with '-w out' option
+// this one is made extern in defs.h so that other parts of program
+// can figure out what type of output is desirable
+bool stdout_requested = false;
 
 bool verbose = false;
 int trace_freq = -1;
@@ -201,11 +207,6 @@ int main( int argc, char * argv[] )
 {
   printf("################################################################\n");
   printf("########### minimization, release 1.1, 2020/12/22 #############\n");
-
-  // user specified stdin with -I option
-  bool stdin_requested = false;
-  // user specified stdout with '-w out' option
-  bool stdout_requested = false;
 
   int seed = 0;
   int ch = -1;
@@ -539,7 +540,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2020 12 22 at 21:49:39 GMT] */
+/*  [Last modified: 2020 12 22 at 22:13:10 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */

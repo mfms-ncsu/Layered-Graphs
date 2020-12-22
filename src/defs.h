@@ -168,6 +168,11 @@ extern bool produce_output;
 extern char * output_base_name;
 
 /**
+ * user specified stdout with '-w out' option
+ */
+extern bool stdout_requested;
+
+/**
  * True if verbose information about the graph should be printed
  */
 extern bool verbose;
@@ -180,5 +185,5 @@ extern int trace_freq;
 
 #endif
 
-/*  [Last modified: 2019 12 13 at 21:06:15 GMT] */
+/*  [Last modified: 2020 12 22 at 22:11:42 GMT] */
 
