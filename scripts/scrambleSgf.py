@@ -1,148 +1,173 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 """
- translates from sgf format, described in the script, to the graphml format
- used by Galant. This program is a simple filter, translating from
- standard input to standard output.
+Randomly permutes nodes and edges of an sgf file;
+order in which nodes appear and their position in a layer are permuted independently 
 """
 
-# sfg format is as follows:
-#
-#    c comment line 1
-#    ...
-#    c comment line k
-#
-#    t graph_name
-#
-#    n id_1 layer_1 position_1
-#    n id_2 layer_2 position_2
-#    ...
-#    n id_n layer_n position_n
-#
-#    e source_1 target_1
-#    ...
-#    e source_m target_m
+"""
+Algorithm.
+
+1. Read the input
+    a. save a list of comments
+    b. create a list of nodes, tuples of the form (id, layer, position); integers all
+    c. create a list of edges, tuples of the form (source, target)
+2. Permute using the seed
+    a. permute the list of nodes
+    b. create a dictionary that maps a layer to a list of node id's (integers)
+        - nodes are added in order of appearance in the permuted list
+    c. create a dictionary that maps each node to a (layer, position) tuple
+        - position is determined by position in the list for the layer
+    d. permute the list of nodes again to determine their order in the output
+    e. permute the list of edges
+3. Output the permuted sgf graph
+"""
 
 import sys
+import os
+import random
+
+def date():
+    date_pipe = os.popen( 'date -u "+%Y/%m/%d %H:%M"' )
+    return date_pipe.readlines()[0].split()[0]
 
 def usage( program_name ):
-    print "Usage:", program_name, " < INPUT_FILE > OUTPUT_FILE"
-    print "Takes an sgf file from standard input and converts to graphml."
-    print "The graphml file encodes node positions (layer/position in layer) and edges."
+    print("Usage:", program_name, " INPUT_FILE SEED > OUTPUT_FILE")
+    print("Takes an sgf file and a seed and outputs a permuted version of the graph.")
+    print("Output (also sgf) goes to standard output.")
 
-# @return a tuple of the form (name, graph_list)
-# and graph_list has the form:
-#     [type (attr value) ... (attr value)]
-# where type is either 'node' or 'edge'
-# in this case, the only attributes are:
-#    id, layer, and position_in_layer for nodes,
-#    source and target for edges
-def read_sgf( input ):
-    graph_list = []
-    line = skip_comments( input )
-    # for now, assume next line begins with 't'; do error checking later
-    # since the number of nodes and edges is implicit, these can be ignored
-    name = line.split()[1]
-    line = read_nonblank( input )
+def read_sgf(input):
+    global _nodes, _edges, _name
+    _nodes = []
+    _edges = []
+    line = skip_comments(input)
+    # the current line is assumed to be the tag line, of the form 't NAME'
+    _name = line[1]
+    line = read_nonblank(input)
     while ( line ):
         type = line.split()[0]
         if type == 'n':
-            graph_list.append( process_node( line ) )
+            process_node(line)
         elif type == 'e':
-            graph_list.append( process_edge( line ) )
-            # otherwise error (ignore for now)
-        line = read_nonblank( input )
-    return (name, graph_list)
+            process_edge(line)
+        line = read_nonblank(input)
 
-def process_node( line ):
+def process_node(line):
+    global _nodes
     line_fields = line.split()
-    id = line_fields[1]
-    layer = line_fields[2]
-    position_in_layer = line_fields[3]
-    return ['node',
-            ('id', id),
-            ('layer', layer),
-            ('positionInLayer', position_in_layer)]
+    node_id = int(line_fields[1])
+    layer_number = int(line_fields[2])
+    position_in_layer = int(line_fields[3])
+    _nodes.append((node_id, layer_number, position_in_layer))
 
-def process_edge( line ):
+def process_edge(line):
+    global _edges
     line_fields = line.split()
-    source = line_fields[1]
-    target = line_fields[2]
-    return ['edge', ('source', source), ('target', target)]
+    source = int(line_fields[1])
+    target = int(line_fields[2])
+    _edges.append((source, target))
 
-# @return the first non-blank line in the input
-def read_nonblank( input ):
+"""
+@return the first non-blank line in the input
+"""
+def read_nonblank(input):
     line = input.readline()
     while ( line and line.strip() == "" ):
         line = input.readline()
     return line
 
-# reads and skips lines that begin with 'c' and collects them into the global
-# list of strings _comments, one element per comment line
-# @return the first line that is not a comment line
+"""
+reads and skips lines that begin with 'c' and collects them into the global
+list of strings _comments, one element per comment line
+@return the first line that is not a comment line
+"""
 def skip_comments( input ):
     global _comments
     _comments = []
-    line = read_nonblank( input )
+    line = read_nonblank(input)
     while ( line.split()[0] == 'c' ):
         _comments.append( line.strip().lstrip( "c" ) )
         line = read_nonblank( input )
     return line
 
-def print_opening():
-    print '<?xml version="1.0" encoding="UTF-8"?>'
-    print '<graphml xmlns="http://graphml.graphdrawing.org/xmlns"'
-    print 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
-    print 'xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns'
-    print 'http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">'
+"""
+permutes nodes and edges randomly using the seed supplied on the command line;
+see step 2 of the algorithm
+"""
+def permute_graph():
+    global _nodes, _edges
+    random.shuffle(_nodes)
+    layer_map = add_nodes_to_layers()
+    node_map = set_node_information(layer_map)
+    random.shuffle(_nodes)
+    random.shuffle(_edges)
+    return node_map
 
-def print_graph_body( internal_graph ):
-    name = internal_graph[0]
-    print '<graph edgedefault="directed" name="'+ name + '"' + ' type="layered">'
-    
-    for item in internal_graph[1]:
-        print_item( item )
-    print '</graph>'
+"""
+@return a map that maps a layer number to a list of nodes on the layer;
+the order of nodes on each layer is based on order in the global _node_list;
+see step 2(b) in the algorithm
+"""
+def add_nodes_to_layers():
+    layer_map = {}
+    for node in _nodes:
+        node_id = node[0]
+        layer_number = node[1]
+        if not layer_number in layer_map:
+            layer_map[layer_number] = []
+        layer_map[layer_number].append(node_id)
+    return layer_map
 
-def print_item( item ):
-    # need to put everything on the same line (not clear why), so can't use
-    # print
-    sys.stdout.write( '<%s ' % ( item[0] ) )
-    sys.stdout.write( graphml_version( item[1:] ) )
-    sys.stdout.write( '/>\n' )
+"""
+@return a map that maps each node id to a (new) layer and position;
+position is based on the order of appearance in the layer map;
+see step 2(c)
+"""
+def set_node_information(layer_map):
+    node_map = {}
+    for layer_number in layer_map:
+        node_list = layer_map[layer_number]
+        position = 0
+        for node in node_list:
+            node_map[node] = (layer_number, position)
+            position += 1
+    return node_map
 
-# @param attribute_list has the form [(attr_1,value_1),..., (attr_k,value_k)]
-# @return a string of the form "attr_1=value_1 ... attr_k=value_k"
-def graphml_version( attribute_list ):
-    return ' '.join( map( graphml_attribute, attribute_list ) )
-    
-# @param attribute_pair has the form (attr,value)
-# @return "attr=value"
-def graphml_attribute( attribute_pair ):
-    return '%s="%s"' % attribute_pair
-
-def print_comments():
-    print "<comments>"
+"""
+write comments from the input graph plus a comment about how the permuted graph was generated
+"""
+def write_preamble(output_stream, seed):
     for comment in _comments:
-        print comment
-    print "</comments>"
+        output_stream.write("c {}\n".format(comment))
+    output_stream.write("c Permuted, scrambleSgf, seed = {}, date = {}\n"
+                        .format(seed, date()))
+    output_stream.write("t {}\n".format(_name))
 
-def print_closing():
-    print '</graphml>'
+"""
+write shuffled graph in sgf format to the output stream
+@param node_map maps each node to a (new) layer and position;
+ the position is independent of the order in which the node appears in _node_list 
+@param seed used in a comment about how the output was generated
+"""
+def write_sgf(output_stream, node_map, seed):
+    write_preamble(output_stream, seed)
+    for node in _nodes:
+        node_id = node[0]
+        (layer, position) = node_map[node_id]
+        output_stream.write("n {} {} {}\n".format(node_id, layer, position))
+    for edge in _edges:
+        output_stream.write("e {} {}\n".format(edge[0], edge[1]))
 
-def print_graphml( internal_graph ):
-    print_opening()
-    print_comments()
-    print_graph_body( internal_graph )
-    print_closing()
-    
-def main():
-    if len( sys.argv ) != 1:
-        usage( sys.argv[0] )
+if __name__ == '__main__':
+    if len( sys.argv ) != 3:
+        usage(sys.argv[0])
         sys.exit()
-    internal_graph = read_sgf( sys.stdin )
-    print_graphml( internal_graph )
+    input_file_name = sys.argv[1]
+    seed = int(sys.argv[2])
+    input_stream = open(input_file_name, 'r')
+    read_sgf(input_stream)
+    random.seed(seed)
+    node_map = permute_graph()
+    write_sgf(sys.stdout, node_map, seed)
 
-main()
-
-#  [Last modified: 2020 12 23 at 20:40:16 GMT]
+#  [Last modified: 2020 12 28 at 22:45:40 GMT]
