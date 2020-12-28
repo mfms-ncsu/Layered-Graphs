@@ -27,25 +27,30 @@ Algorithm
 """
 dictionary mapping a layer number (as int) to a list of nodes (as strings) in it
 """
-global _layer = {}
+global _layer
 
 """
 maximum layer number in sgf file
 """
-global _max_layer_number = 0
+global _max_layer_number
 
 """
 dictionary mapping a node id (as string) from the sgf graph
 to a node number in the lff format
 """
-global _node_number = {}
+global _node_number
 
 """
 list of edges; each item is of the form (source, target), where each is a string
 """
-global _edges = []
+global _edges
 
 def read_sgf(input):
+    global _layer, _max_layer_number, _node_number, _edges
+    _layer = {}
+    _node_number = {}
+    _max_layer_number = 0
+    _edges = []
     line = skip_comments(input)
     # for now, assume next line is the one that begins with 't' and gives the graph name,
     # it can be ignored.
@@ -64,7 +69,7 @@ def process_node(line):
     node_id = line_fields[1]
     layer_number = int(line_fields[2])
     position_in_layer = line_fields[3]
-    if not _layer[layer_number]:
+    if not layer_number in _layer:
         _layer[layer_number] = []
     _layer[layer_number].append(node_id)
     if layer_number > _max_layer_number:
@@ -105,7 +110,7 @@ def assign_node_numbers():
     global _node_number
     current_node_number = 1
     for layer_number in range(0, _max_layer_number + 1):
-        for node_id in _layer:
+        for node_id in _layer[layer_number]:
             _node_number[node_id] = current_node_number
             current_node_number += 1
 
@@ -115,8 +120,16 @@ writes the graph in lff format to the output_stream
 def write_lff(output_stream):
     num_nodes = len(_node_number)
     num_edges = len(_edges)
-    num_layers = len(_layers)
+    num_layers = len(_layer)
     output_stream.write("{} {} {}\n".format(num_nodes, num_edges, num_layers))
+    output_stream.write("{}".format(len(_layer[0])))
+    for layer_num in range(1, _max_layer_number + 1):
+        output_stream.write(" {}".format(len(_layer[layer_num])))
+    output_stream.write("\n")
+    for edge in _edges:
+        source = _node_number[edge[0]]
+        target = _node_number[edge[1]]
+        output_stream.write("{} {}\n".format(source, target))
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
@@ -128,4 +141,4 @@ if __name__ == '__main__':
     assign_node_numbers()
     write_lff(sys.stdout)
 
-#  [Last modified: 2020 12 28 at 17:59:58 GMT]
+#  [Last modified: 2020 12 28 at 20:21:53 GMT]
