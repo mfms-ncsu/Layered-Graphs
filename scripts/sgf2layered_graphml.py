@@ -138,11 +138,11 @@ def print_graphml( internal_graph ):
     
 def main():
     if len( sys.argv ) != 1:
-        usage( sys.argv[0] )
+        usage(sys.argv[0])
         sys.exit()
     internal_graph = read_sgf( sys.stdin )
-    print_graphml( internal_graph )
+    print_graphml(internal_graph)
 
 main()
 
-#  [Last modified: 2020 12 23 at 20:40:16 GMT]
+#  [Last modified: 2020 12 28 at 23:14:08 GMT]

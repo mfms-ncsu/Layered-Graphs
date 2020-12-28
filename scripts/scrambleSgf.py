@@ -31,10 +31,10 @@ def date():
     date_pipe = os.popen( 'date -u "+%Y/%m/%d %H:%M"' )
     return date_pipe.readlines()[0].split()[0]
 
-def usage( program_name ):
-    print("Usage:", program_name, " INPUT_FILE SEED > OUTPUT_FILE")
-    print("Takes an sgf file and a seed and outputs a permuted version of the graph.")
-    print("Output (also sgf) goes to standard output.")
+def usage(program_name):
+    sys.stderr.write("Usage: {} INPUT_FILE SEED > OUTPUT_FILE\n".format(program_name))
+    sys.stderr.write("Takes an sgf file and a seed and outputs a permuted version of the graph.\n")
+    sys.stderr.write("Output (also sgf) goes to standard output.\n")
 
 def read_sgf(input):
     global _nodes, _edges, _name
@@ -170,4 +170,4 @@ if __name__ == '__main__':
     node_map = permute_graph()
     write_sgf(sys.stdout, node_map, seed)
 
-#  [Last modified: 2020 12 28 at 22:45:40 GMT]
+#  [Last modified: 2020 12 28 at 23:08:11 GMT]

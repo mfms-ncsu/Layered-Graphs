@@ -31,9 +31,9 @@ import sys
 import os
 
 def usage(program_name):
-    print("Usage:", program_name, "INPUT_FILE > OUTPUT_FILE")
-    print("Takes the lff file INPUT_FILE and converts to sgf,")
-    print("which is printed on standard output.")
+    sys.stderr.write("Usage: {} INPUT_FILE > OUTPUT_FILE\n".format(program_name))
+    sys.stderr.write("Takes the lff file INPUT_FILE and converts to sgf,\n")
+    sys.stderr.write("which is printed on standard output.\n")
 
 def date():
     date_pipe = os.popen( 'date -u "+%Y/%m/%d %H:%M"' )
@@ -109,4 +109,4 @@ if __name__ == '__main__':
     internal_graph = read_lff(input_stream)
     write_sgf(sys.stdout, internal_graph, graph_name)
 
-#  [Last modified: 2020 12 23 at 20:46:06 GMT]
+#  [Last modified: 2020 12 28 at 23:12:02 GMT]
