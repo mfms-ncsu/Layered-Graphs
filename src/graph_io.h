@@ -56,24 +56,11 @@ void writeDot(const char * dot_file_name,
                );
 
 /**
- * Writes the current graph to an sgf file with the given name.
- * @param sgf_file_name the output file name (including .dot extension)
- * @param graph_name name of graph
- * @param header_information what will go into the file as comments
- * @param node_list array of nodes (with relevant information)
- * @param node_list_length length of node list
- * @param edge_list array of edges (with source and target information)
- * @param edge_list_length length of the edge list
+ * Writes the current graph and its ordering to an sgf file with the given name.
+ * @param output_stream either a pointer to a file or stdout
  */
-void writeSgf(const char * sgf_file_name,
-              const char * graph_name,
-              const char * header_information,
-              const Nodeptr * node_list,
-              int node_list_length,
-              const Edgeptr * edge_list,
-              int edge_list_length
-              );
+void writeSgf(FILE * output_stream);
 
 #endif
 
-/*  [Last modified: 2020 12 18 at 15:23:42 GMT] */
+/*  [Last modified: 2020 12 29 at 21:43:27 GMT] */

@@ -60,14 +60,14 @@ static char buffer[ MAX_NAME_LENGTH ];
 
 #if ! defined( TEST )
 
-void createOrdFileName( char * output_file_name, const char * appendix )
-{
-  if ( output_base_name == NULL )
-    {
+void createOutputFileName(char * output_file_name,
+                          const char * appendix,
+                          const char * extension) {
+  if ( output_base_name == NULL ) {
       output_base_name = "temp";
       printf( "WARNING: no output base name specified, using %s\n", "temp" );
       printf( " Use -o to get something different\n" );
-    }
+  }
   strcpy( output_file_name, output_base_name );
   strcat( output_file_name, "-" );
   strcat( output_file_name, preprocessor );
@@ -76,7 +76,7 @@ void createOrdFileName( char * output_file_name, const char * appendix )
     strcat( output_file_name, "+" );
   strcat( output_file_name, heuristic );
   strcat( output_file_name, appendix );
-  strcat( output_file_name, ".ord" );
+  strcat( output_file_name, extension );
 }
 
 void createDotFileName( char * output_file_name, const char * appendix )
@@ -184,8 +184,18 @@ bool end_of_iteration( void )
       char output_file_name[MAX_NAME_LENGTH];
       char appendix[MAX_NAME_LENGTH];
       sprintf( appendix, "-%d", iteration );
-      createOrdFileName( output_file_name, appendix );
-      writeOrd( output_file_name );
+      if ( produce_ord_output ) {
+          createOutputFileName(output_file_name, appendix, ".ord");
+          writeOrd(output_file_name);
+      }
+      else if ( produce_sgf_output ) {
+          createOutputFileName(output_file_name, appendix, ".ord");
+          FILE * output_stream = fopen(output_file_name, "w");
+          writeSgf(output_stream);
+      }
+      else if ( stdout_requested ) {
+          writeSgf(stdout);
+      }
     }
 #ifdef DEBUG
   printf( " ### crossings at end of iteration:\n"
@@ -979,4 +989,4 @@ void swapping( void )
 
 #endif // ! defined(TEST)
 
-/*  [Last modified: 2020 12 22 at 22:28:28 GMT] */
+/*  [Last modified: 2020 12 29 at 21:18:02 GMT] */

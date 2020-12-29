@@ -31,8 +31,10 @@
 
 // definition of command-line options with default values
 
+char * command_line = NULL;
 char * heuristic = "";
 char * preprocessor = "";
+char * objective = "";
 int max_iterations = INT_MAX;
 double runtime = 0;
 double max_runtime = DBL_MAX;
@@ -44,17 +46,31 @@ enum mce_option_enum mce_option = NODES;
 enum sifting_style_enum sifting_style = DEFAULT;
 enum pareto_objective_enum pareto_objective = NO_PARETO;
 int capture_iteration = INT_MIN; /* because -1 is a possible iteration */
-bool favored_edges = false;
 bool randomize_order = false;
 /**
  * @todo not clear which value of this option works best; stay tuned ...
  */
 bool balanced_weight = false;
+
+/**
+ * produce_output is set when user specifies the -w option
+ * produce_ord_output and produce_sgf_output are based on the nature
+ * of the input
+ */
 bool produce_output = false;
+bool produce_ord_output = false;
+bool produce_sgf_output = false;
+
+/**
+ * base_name_arg stores a base name given by a -w option,
+ * while output_base_name is the actual base name used,
+ * which will differ if the arg is "_"
+ */
+char * base_name_arg = NULL;
 char * output_base_name = NULL;
 // user specified stdin with -I option
 bool stdin_requested = false;
-// user specified stdout with '-w out' option
+// user specified stdout with '-w stdout' option
 // this one is made extern in defs.h so that other parts of program
 // can figure out what type of output is desirable
 bool stdout_requested = false;
@@ -104,9 +120,11 @@ static void printUsage( void )
          "      b = bottleneck, t = total, s = stretch (default = none)\n"
          "  -w BASE produce file(s) with name(s) BASE-h.sgf, where h is the heuristic used\n"
          "     -w _ (underscore) means use the base name of the input file\n"
-         "     -w out means use stdout and suppress the usual output\n"
-         "            unless -P is used, in which case the line with Pareto optima\n"
-         "            is prepended as a comment\n"
+         "     -w stdout means use stdout and suppress the usual output\n"
+         "               unless -P is used, in which case the line with Pareto optima\n"
+         "               is appended as a comment\n"
+         "  -o OBJECTIVE the primary objective (used to determine sgf output)\n"
+         "      b = bottleneck, t = total, s = stretch, bs = bottleneck stretch\n"
          "  -s (layer | degree | random) [sifting variation - see paper]\n"
          "  -g (total | max) [what sifting is based on] [default: total for sifting, mcn; max for mce]\n"
          "      [not implemented yet]\n"
@@ -133,6 +151,37 @@ static char * base_name( char * buffer )
   char * pointer_to_last_period = strrchr( without_directory, '.' );
   *pointer_to_last_period = '\0';
   return without_directory;
+}
+
+/**
+ * get a base name for an output file if appropriate; handles the
+ * special case where the specified base name is "_"
+ * @param output_base_name a buffer in which to store the base name
+ * @param base_name_arg the name specified on the command line (or
+ * "_")
+ * @param input_file_name name of the dot or sgf input file, used only
+ * if specified name is "_"
+ */
+static void getOutputBaseName(char * output_base_name,
+                              const char * base_name_arg,
+                              const char * input_file_name) {
+    if ( strlen(base_name_arg) == 1
+         && * base_name_arg == '_' ) {
+        free(base_name_arg);
+        char buffer[MAX_NAME_LENGTH];
+        strcpy(buffer, input_file_name );
+#ifdef DEBUG
+        printf("output special case: buffer = %s, input_file_name = %s\n",
+               buffer, input_file_name);
+#endif
+        char * base_name_ptr = base_name(buffer);
+#ifdef DEBUG
+        printf("output special case: buffer = %s, base = %s\n",
+               buffer, base_name_ptr);
+#endif
+        strcpy(output_base_name, base_name_ptr);
+    }
+    else strcpy(output_base_name, base_name_arg);
 }
 
 static void runPreprocessor( void )
@@ -190,6 +239,15 @@ static void runHeuristic( void )
 }
 
 /**
+ * puts the command line into the given buffer
+ */
+void captureCommandLine(char * cmd_line_buffer, int argc, char * argv[]) {
+    for ( int counter = 0; counter < argc; counter++ ) {
+        sprintf(cmd_line_buffer, " %s", argv[counter]);
+    }
+}
+
+/**
  * As of now, the main program does the following seqence of events -
  * -# If there are two args, treat them as a dot and ord file and read
  * -# If there is one arg, treat it as an sgf file and read
@@ -207,6 +265,12 @@ int main( int argc, char * argv[] )
   printf("################################################################\n");
   printf("########### minimization, release 1.1, 2020/12/22 #############\n");
 
+  char cmd_line_buffer[MAX_NAME_LENGTH];
+  
+  captureCommandLine(cmd_line_buffer, argc, argv);
+  command_line = calloc(strlen(cmd_line_buffer) + 1, sizeof(char));
+  strcpy(command_line, cmd_line_buffer);
+
   int seed = 0;
   int ch = -1;
 
@@ -217,7 +281,7 @@ int main( int argc, char * argv[] )
    * @todo add a -o option to specify which objective to use when
    * creating output
    */
-  while ( (ch = getopt(argc, argv, "c:fgh:Ii:p:P:R:r:s:t:vw:z")) != -1)
+  while ( (ch = getopt(argc, argv, "c:fgh:Ii:o:p:P:R:r:s:t:vw:z")) != -1)
     {
       switch(ch)
         {
@@ -267,14 +331,19 @@ int main( int argc, char * argv[] )
           capture_iteration = atoi( optarg );
           break;
 
+        case 'o':
+            objective = calloc(strlen(optarg) + 1, sizeof(char));
+            strcpy(objective, optarg);
+            break;
+
         case 'w':
           produce_output = true;
-          if ( strcmp(optarg, "out") == 0 ) {
+          if ( strcmp(optarg, "stdout") == 0 ) {
               stdout_requested = true;
           }
           else {
-              output_base_name = calloc(strlen(optarg) + 1, sizeof(char));
-              strcpy(output_base_name, optarg);
+              base_name_arg = calloc(strlen(optarg) + 1, sizeof(char));
+              strcpy(base_name_arg, optarg);
           }
           break;
 
@@ -330,28 +399,13 @@ int main( int argc, char * argv[] )
       const char * dot_file_name = argv[0];
       const char * ord_file_name = argv[1];
 
-      // handle special case where user specified an empty (_) base name for output
-      /**
-       * @todo need to handle the same situation for sgf, but that can wait
-       */
-      if ( produce_output
-           && strlen(output_base_name) == 1
-           && * output_base_name == '_' ) {
-          free( output_base_name );
+      if ( produce_output && ! stdout_requested ) {
+          produce_ord_output = true;
           char buffer[MAX_NAME_LENGTH];
-          strcpy( buffer, dot_file_name );
-#ifdef DEBUG
-          printf( "output special case: buffer = %s, dot_file_name = %s\n",
-                  buffer, dot_file_name );
-#endif
-          char * base_name_ptr = base_name( buffer );
-#ifdef DEBUG
-          printf( "output special case: buffer = %s, base = %s\n",
-                  buffer, base_name_ptr );
-#endif
+          getOutputBaseName(buffer, base_name_arg, dot_file_name);
           output_base_name
-              = (char *) calloc( strlen(base_name_ptr) + 1, sizeof(char) );
-          strcpy( output_base_name, base_name_ptr ); 
+              = (char *) calloc(strlen(buffer) + 1, sizeof(char));
+          strcpy(output_base_name, buffer); 
       } // end, produce output
 
       // read graph
@@ -362,9 +416,19 @@ int main( int argc, char * argv[] )
   } // end, dot and ord input
   else if ( argc == 1 ) {
       char * sgf_file_name = argv[0];
-      FILE * sgf_file = fopen(sgf_file_name, "r");
-      readSgf(sgf_file);
-      fclose(sgf_file);
+      FILE * input_stream = fopen(sgf_file_name, "r");
+
+      if ( produce_output && ! stdout_requested ) {
+          produce_sgf_output = true;
+          char buffer[MAX_NAME_LENGTH];
+          getOutputBaseName(buffer, base_name_arg, sgf_file_name);
+          output_base_name
+              = (char *) calloc(strlen(buffer) + 1, sizeof(char));
+          strcpy(output_base_name, buffer); 
+      } // end, produce output
+
+      readSgf(input_stream);
+      fclose(input_stream);
   }
   else if ( argc == 0 ) {
       if ( stdin_requested ) {
@@ -433,10 +497,10 @@ int main( int argc, char * argv[] )
   printf( "after heuristic, runtime = %f\n", RUNTIME );
 #endif
 
-  if ( produce_output ) {
+  if ( produce_ord_output ) {
     // write ordering after heuristic, before post-processing
     restore_order( best_crossings_order );
-    createOrdFileName( output_file_name, "" );
+    createOutputFileName( output_file_name, "", ".ord" );
     writeOrd( output_file_name );
   }
 
@@ -445,10 +509,10 @@ int main( int argc, char * argv[] )
     updateAllCrossings();
     swapping();
 
-    if ( produce_output ) {
+    if ( produce_ord_output ) {
       // write file with best total crossings order after post-processing
-      createOrdFileName( output_file_name, "-post" );
-      writeOrd( output_file_name );
+        createOutputFileName( output_file_name, "-post", ".ord" );
+        writeOrd( output_file_name );
     }
   }
 
@@ -460,25 +524,44 @@ int main( int argc, char * argv[] )
 #endif
 
   // write file with best order for edge crossings
-  if ( produce_output ) {
+  if ( produce_ord_output ) {
       // write file with best max edge order after overall
       restore_order( best_edge_crossings_order );
-      createOrdFileName( output_file_name, "-edge" );
+      createOutputFileName( output_file_name, "-edge", ".ord" );
       writeOrd( output_file_name );
-  }
 
-  if ( produce_output ) {
       // write file with best stretch order overall
       restore_order( best_total_stretch_order );
-      createOrdFileName( output_file_name, "-stretch" );
+      createOutputFileName( output_file_name, "-stretch", ".ord" );
+      writeOrd( output_file_name );
+
+      // write file with best stretch order overall
+      restore_order( best_bottleneck_stretch_order );
+      createOutputFileName( output_file_name, "-bs", ".ord" );
       writeOrd( output_file_name );
   }
 
-  if ( produce_output ) {
-      // write file with best stretch order overall
+  if ( strcmp(objective, "t") == 0 ) {
+      restore_order( best_crossings_order );
+  }
+  else if ( strcmp(objective, "b") == 0 ) {
+      restore_order( best_edge_crossings_order );
+  }
+  else if ( strcmp(objective, "s") == 0 ) {
+      restore_order( best_total_stretch_order );
+  }
+  else if ( strcmp(objective, "bs") == 0 ) {
       restore_order( best_bottleneck_stretch_order );
-      createOrdFileName( output_file_name, "-bs" );
-      writeOrd( output_file_name );
+  }
+  
+  if ( produce_sgf_output ) {
+          createOutputFileName(output_file_name, objective, ".sgf");
+          FILE * output_stream = fopen(output_file_name, "w");
+          writeSgf(output_stream);
+          fclose(output_stream);
+      }
+  else if ( stdout_requested ) {
+      writeSgf(stdout);
   }
 
   print_run_statistics( stdout );
@@ -499,7 +582,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2020 12 22 at 22:27:53 GMT] */
+/*  [Last modified: 2020 12 29 at 22:08:24 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */

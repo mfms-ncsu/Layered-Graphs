@@ -63,6 +63,15 @@ extern char * heuristic;
 extern char * preprocessor;
 
 /**
+ * minimization objective, currently used to determine sgf output, if any;
+ * @todo use this to determine what information to track while the
+ * heuristic is running
+ *  "t" = total, "b" = bottleneck, "s" and "bs" for stretch and
+ *  bottleneck stretch
+ */
+extern char * objective;
+
+/**
  * structure to save layer orderings for minimum crossings so far
  */
 extern Orderptr best_crossings_order;
@@ -156,10 +165,12 @@ extern enum pareto_objective_enum
 extern int capture_iteration;
 
 /**
- * True if ord files representing the minimum number of crossings should be
+ * True if ord/sgf files representing the minimum number of crossings should be
  * written
  */
 extern bool produce_output;
+extern bool produce_ord_output;
+extern bool produce_sgf_output;
 
 /**
  * output file names are of the form output_base_name-x.ord, where x is
@@ -185,5 +196,5 @@ extern int trace_freq;
 
 #endif
 
-/*  [Last modified: 2020 12 22 at 22:11:42 GMT] */
+/*  [Last modified: 2020 12 29 at 22:10:01 GMT] */
 

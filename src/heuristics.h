@@ -36,9 +36,12 @@ extern int post_processing_iteration;
  * Creates an ord file name from the graph name, preprocessor and heuristic.
  * @param output_file_name a buffer for the file name to be created, assumed
  * to be big enough
- * @param appendix a string that is attached just before the .ord extension
+ * @param appendix a string that is attached just before the extension
+ * @param extension either ".ord" or ".sgf" depending on format of output
  */
-void createOrdFileName( char * output_file_name, const char * appendix );
+void createOutputFileName( char * output_file_name,
+                           const char * appendix,
+                           const char * extension );
 
 /**
  * Creates a dot file name using the graph name and the appendix
@@ -193,4 +196,4 @@ void swapping( void );
 
 #endif
 
-/*  [Last modified: 2016 05 19 at 15:19:35 GMT] */
+/*  [Last modified: 2020 12 29 at 21:39:41 GMT] */
