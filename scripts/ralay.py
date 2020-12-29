@@ -179,7 +179,7 @@ def create_name( degree_var, seed ):
 #    ...
 #    c comment line k
 #
-#    t graph_name
+#    t graph_name num_nodes num_edges num_layers
 #    n id_1 layer_1 position_1
 #    n id_2 layer_2 position_2
 #    ...
@@ -193,7 +193,9 @@ def print_graph( file_stream, degree_var, seed ):
     file_stream.write( "c {} {} {} {:4.2f} {}\n"
                        .format(_nodes, _edges, _layers, degree_var, seed) )
     graph_name = create_name(degree_var, seed); 
-    file_stream.write( "t %s\n" % ( create_name( degree_var, seed ) ) )
+    file_stream.write("t %s %d %d %d\n"
+                       .format(create_name(degree_var, seed),
+                       _nodes, _edges, _layers))
     print_nodes(file_stream)
     print_edges(file_stream)
 
@@ -724,4 +726,4 @@ if __name__ == "__main__":
     print_layer_widths(sys.stderr)
     print_degree_sequences(sys.stderr)
 
-#  [Last modified: 2020 05 18 at 14:46:51 GMT]
+#  [Last modified: 2020 12 29 at 23:32:12 GMT]

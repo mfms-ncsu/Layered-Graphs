@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 """
  translates from sgf format, described in the script, to the graphml format
@@ -12,7 +12,7 @@
 #    ...
 #    c comment line k
 #
-#    t graph_name
+#    t graph_name num_nodes num_edges num_layers
 #
 #    n id_1 layer_1 position_1
 #    n id_2 layer_2 position_2
@@ -145,4 +145,4 @@ def main():
 
 main()
 
-#  [Last modified: 2020 12 28 at 23:14:08 GMT]
+#  [Last modified: 2020 12 29 at 23:28:06 GMT]

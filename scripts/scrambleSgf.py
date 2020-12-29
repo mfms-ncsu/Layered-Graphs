@@ -37,12 +37,13 @@ def usage(program_name):
     sys.stderr.write("Output (also sgf) goes to standard output.\n")
 
 def read_sgf(input):
-    global _nodes, _edges, _name
+    global _nodes, _edges, _name, _num_nodes, _num_edges, _num_layers
     _nodes = []
     _edges = []
     line = skip_comments(input)
-    # the current line is assumed to be the tag line, of the form 't NAME'
-    _name = line[1]
+    # the current line is assumed to be the tag line,
+    # of the form 't NAME NODES EDGES LAYERS'
+    (tag, _name, _num_nodes, _num_edges, _num_layers) = line.strip().split()
     line = read_nonblank(input)
     while ( line ):
         type = line.split()[0]
@@ -81,7 +82,7 @@ reads and skips lines that begin with 'c' and collects them into the global
 list of strings _comments, one element per comment line
 @return the first line that is not a comment line
 """
-def skip_comments( input ):
+def skip_comments(input):
     global _comments
     _comments = []
     line = read_nonblank(input)
@@ -141,7 +142,8 @@ def write_preamble(output_stream, seed):
         output_stream.write("c {}\n".format(comment))
     output_stream.write("c Permuted, scrambleSgf, seed = {}, date = {}\n"
                         .format(seed, date()))
-    output_stream.write("t {}\n".format(_name))
+    output_stream.write("t {} {} {} {}\n"
+                        .format(_name, _num_nodes, _num_edges, _num_layers))
 
 """
 write shuffled graph in sgf format to the output stream
@@ -170,4 +172,4 @@ if __name__ == '__main__':
     node_map = permute_graph()
     write_sgf(sys.stdout, node_map, seed)
 
-#  [Last modified: 2020 12 28 at 23:08:11 GMT]
+#  [Last modified: 2020 12 29 at 23:41:12 GMT]

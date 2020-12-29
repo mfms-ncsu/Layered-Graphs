@@ -91,9 +91,8 @@ def write_sgf(file_stream, graph, name):
     edge_list = graph[1]
     file_stream.write("c generated %s\n" % date())
     file_stream.write("c  by lff2sgf.py\n")
-    file_stream.write("c %d nodes %d edges %d layers\n"
-                      % (len(node_list), len(edge_list), _number_of_layers))
-    file_stream.write( "t %s\n" % name )
+    file_stream.write("t %s %d %d %d\n"
+                      .format(name, len(node_list), len(edge_list), _number_of_layers))
     for node in node_list:
         file_stream.write("n %d %d %d\n" % tuple(node))
     for edge in edge_list:
@@ -109,4 +108,4 @@ if __name__ == '__main__':
     internal_graph = read_lff(input_stream)
     write_sgf(sys.stdout, internal_graph, graph_name)
 
-#  [Last modified: 2020 12 28 at 23:12:02 GMT]
+#  [Last modified: 2020 12 29 at 23:23:16 GMT]

@@ -33,7 +33,7 @@ sfg format is as follows:
    ...
    c comment line k
 
-   t graph_name
+   t graph_name num_nodes num_edges num_layers
 
    n id_1 layer_1 position_1
    n id_2 layer_2 position_2
@@ -114,8 +114,8 @@ def print_sgf( file_stream, graph, name ):
     edge_list = graph[1]
     file_stream.write( "c generated %s\n" % date() )
     file_stream.write( "c %s\n" % version() )
-    file_stream.write( "c %d nodes %d edges %d layers\n" % ( len(node_list), len(edge_list), _number_of_layers ) )
-    file_stream.write( "t %s\n" % name )
+    file_stream.write("t %s %d %d %d\n"
+                       % (name, len(node_list), len(edge_list), _number_of_layers))
     for node in node_list:
         file_stream.write( "n %d %d %d\n" % tuple( node ) )
     for edge in edge_list:
@@ -133,4 +133,4 @@ def main():
 
 main()
 
-#  [Last modified: 2020 05 18 at 15:16:22 GMT]
+#  [Last modified: 2020 12 29 at 23:26:48 GMT]

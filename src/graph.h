@@ -141,7 +141,8 @@ extern int number_of_edges;
 extern int number_of_isolated_nodes;
 extern Layerptr * layers;
 extern char graph_name[MAX_NAME_LENGTH];
+extern char * comments[];
 
 #endif
 
-/*  [Last modified: 2019 09 27 at 16:12:48 GMT] */
+/*  [Last modified: 2020 12 29 at 23:18:26 GMT] */

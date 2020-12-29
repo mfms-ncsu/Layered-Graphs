@@ -163,7 +163,7 @@ static char * base_name( char * buffer )
  * if specified name is "_"
  */
 static void getOutputBaseName(char * output_base_name,
-                              const char * base_name_arg,
+                              char * base_name_arg,
                               const char * input_file_name) {
     if ( strlen(base_name_arg) == 1
          && * base_name_arg == '_' ) {
@@ -582,7 +582,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2020 12 29 at 22:08:24 GMT] */
+/*  [Last modified: 2020 12 29 at 23:16:52 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */
