@@ -34,7 +34,7 @@
 char * command_line = NULL;
 char * heuristic = "";
 char * preprocessor = "";
-char * objective = "";
+char * objective = NULL;
 int max_iterations = INT_MAX;
 double runtime = 0;
 double max_runtime = DBL_MAX;
@@ -124,7 +124,7 @@ static void printUsage( void )
          "               unless -P is used, in which case the line with Pareto optima\n"
          "               is appended as a comment\n"
          "  -o OBJECTIVE the primary objective (used to determine sgf output)\n"
-         "      b = bottleneck, t = total, s = stretch, bs = bottleneck stretch\n"
+         "      t = total (default), b = bottleneck, s = stretch, bs = bottleneck stretch\n"
          "  -s (layer | degree | random) [sifting variation - see paper]\n"
          "  -g (total | max) [what sifting is based on] [default: total for sifting, mcn; max for mce]\n"
          "      [not implemented yet]\n"
@@ -186,7 +186,7 @@ static void getOutputBaseName(char * output_base_name,
 
 static void runPreprocessor( void )
 {
-  printf( "--- Running preprocessor %s\n", preprocessor );
+    fprintf( stderr, "--- Running preprocessor %s\n", preprocessor );
   if( strcmp( preprocessor, "" ) == 0 )
     ;                           /* do nothing */
   else if( strcmp( preprocessor, "bfs" ) == 0 )
@@ -210,7 +210,7 @@ static void runPreprocessor( void )
  */
 static void runHeuristic( void )
 {
-  printf( "=== Running heuristic %s\n", heuristic );
+    fprintf(stderr, "=== Running heuristic %s\n", heuristic);
   if( strcmp( heuristic, "" ) == 0 )
     ;                           /* do nothing */
   else if( strcmp( heuristic, "median" ) == 0 )
@@ -242,8 +242,12 @@ static void runHeuristic( void )
  * puts the command line into the given buffer
  */
 void captureCommandLine(char * cmd_line_buffer, int argc, char * argv[]) {
+    char local_buffer[MAX_NAME_LENGTH];
+    *cmd_line_buffer = '\0';
     for ( int counter = 0; counter < argc; counter++ ) {
-        sprintf(cmd_line_buffer, " %s", argv[counter]);
+        sprintf(local_buffer, "%s", argv[counter]);
+        if ( counter > 0 ) strcat(cmd_line_buffer, " ");
+        strcat(cmd_line_buffer, local_buffer);
     }
 }
 
@@ -262,25 +266,21 @@ void captureCommandLine(char * cmd_line_buffer, int argc, char * argv[]) {
  */
 int main( int argc, char * argv[] )
 {
-  printf("################################################################\n");
-  printf("########### minimization, release 1.1, 2020/12/22 #############\n");
+    fprintf(stderr, "################################################################\n");
+    fprintf(stderr, "########### minimization, release 1.1, 2020/12/22 #############\n");
 
   char cmd_line_buffer[MAX_NAME_LENGTH];
   
   captureCommandLine(cmd_line_buffer, argc, argv);
   command_line = calloc(strlen(cmd_line_buffer) + 1, sizeof(char));
   strcpy(command_line, cmd_line_buffer);
-
+  
   int seed = 0;
   int ch = -1;
 
   // process command-line options; these must come before the file arguments
   // note: options that have an arg are followed by : but others are
   // not
-  /**
-   * @todo add a -o option to specify which objective to use when
-   * creating output
-   */
   while ( (ch = getopt(argc, argv, "c:fgh:Ii:o:p:P:R:r:s:t:vw:z")) != -1)
     {
       switch(ch)
@@ -429,6 +429,7 @@ int main( int argc, char * argv[] )
 
       readSgf(input_stream);
       fclose(input_stream);
+      addComment(command_line, true);
   }
   else if ( argc == 0 ) {
       if ( stdin_requested ) {
@@ -447,7 +448,9 @@ int main( int argc, char * argv[] )
       exit(EXIT_FAILURE);
   }
 
-  print_graph_statistics( stdout );
+  if ( ! stdout_requested ) {
+      print_graph_statistics( stdout );
+  }
 
   initCrossings();
   initChannels();
@@ -541,30 +544,44 @@ int main( int argc, char * argv[] )
       writeOrd( output_file_name );
   }
 
+  if ( objective == NULL ) objective = "t";
+  char * objective_suffix = "";
+
   if ( strcmp(objective, "t") == 0 ) {
       restore_order( best_crossings_order );
+      objective_suffix = "-t";
   }
   else if ( strcmp(objective, "b") == 0 ) {
       restore_order( best_edge_crossings_order );
+      objective_suffix = "-b";
   }
   else if ( strcmp(objective, "s") == 0 ) {
       restore_order( best_total_stretch_order );
+      objective_suffix = "-s";
   }
   else if ( strcmp(objective, "bs") == 0 ) {
       restore_order( best_bottleneck_stretch_order );
+      objective_suffix = "-bs";
   }
   
   if ( produce_sgf_output ) {
-          createOutputFileName(output_file_name, objective, ".sgf");
-          FILE * output_stream = fopen(output_file_name, "w");
-          writeSgf(output_stream);
-          fclose(output_stream);
-      }
+      createOutputFileName(output_file_name, objective_suffix, ".sgf");
+      FILE * output_stream = fopen(output_file_name, "w");
+      writeSgf(output_stream);
+      fclose(output_stream);
+  }
   else if ( stdout_requested ) {
+      if ( pareto_objective != NO_PARETO ) { 
+          char buffer[MAX_NAME_LENGTH];
+          getParetoList(buffer);
+          addComment(buffer, true);
+      }
       writeSgf(stdout);
   }
 
-  print_run_statistics( stdout );
+  if ( ! stdout_requested ) {
+      print_run_statistics( stdout );
+  }
 
   // deallocate all order structures
   cleanup_order( best_crossings_order );
@@ -582,7 +599,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2020 12 29 at 23:16:52 GMT] */
+/*  [Last modified: 2020 12 30 at 19:10:07 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */

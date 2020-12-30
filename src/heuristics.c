@@ -167,7 +167,7 @@ static void print_last_iteration_message( void )
       /**
        * @todo more information in the "still improving" message
        */
-       printf( "*** still improving but max iterations or runtime reached:"
+        fprintf(stderr, "*** still improving but max iterations or runtime reached:"
               " iteration %d, runtime %2.3f, graph %s\n",
               iteration, RUNTIME, graph_name );
     }
@@ -243,7 +243,7 @@ static void print_standard_termination_message()
 
   if ( ! standard_termination_message_printed )
     {
-      printf( "*** standard termination here: iteration %d crossings %d"
+        fprintf(stderr, "*** standard termination here: iteration %d crossings %d"
               " edge_crossings %d"
               " graph %s ***\n",
               iteration, total_crossings.best,
@@ -989,4 +989,4 @@ void swapping( void )
 
 #endif // ! defined(TEST)
 
-/*  [Last modified: 2020 12 29 at 21:18:02 GMT] */
+/*  [Last modified: 2020 12 30 at 18:12:37 GMT] */

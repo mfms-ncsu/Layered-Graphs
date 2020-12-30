@@ -14,6 +14,7 @@
 #include<limits.h>
 #include<math.h>
 #include<float.h>
+#include<string.h>
 
 #include"stats.h"
 #include"defs.h"
@@ -35,35 +36,43 @@ static PARETO_LIST pareto_list = NULL;
 
 static void init_pareto_list( void ) { pareto_list = NULL; }
 
-static void print_pareto_list( PARETO_LIST list, FILE * output_stream ) {
-  PARETO_LIST local_list = list;
-  while ( local_list != NULL ) {
-    if ( pareto_objective == BOTTLENECK_TOTAL ) {
-      fprintf(output_stream, "%d^%d",
-              (int) local_list->objective_one,
-              (int) local_list->objective_two);
+/**
+ * puts formatted Pareto list to the buffer, starting with Pareto tag
+ */
+static void putParetoList(char * buffer) {
+    PARETO_LIST local_list = pareto_list;
+    char local_buffer[MAX_NAME_LENGTH];
+    *buffer = '\0';
+    strcat(buffer, "Pareto,");
+    while ( local_list != NULL ) {
+        if ( pareto_objective == BOTTLENECK_TOTAL ) {
+            sprintf(local_buffer, "%d^%d",
+                    (int) local_list->objective_one,
+                    (int) local_list->objective_two);
+        }
+        else if ( pareto_objective == STRETCH_TOTAL ) {
+            sprintf(local_buffer, "%f^%d",
+                    local_list->objective_one,
+                    (int) local_list->objective_two);
+        }
+        else { //  pareto_objective == BOTTLENECK_STRETCH
+            sprintf(local_buffer, "%d^%f",
+                    (int) local_list->objective_one,
+                    local_list->objective_two);
+        }
+        strcat(buffer, local_buffer);
+        local_list = local_list->rest;
+        if ( local_list != NULL ) strcat(buffer, ";");
     }
-    else if ( pareto_objective == STRETCH_TOTAL ) {
-      fprintf(output_stream, "%f^%d",
-              local_list->objective_one,
-              (int) local_list->objective_two);
+    local_list = pareto_list;
+    strcat(buffer, ", ");
+    while ( local_list != NULL ) {
+        sprintf(local_buffer, "%d", local_list->iteration);
+        strcat(buffer, local_buffer);
+        local_list = local_list->rest;
+        if ( local_list != NULL ) strcat(buffer, ";");
     }
-    else { //  pareto_objective == BOTTLENECK_STRETCH
-      fprintf(output_stream, "%d^%f",
-              (int) local_list->objective_one,
-              local_list->objective_two);
-    }
-    local_list = local_list->rest;
-    if ( local_list != NULL ) fprintf(output_stream, ";");
-  }
-  local_list = list;
-  printf(", ");
-  while ( local_list != NULL ) {
-    fprintf(output_stream, "%d", local_list->iteration);
-    local_list = local_list->rest;
-    if ( local_list != NULL ) fprintf(output_stream, ";");
-  }
-} 
+}
 
 /**
  * Inserts, if appropriate, an item with the given values of objective_one and
@@ -507,22 +516,29 @@ static void print_crossing_stats_double(FILE * output_stream,
            stats.name, stats.after_post_processing, stats.post_processing_iteration );
 }
 
-void print_run_statistics( FILE * output_stream )
-{
-  fprintf( output_stream, "Preprocessor,%s\n", preprocessor );
-  fprintf( output_stream, "Heuristic,%s\n", heuristic );
-  fprintf( output_stream, "Iterations,%d\n", iteration );
-  fprintf( output_stream, "Runtime,%2.3f\n", RUNTIME );
-
-  print_crossing_stats_int( output_stream, total_crossings );
-  print_crossing_stats_int( output_stream, max_edge_crossings );
-  print_crossing_stats_double( output_stream, total_stretch );
-  print_crossing_stats_double( output_stream, bottleneck_stretch );
-  if ( pareto_objective != NO_PARETO ) {
-    fprintf( output_stream, "Pareto,");
-    print_pareto_list( pareto_list, output_stream );
-    fprintf( output_stream, "\n" );
-  }
+void getParetoList(char * buffer) {
+    *buffer = '\0';
+    strcat(buffer, "Pareto,");
+    putParetoList(buffer);
 }
 
-/*  [Last modified: 2020 12 22 at 22:29:43 GMT] */
+void print_run_statistics( FILE * output_stream )
+{
+    fprintf( output_stream, "Preprocessor,%s\n", preprocessor );
+    fprintf( output_stream, "Heuristic,%s\n", heuristic );
+    fprintf( output_stream, "Iterations,%d\n", iteration );
+    fprintf( output_stream, "Runtime,%2.3f\n", RUNTIME );
+    
+    print_crossing_stats_int( output_stream, total_crossings );
+    print_crossing_stats_int( output_stream, max_edge_crossings );
+    print_crossing_stats_double( output_stream, total_stretch );
+    print_crossing_stats_double( output_stream, bottleneck_stretch );
+
+    if ( pareto_objective != NO_PARETO ) {
+        char buffer[MAX_NAME_LENGTH];
+        getParetoList(buffer);
+        fprintf(output_stream, "%s\n", buffer);
+    }
+}
+
+/*  [Last modified: 2020 12 30 at 18:56:14 GMT] */

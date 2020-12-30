@@ -31,19 +31,9 @@ Consider runtime options that assume three stages: preprocessing (e.g., dfs), so
 
 - an option to specify the desired objective(s), independent of heuristic, so that output focuses on those only; this would be independent of Pareto output; probably need to rethink output: currently best x is reported for all possible x and all stages
 
-- the -h option so that a sequence of heuristics, separated by commas, can be specified
-
-- the -i and -r options should also be comma separated so that different heuristics can have different numbers of iterations or time limits; need to look into which of these has precedence if both are specified; also, may need to use '_' to indicate that the corresponding heuristic does not use the option: for example, one heuristic may run for a number of iterations while another has a time limit
-
-- the -R option for randomization also needs comma-separated arguments; here we need to distinguish between actual seed, use seed from previous heuristic, if any, no seed, and no randomness; maybe should not have the "use seed from previous" option -- too complicated, but can use, e.g., -1 for no randomness
-
-- might need a global iteration count to be used with the -c option and reported with each minimum or Pareto point
-
 - output is not conducive to csv because each minimum or Pareto point comes with an iteration number that is reported on the same line; need to think in terms of a conversion script and/or separate lines for the iteration reports [* may be okay if important info comes immediately after separator (comma) *]
 
 *** Add ***
-
-- script to convert from format used by recent papers to sgf
 
 (* done *) - facilities for reading and writing sgf files; the program would base the I/O method on the extension(s) of the input file(s); still to do
 

@@ -19,31 +19,31 @@ for sgf_file in TestData/*.sgf; do
     echo "========= running experiments with $sgf_file, $date ===============" \
         >> $output_file
     echo "$executable -p dfs -h bary -i 10000 -P b_t -z $sgf_file"
-    $executable -p dfs -h bary -i 10000 -P b_t -z $sgf_file >> $output_file
+    $executable -p dfs -h bary -i 10000 -P b_t -z $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h mod_bary -i 10000 -P b_t -z $sgf_file"
-    $executable -p dfs -h mod_bary -i 10000 -P b_t -z $sgf_file >> $output_file
+    $executable -p dfs -h mod_bary -i 10000 -P b_t -z $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h mce -i 10000 -P b_t -z $sgf_file"
-    $executable -p dfs -h mce -i 10000 -P b_t -z $sgf_file >> $output_file
+    $executable -p dfs -h mce -i 10000 -P b_t -z $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h sifting -i 10000 -P b_t -z $sgf_file"
-    $executable -p dfs -h sifting -i 10000 -P b_t -z $sgf_file >> $output_file
+    $executable -p dfs -h sifting -i 10000 -P b_t -z $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h mse -i 10000 -P s_t -z $sgf_file"
-    $executable -p dfs -h mse -i 10000 -P s_t -z $sgf_file >> $output_file
+    $executable -p dfs -h mse -i 10000 -P s_t -z $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h mce -i 10000 -P b_t -z -R 81453 $sgf_file"
-    $executable -p dfs -h mce -i 10000 -P b_t -z -R 81453 $sgf_file >> $output_file
+    $executable -p dfs -h mce -i 10000 -P b_t -z -R 81453 $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h mse -i 10000 -P s_t -z -R 81453 $sgf_file"
-    $executable -p dfs -h mse -i 10000 -P s_t -z -R 81453 $sgf_file >> $output_file
+    $executable -p dfs -h mse -i 10000 -P s_t -z -R 81453 $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "===================================================" \
@@ -59,7 +59,7 @@ grep --invert-match "[Rr]untime" $last_output > $tmp_last
 grep --invert-match "[Rr]untime" $output_file > $tmp_next
 
 echo "-------- doing the diff -----------"
-diff $tmp_last $tmp_next
+diff -bB $tmp_last $tmp_next
 
 echo -n "Continue (y/n)? "
 read answer
@@ -68,4 +68,4 @@ if [ $answer = "y" ]; then
     rm $tmp_last $tmp_next
 fi
 
-#  [Last modified: 2020 12 19 at 18:57:07 GMT]
+#  [Last modified: 2020 12 30 at 19:06:47 GMT]

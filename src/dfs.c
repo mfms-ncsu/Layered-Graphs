@@ -116,7 +116,7 @@ static void dfs( void )
             }
         }
     }
-  printf( "dfs done, number_of_components = %d, size_of_largest_component = %d\n",
+  fprintf(stderr, "dfs done, number_of_components = %d, size_of_largest_component = %d\n",
           number_of_components, size_of_largest_component );
 }
 
@@ -126,4 +126,4 @@ void assignDfsWeights( void )
   dfs();
 }
 
-/*  [Last modified: 2011 06 04 at 20:19:23 GMT] */
+/*  [Last modified: 2020 12 30 at 18:10:32 GMT] */

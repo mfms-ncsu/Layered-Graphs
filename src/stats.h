@@ -126,6 +126,12 @@ void print_graph_statistics( FILE * output_stream );
  */
 void print_run_statistics( FILE * output_stream );
 
+/**
+ * Puts the a line of the form 'Pareto,LIST' into the buffer, where
+ * LIST is the Pareto list
+ */
+void getParetoList(char * buffer);
+
 #endif
 
-/*  [Last modified: 2016 05 18 at 19:59:14 GMT] */
+/*  [Last modified: 2020 12 30 at 17:49:28 GMT] */

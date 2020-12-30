@@ -37,63 +37,6 @@
 void readSgf(FILE * sgf_stream);
 
 /**
- * structure for storing information about node just read from file
- */
-struct sgf_node_struct { int id; int layer; int position; } sgf_node;
-
-/**
- * structure for storing information about edge just read from file
- */
-struct sgf_edge_struct { int source; int target; } sgf_edge;
-
-/**
- * reads from 'in' past the comments
- */
-void initSgf(FILE * in);
-
-/**
- * places the name of the graph into buffer, which must be preallocated
- * @assume initSgf() has already been called (hence no need for the file ptr)
- */
-void getNameFromSgfFile(char * buffer);
-
-/**
- * @return number of nodes
- * @assume initSgf() and getNameFromSgfFile() have already been called
- */
-int getNumberOfNodes();
-
-/**
- * @return number of edges
- * @assume initSgf(), getNameFromSgfFile(), and getNumberOfNodes() have
- * already been called
- */
-int getNumberOfEdges();
-
-/**
- * @return number of layers
- * @assume initSgf()), getNameFromSgfFile(), getNumberOfNodes(), and
- * getNumberOfEdges() have already been called
- */
-int getNumberOfLayers();
-
-/**
- * put node id, layer, and position into sgf_node
- * @return true if there is a next node
- * @assume the tag line has been read, i.e., getNameFromSgfFile(),
- * getNumberOfNodes(), getNumberOfEdges(), and getNumberOfLayers() have
- * already been called
- */
-bool getNextNode();
-
-/**
- * put source and target into sgf_edge
- * @return true if there is a next edge
- * @assume all nodes have been read from the file using getNumberOfNodes()
- */
-bool getNextEdge();
-
-/**
  * Writes the current graph and its ordering to an sgf file with the given name.
  * @param output_stream either a pointer to a file or stdout
  */
@@ -101,4 +44,4 @@ void writeSgf(FILE * output_stream);
 
 #endif
 
-/*  [Last modified: 2020 12 30 at 14:35:33 GMT] */
+/*  [Last modified: 2020 12 30 at 15:29:08 GMT] */
