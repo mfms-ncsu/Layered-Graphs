@@ -469,8 +469,17 @@ static void print_degree_statistics( FILE * output_stream )
 /* { */
 /* }  */
 
+void print_comments(FILE * output_stream) {
+    fprintf(output_stream, "# comments\n");
+    fprintf(output_stream, "%s", comments);
+    fprintf(output_stream, "# end_comments\n");
+}
+
 void print_graph_statistics( FILE * output_stream )
 {
+    if ( strlen(comments) > 0 ) {
+        print_comments(output_stream);
+    }
   int effective_number_of_nodes = number_of_nodes - number_of_isolated_nodes;
   fprintf( output_stream, "GraphName,%s\n", graph_name );
   fprintf( output_stream, "NumberOfLayers,%d\n", number_of_layers );
@@ -541,4 +550,4 @@ void print_run_statistics( FILE * output_stream )
     }
 }
 
-/*  [Last modified: 2020 12 30 at 18:56:14 GMT] */
+/*  [Last modified: 2020 12 30 at 20:44:32 GMT] */
