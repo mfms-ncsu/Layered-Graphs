@@ -32,6 +32,11 @@
 #include<stdbool.h>
 
 /**
+ * Reads a graph in sgf format from the given stream
+ */
+void readSgf(FILE * sgf_stream);
+
+/**
  * structure for storing information about node just read from file
  */
 struct sgf_node_struct { int id; int layer; int position; } sgf_node;
@@ -96,4 +101,4 @@ void writeSgf(FILE * output_stream);
 
 #endif
 
-/*  [Last modified: 2020 12 30 at 00:53:33 GMT] */
+/*  [Last modified: 2020 12 30 at 14:35:33 GMT] */

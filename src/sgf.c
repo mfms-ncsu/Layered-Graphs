@@ -11,6 +11,7 @@
 #include "sgf.h"
 #include "defs.h"
 #include "graph.h"
+#include "graph_io.h"
 
 /**
  * stores a long string of comments separated by '\n's
@@ -45,13 +46,10 @@ static int local_layers;
  */
 void initSgf(FILE * in) {
     in_stream = in;
-    comments = calloc(1, sizeof(char));
-    comments[0] = '\0';         /* so strlen will be 0 */
+    startAddingComments();
     success = fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
     while ( success != NULL && local_buffer[0] == 'c' ) {
-        comments = realloc(comments, strlen(comments) + strlen(local_buffer));
-        strcat(comments, local_buffer + 2); /* omit the "c " */
-        strcat(comments, "\n");
+        addComment(local_buffer + 2); /* ignore the 'c' */
         success = fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
     }
     // assert: first char of local_buffer should be 't' at this point
@@ -158,4 +156,4 @@ void writeSgf(FILE * output_stream) {
     writeSgfEdges(output_stream);
 }
 
-/*  [Last modified: 2020 12 30 at 00:59:39 GMT] */
+/*  [Last modified: 2020 12 30 at 15:03:43 GMT] */

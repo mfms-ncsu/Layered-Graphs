@@ -14,6 +14,7 @@
 #define GRAPH_IO_H
 
 #include"graph.h"
+#include"sgf.h"
 
 /**
  * Reads the graph from the given dot and ord files, specified by their names.
@@ -22,11 +23,6 @@
  * Also initializes all graph-related data structures and global variables.
  */
 void readDotAndOrd( const char * dot_file, const char * ord_file );
-
-/**
- * Reads a graph from the given stream
- */
-void readSgf(FILE * sgf_stream);
 
 /**
  * Prints the graph in a verbose format on standard output for debugging
@@ -55,6 +51,31 @@ void writeDot(const char * dot_file_name,
                int edge_list_length
                );
 
+/**
+ * Initializes the comments string to be empty in preparation for
+ * adding comments.
+ */
+void startAddingComments(void);
+
+/**
+ * Adds the given string as a comment to the comments string,
+ * terminated with a '\n'
+ */
+void addComment(const char * comment);
+
+/**
+ * Initializes processing of the comments string; called at the
+ * beginning of a sequence of getComment calls
+ */
+void startGettingComments(void);
+
+/**
+ * Puts the next comment into the comment buffer
+ * @return a pointer to the beginning of the comment
+ *         or NULL if there is no next comment
+ */
+char * getNextComment(char * comment_buffer);
+
 #endif
 
-/*  [Last modified: 2020 12 30 at 00:53:11 GMT] */
+/*  [Last modified: 2020 12 30 at 15:02:29 GMT] */

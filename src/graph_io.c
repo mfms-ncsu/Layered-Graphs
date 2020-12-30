@@ -600,6 +600,39 @@ void readDotAndOrd( const char * dot_file, const char * ord_file )
   removeHashTable();
 }
 
+// --------------- Handling of comments
+
+void startAddingComments(void) {
+    comments = calloc(1, sizeof(char));
+    comments[0] = '\0';         /* so strlen will be 0 */
+}
+
+void addComment(const char * comment) {
+    comments = realloc(comments, strlen(comments) + strlen(comment) + 2);
+    strcat(comments, comment);
+    strcat(comments, "\n");
+}
+
+/**
+ * pointer to start of next comment
+ */
+static char * next_comment;
+
+void startGettingComments(void) {
+    next_comment = comments;
+}
+
+char * getNextComment(char * comment_buffer) {
+    char * end_comment = strchr(next_comment, '\n');
+    if ( end_comment == NULL ) return NULL;
+    while ( next_comment != end_comment ) {
+        *comment_buffer = *next_comment;
+        comment_buffer++;
+        next_comment++;
+    }
+    return ++next_comment;
+}
+
 // --------------- Output to dot and ord files
 
 static void writeNodes( FILE * out, Layerptr layerptr )
@@ -732,4 +765,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2020 12 30 at 00:54:15 GMT] */
+/*  [Last modified: 2020 12 30 at 14:57:53 GMT] */
