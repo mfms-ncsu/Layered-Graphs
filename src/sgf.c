@@ -2,6 +2,7 @@
  * @file sgf.c
  * @brief
  * Implementation of module for reading and writing files in .sgf format
+ * Deals with details of sgf format
  * @author Matt Stallmann
  * @date 2019/12/19
  */
@@ -9,6 +10,12 @@
 #include<string.h>
 #include "sgf.h"
 #include "defs.h"
+#include "graph.h"
+
+/**
+ * stores a long string of comments separated by '\n's
+ */
+char * comments = NULL;
 
 /**
  * stores the file stream
@@ -34,12 +41,17 @@ static int local_edges;
 static int local_layers;
 
 /**
- * reads from 'in' past the comments
+ * reads from 'in' past the comments and stores the comments (see graph.h)
  */
 void initSgf(FILE * in) {
     in_stream = in;
+    comments = calloc(1, sizeof(char));
+    comments[0] = '\0';         /* so strlen will be 0 */
     success = fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
     while ( success != NULL && local_buffer[0] == 'c' ) {
+        comments = realloc(comments, strlen(comments) + strlen(local_buffer));
+        strcat(comments, local_buffer + 2); /* omit the "c " */
+        strcat(comments, "\n");
         success = fgets(local_buffer, MAX_NAME_LENGTH, in_stream);
     }
     // assert: first char of local_buffer should be 't' at this point
@@ -121,4 +133,29 @@ bool getNextEdge() {
     return false;
 }
 
-/*  [Last modified: 2020 12 19 at 18:41:51 GMT] */
+static void writeSgfComments(FILE * output_stream) {
+    // write each line of the comment string separately, preceded by "c "
+    
+}
+
+static void writeCommandLineAsSgfComment(FILE * output_stream) {
+}
+
+static void writeSgfGraphName(FILE * output_stream) {
+}
+
+static void writeSgfNodes(FILE * output_stream) {
+}
+
+static void writeSgfEdges(FILE * output_stream) {
+}
+
+void writeSgf(FILE * output_stream) {
+    writeSgfComments(output_stream);
+    writeCommandLineAsSgfComment(output_stream);
+    writeSgfGraphName(output_stream);
+    writeSgfNodes(output_stream);
+    writeSgfEdges(output_stream);
+}
+
+/*  [Last modified: 2020 12 30 at 00:59:39 GMT] */

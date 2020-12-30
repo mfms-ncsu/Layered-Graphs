@@ -88,6 +88,12 @@ bool getNextNode();
  */
 bool getNextEdge();
 
+/**
+ * Writes the current graph and its ordering to an sgf file with the given name.
+ * @param output_stream either a pointer to a file or stdout
+ */
+void writeSgf(FILE * output_stream);
+
 #endif
 
-/*  [Last modified: 2020 12 18 at 17:29:46 GMT] */
+/*  [Last modified: 2020 12 30 at 00:53:33 GMT] */

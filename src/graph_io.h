@@ -55,12 +55,6 @@ void writeDot(const char * dot_file_name,
                int edge_list_length
                );
 
-/**
- * Writes the current graph and its ordering to an sgf file with the given name.
- * @param output_stream either a pointer to a file or stdout
- */
-void writeSgf(FILE * output_stream);
-
 #endif
 
-/*  [Last modified: 2020 12 29 at 21:43:27 GMT] */
+/*  [Last modified: 2020 12 30 at 00:53:11 GMT] */

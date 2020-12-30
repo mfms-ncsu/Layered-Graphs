@@ -662,29 +662,6 @@ void writeDot( const char * dot_file_name,
   fclose( out );
 }
 
-static void writeSgfComments(FILE * output_stream) {
-}
-
-static void writeCommandLineAsSgfComment(FILE * output_stream) {
-}
-
-static void writeSgfGraphName(FILE * output_stream) {
-}
-
-static void writeSgfNodes(FILE * output_stream) {
-}
-
-static void writeSgfEdges(FILE * output_stream) {
-}
-
-void writeSgf(FILE * output_stream) {
-    writeSgfComments(output_stream);
-    writeCommandLineAsSgfComment(output_stream);
-    writeSgfGraphName(output_stream);
-    writeSgfNodes(output_stream);
-    writeSgfEdges(output_stream);
-}
-
 // --------------- Debugging output --------------
 
 void printNode( Nodeptr node )
@@ -755,4 +732,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2020 12 29 at 22:12:08 GMT] */
+/*  [Last modified: 2020 12 30 at 00:54:15 GMT] */
