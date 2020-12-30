@@ -92,9 +92,27 @@ void allocateNodeListsForLayers(void) {
 }
 
 /**
+ * inserts the node into the layer based on its position (for sgf)
+ * @todo this happens automatically for ord files and all crossing
+ * information is currently based on sorted order on each layer,
+ * something that may need to change when verticality is considered
+ */
+void insertIntoLayer(Nodeptr node, int layer_num, int num_nodes_so_far) {
+    Layerptr layer = layers[layer_num];
+    int current_position = num_nodes_so_far;
+    while ( current_position > 0
+            && layer->nodes[current_position - 1]->position > node->position ) {
+        layer->nodes[current_position] = layer->nodes[current_position - 1];
+        current_position--;
+    }
+    layer->nodes[current_position] = node;   
+}
+
+/**
  * traverses master node list twice, once to compute the number of
  * nodes on each layer for allocation purposes and a second time to
  * add each node to its layer
+ * Important: layers are kept sorted by position.
  * @todo might be better to use the same approach as with edges and
  * adjacency lists, i.e., use realloc and put the nodes on the layers
  * as we make them rather than using a separate function
@@ -113,7 +131,8 @@ void addNodesToLayers(void) {
     for ( int index = 0; index < number_of_nodes; index++ ) {
         Nodeptr node = master_node_list[index];
         int layer_num = node->layer;
-        layers[layer_num]->nodes[current_num_nodes[layer_num]++] = node;
+        insertIntoLayer(node, layer_num, current_num_nodes[layer_num]);
+        current_num_nodes[layer_num]++;
     }
     free(current_num_nodes);
 }
@@ -664,4 +683,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2020 12 30 at 18:22:49 GMT] */
+/*  [Last modified: 2020 12 30 at 22:57:36 GMT] */
