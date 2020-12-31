@@ -332,6 +332,14 @@ int main( int argc, char * argv[] )
           break;
 
         case 'o':
+            if ( strcmp(optarg, "t") != 0
+                 && strcmp(optarg, "b") != 0
+                 && strcmp(optarg, "s") != 0
+                 && strcmp(optarg, "bs") != 0 ) {
+                printf( "Bad value '%s' for option -o\n", optarg );
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
             objective = calloc(strlen(optarg) + 1, sizeof(char));
             strcpy(objective, optarg);
             break;
@@ -599,7 +607,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2020 12 30 at 19:10:07 GMT] */
+/*  [Last modified: 2020 12 31 at 01:01:02 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */
