@@ -1,11 +1,14 @@
 #! /bin/bash
-## runTests.sh - Script for running regression tests on min_crossings.
+# runSgfTests.sh - Script for running regression tests on minimization with sgf files
 #
 #   @author Matt Stallmann
 #   @date 2016/03/31
 
 executable=../src/minimization
 date=`date -u +"%F-%H%M"`
+if ! [ -d History ]; then
+    mkdir History
+fi
 output_file=History/$date-sgf.out
 last_output=TestOutputs/last.out
 if [ ! -e $executable ] || [ ! -x $executable ]; then
@@ -68,4 +71,4 @@ if [ $answer = "y" ]; then
     rm $tmp_last $tmp_next
 fi
 
-#  [Last modified: 2020 12 30 at 19:06:47 GMT]
+#  [Last modified: 2021 01 02 at 21:42:26 GMT]

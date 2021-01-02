@@ -1,11 +1,14 @@
 #! /bin/bash
-## runTests.sh - Script for running regression tests on min_crossings.
+#  Script for running regression tests on minimization program with dot and ord files
 #
 #   @author Matt Stallmann
 #   @date 2016/03/31
 
 executable=../src/minimization
 date=`date -u +"%F-%H%M"`
+if ! [ -d History ]; then
+    mkdir History
+fi
 output_file=History/$date.out
 last_output=TestOutputs/last.out
 if [ ! -e $executable ] || [ ! -x $executable ]; then
@@ -77,4 +80,4 @@ if [ $answer = "y" ]; then
     rm $tmp_last $tmp_next
 fi
 
-#  [Last modified: 2020 12 17 at 21:16:44 GMT]
+#  [Last modified: 2021 01 02 at 21:41:48 GMT]
