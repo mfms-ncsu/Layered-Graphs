@@ -165,23 +165,32 @@ extern enum pareto_objective_enum
 extern int capture_iteration;
 
 /**
- * True if ord/sgf files representing the minimum number of crossings should be
- * written
+ * true if one or more files representing best values of objective or
+ * different stages of the run should be created;
+ * the type/format of the file is determined by the type of the input file
  */
-extern bool produce_output;
-extern bool produce_ord_output;
-extern bool produce_sgf_output;
+extern bool write_files;
+/**
+ * true if output should go to an ord file
+ */
+extern bool write_ord_output;
+/**
+ * true if output should go to an sgf file
+ */
+extern bool write_sgf_output;
+
+/**
+ * true if (sfg) output should be written to stdout,
+ *  i.e., user specified the '-o OBJECTIVE' option to get the sgf format
+ *  representing best value of the OBJECTIVE to go to stdout
+ */
+extern bool write_stdout;
 
 /**
  * output file names are of the form output_base_name-x.ord, where x is
  * information about the heuristic used 
  */
 extern char * output_base_name;
-
-/**
- * user specified stdout with '-w out' option
- */
-extern bool stdout_requested;
 
 /**
  * True if verbose information about the graph should be printed
@@ -196,5 +205,5 @@ extern int trace_freq;
 
 #endif
 
-/*  [Last modified: 2020 12 29 at 22:10:01 GMT] */
+/*  [Last modified: 2021 01 02 at 19:37:32 GMT] */
 

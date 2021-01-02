@@ -32,8 +32,6 @@
 // definition of command-line options with default values
 
 char * command_line = NULL;
-char * heuristic = "";
-char * preprocessor = "";
 char * objective = NULL;
 int max_iterations = INT_MAX;
 double runtime = 0;
@@ -53,13 +51,11 @@ bool randomize_order = false;
 bool balanced_weight = false;
 
 /**
- * produce_output is set when user specifies the -w option
- * produce_ord_output and produce_sgf_output are based on the nature
- * of the input
+ * write_files is set when user specifies the -w option
+ * write_ord_output and write_sgf_output are based on the nature
+ * of the input; these are defined in graph_io.c
  */
-bool produce_output = false;
-bool produce_ord_output = false;
-bool produce_sgf_output = false;
+bool write_files = false;
 
 /**
  * base_name_arg stores a base name given by a -w option,
@@ -67,13 +63,12 @@ bool produce_sgf_output = false;
  * which will differ if the arg is "_"
  */
 char * base_name_arg = NULL;
-char * output_base_name = NULL;
 // user specified stdin with -I option
 bool stdin_requested = false;
 // user specified stdout with '-w stdout' option
 // this one is made extern in defs.h so that other parts of program
 // can figure out what type of output is desirable
-bool stdout_requested = false;
+bool write_stdout = false;
 
 bool verbose = false;
 int trace_freq = -1;
@@ -86,7 +81,6 @@ Orderptr best_bottleneck_stretch_order = NULL;
 Orderptr best_favored_crossings_order = NULL;
 
 /** buffer to be used for all output file names */
-static char output_file_name[MAX_NAME_LENGTH];
 
 static bool do_post_processing = false;
 
@@ -118,13 +112,15 @@ static void printUsage( void )
          "  -c ITERATION [capture the order after this iteration in a file or stdout]\n"
          "  -P PARETO_OBJECTIVES (b_t | s_t | b_s) pair of objectives for Pareto optima\n"
          "      b = bottleneck, t = total, s = stretch (default = none)\n"
-         "  -w BASE produce file(s) with name(s) BASE-h.sgf, where h is the heuristic used\n"
-         "     -w _ (underscore) means use the base name of the input file\n"
-         "     -w stdout means use stdout and suppress the usual output\n"
-         "               unless -P is used, in which case the line with Pareto optima\n"
-         "               is appended as a comment\n"
-         "  -o OBJECTIVE the primary objective (used to determine sgf output)\n"
+         "      'bottleneck' is also known as 'min-max edge'"
+         "  -w BASE produce file(s) with name(s) BASE-H-O.EXT,\n"
+         "          where H is the heuristic(s) used, O is the objective,\n"
+         "          and EXT is either sgf or ord, depending on input format\n"
+         "     -w _ (underscore) means use the name of the graph as base name\n"
+         "     -w stdout means use stdout and suppress the usual output;\n"
+         "  -o OBJECTIVE write best configuration for OBJECTIVE as sgf output to stdout\n"
          "      t = total (default), b = bottleneck, s = stretch, bs = bottleneck stretch\n"
+         "     if -P is used, the line with Pareto optima is appended as a comment\n"
          "  -s (layer | degree | random) [sifting variation - see paper]\n"
          "  -g (total | max) [what sifting is based on] [default: total for sifting, mcn; max for mce]\n"
          "      [not implemented yet]\n"
@@ -294,15 +290,10 @@ int main( int argc, char * argv[] )
             break;
 
         case 'w':
-          produce_output = true;
-          if ( strcmp(optarg, "stdout") == 0 ) {
-              stdout_requested = true;
-          }
-          else {
-              base_name_arg = calloc(strlen(optarg) + 1, sizeof(char));
-              strcpy(base_name_arg, optarg);
-          }
-          break;
+            write_files = true;
+            base_name_arg = calloc(strlen(optarg) + 1, sizeof(char));
+            strcpy(base_name_arg, optarg);
+            break;
 
         case 's':
           if( strcmp( optarg, "layer" ) == 0 ) sift_option = LAYER;
@@ -361,6 +352,9 @@ int main( int argc, char * argv[] )
        * @todo use streams instead of names
        */
       readDotAndOrd( dot_file_name, ord_file_name );
+      if ( write_files ) {
+          write_ord_output = true;
+      }
   } // end, dot and ord input
   else if ( argc == 1 ) {
       char * sgf_file_name = argv[0];
@@ -369,12 +363,16 @@ int main( int argc, char * argv[] )
       readSgf(input_stream);
       fclose(input_stream);
       addComment(command_line, true);
+      if ( write_files ) {
+          write_sgf_output = true;
+      }
   }
   else if ( argc == 0 ) {
       if ( stdin_requested ) {
           readSgf(stdin);
-          if ( produce_output ) {
-              produce_sgf_output = true;
+          addComment(command_line, true);
+          if ( write_files ) {
+              write_sgf_output = true;
           }
       }
       else {
@@ -390,7 +388,7 @@ int main( int argc, char * argv[] )
       exit(EXIT_FAILURE);
   }
 
-  if ( produce_output && ! stdout_requested ) {
+  if ( write_files ) {
       if ( strcmp(base_name_arg, "_") == 0 ) {
           free(base_name_arg);
           output_base_name
@@ -400,7 +398,7 @@ int main( int argc, char * argv[] )
       else strcpy(output_base_name, base_name_arg);
   }
 
-  if ( ! stdout_requested ) {
+  if ( ! write_stdout ) {
       print_graph_statistics( stdout );
   }
 
@@ -452,23 +450,20 @@ int main( int argc, char * argv[] )
   fprintf(stderr,  "after heuristic, runtime = %f\n", RUNTIME );
 #endif
 
-  if ( produce_ord_output ) {
-    // write ordering after heuristic, before post-processing
-    restore_order( best_crossings_order );
-    createOutputFileName( output_file_name, "", ".ord" );
-    writeOrd( output_file_name );
+  if ( write_files ) {
+      // write ordering after heuristic, before post-processing
+      restore_order( best_crossings_order );
+      writeFile("t");
   }
 
   if ( do_post_processing ) {
-    restore_order( best_crossings_order );
-    updateAllCrossings();
-    swapping();
+      restore_order( best_crossings_order );
+      updateAllCrossings();
+      swapping();
 
-    if ( produce_ord_output ) {
-      // write file with best total crossings order after post-processing
-        createOutputFileName( output_file_name, "-post", ".ord" );
-        writeOrd( output_file_name );
-    }
+      if ( write_files ) {
+          writeFile("post");
+      }
   }
 
   capture_post_processing_stats();
@@ -479,59 +474,47 @@ int main( int argc, char * argv[] )
 #endif
 
   // write file with best order for edge crossings
-  if ( produce_ord_output ) {
+  if ( write_files ) {
       // write file with best max edge order after overall
       restore_order( best_edge_crossings_order );
-      createOutputFileName( output_file_name, "-edge", ".ord" );
-      writeOrd( output_file_name );
+      writeFile("b");
 
       // write file with best stretch order overall
       restore_order( best_total_stretch_order );
-      createOutputFileName( output_file_name, "-stretch", ".ord" );
-      writeOrd( output_file_name );
+      writeFile("s");
 
-      // write file with best stretch order overall
+      // write file with best bottleneck stretch order overall
       restore_order( best_bottleneck_stretch_order );
-      createOutputFileName( output_file_name, "-bs", ".ord" );
-      writeOrd( output_file_name );
+      writeFile("bs");
   }
 
-  if ( objective == NULL ) objective = "t";
-  char * objective_suffix = "";
-
-  if ( strcmp(objective, "t") == 0 ) {
-      restore_order( best_crossings_order );
-      objective_suffix = "-t";
-  }
-  else if ( strcmp(objective, "b") == 0 ) {
-      restore_order( best_edge_crossings_order );
-      objective_suffix = "-b";
-  }
-  else if ( strcmp(objective, "s") == 0 ) {
-      restore_order( best_total_stretch_order );
-      objective_suffix = "-s";
-  }
-  else if ( strcmp(objective, "bs") == 0 ) {
-      restore_order( best_bottleneck_stretch_order );
-      objective_suffix = "-bs";
-  }
-
-  if ( produce_sgf_output && ! stdout_requested ) {
-      createOutputFileName(output_file_name, objective_suffix, ".sgf");
-      FILE * output_stream = fopen(output_file_name, "w");
-      writeSgf(output_stream);
-      fclose(output_stream);
-  }
-  else if ( stdout_requested ) {
+  // write to stdout if requested; note that this is independent of
+  // writing files so possible to do both
+  if ( write_stdout ) {
       if ( pareto_objective != NO_PARETO ) { 
           char buffer[MAX_NAME_LENGTH];
           getParetoList(buffer);
           addComment(buffer, true);
       }
+      if ( objective == NULL ) objective = "t";
+
+      if ( strcmp(objective, "t") == 0 ) {
+          restore_order( best_crossings_order );
+          
+      }
+      else if ( strcmp(objective, "b") == 0 ) {
+          restore_order( best_edge_crossings_order );
+      }
+      else if ( strcmp(objective, "s") == 0 ) {
+          restore_order( best_total_stretch_order );
+      }
+      else if ( strcmp(objective, "bs") == 0 ) {
+          restore_order( best_bottleneck_stretch_order );
+      }
       writeSgf(stdout);
   }
 
-  if ( ! stdout_requested ) {
+  if ( ! write_stdout ) {
       print_run_statistics( stdout );
   }
 
@@ -551,7 +534,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2021 01 02 at 00:27:45 GMT] */
+/*  [Last modified: 2021 01 02 at 21:15:07 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */

@@ -245,9 +245,10 @@ int main( int argc, char * argv[] )
            number_of_edges
            );
   
-  writeOrd( ord_name_buffer );
+  FILE * out_stream = fopen(ord_name_buffer, "w");
+  writeOrd(out_stream);
 
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2019 11 25 at 21:52:51 GMT] */
+/*  [Last modified: 2021 01 02 at 21:16:11 GMT] */

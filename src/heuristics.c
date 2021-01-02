@@ -60,25 +60,6 @@ static char buffer[ MAX_NAME_LENGTH ];
 
 #if ! defined( TEST )
 
-void createOutputFileName(char * output_file_name,
-                          const char * appendix,
-                          const char * extension) {
-  if ( output_base_name == NULL ) {
-      output_base_name = "temp";
-      printf( "WARNING: no output base name specified, using %s\n", "temp" );
-      printf( " Use -o to get something different\n" );
-  }
-  strcpy( output_file_name, output_base_name );
-  strcat( output_file_name, "-" );
-  strcat( output_file_name, preprocessor );
-  if( strcmp( preprocessor, "" ) != 0 
-      && strcmp( heuristic, "" ) != 0 )
-    strcat( output_file_name, "+" );
-  strcat( output_file_name, heuristic );
-  strcat( output_file_name, appendix );
-  strcat( output_file_name, extension );
-}
-
 void createDotFileName( char * output_file_name, const char * appendix )
 {
   strcpy( output_file_name, graph_name );
@@ -179,24 +160,11 @@ bool end_of_iteration( void )
   printf( "-> end_of_iteration: iteration = %d, capture_iteration = %d\n",
           iteration, capture_iteration );
 #endif
-  if( capture_iteration == iteration )
-    {
-      char output_file_name[MAX_NAME_LENGTH];
+  if( capture_iteration == iteration && write_files ) {
       char appendix[MAX_NAME_LENGTH];
-      sprintf( appendix, "-%d", iteration );
-      if ( produce_ord_output ) {
-          createOutputFileName(output_file_name, appendix, ".ord");
-          writeOrd(output_file_name);
-      }
-      else if ( produce_sgf_output && ! stdout_requested ) {
-          createOutputFileName(output_file_name, appendix, ".ord");
-          FILE * output_stream = fopen(output_file_name, "w");
-          writeSgf(output_stream);
-      }
-      else if ( stdout_requested ) {
-          writeSgf(stdout);
-      }
-    }
+      sprintf(appendix, "%d", iteration);
+      writeFile(appendix);
+  }
 #ifdef DEBUG
   printf( " ### crossings at end of iteration:\n"
           "   current: total = %d,"
@@ -989,4 +957,4 @@ void swapping( void )
 
 #endif // ! defined(TEST)
 
-/*  [Last modified: 2021 01 02 at 00:23:01 GMT] */
+/*  [Last modified: 2021 01 02 at 20:35:19 GMT] */

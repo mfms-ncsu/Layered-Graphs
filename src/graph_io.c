@@ -14,6 +14,7 @@
 #include"dot.h"
 #include"ord.h"
 #include"sgf.h"
+#include"graph_io.h"
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -30,6 +31,22 @@ int number_of_edges = 0;
 int number_of_isolated_nodes = 0;
 Layerptr * layers = NULL;
 char graph_name[MAX_NAME_LENGTH];
+char * output_base_name = NULL;
+/**
+ * write_ord_output and write_sgf_output are based on the nature
+ * of the input
+ */
+bool write_ord_output = false;
+bool write_sgf_output = false;
+
+/**
+ * @todo an odd place to put these, but necessary so that
+ * create_random_dag can use utility functions in this module, even
+ * though it does not use these; eventually should split out what's
+ * needed by create_random_dag
+ */
+char * heuristic = "";
+char * preprocessor = "";
 
 // for debugging
 
@@ -51,6 +68,45 @@ static char name_buffer[MAX_NAME_LENGTH];
 char * nameFromId(int id) {
     sprintf(name_buffer, "%d", id);
     return name_buffer;
+}
+
+void createOutputFileName(char * output_file_name,
+                          const char * preprocessor_arg,
+                          const char * heuristic_arg,
+                          const char * appendix,
+                          const char * extension) {
+  if ( output_base_name == NULL ) {
+      output_base_name = "temp";
+      printf( "WARNING: no output base name specified, using %s\n", "temp" );
+      printf( " Use -o to get something different\n" );
+  }
+  strcpy( output_file_name, output_base_name );
+  strcat( output_file_name, "-" );
+  strcat( output_file_name, preprocessor );
+  if( strcmp( preprocessor, "" ) != 0 
+      && strcmp( heuristic, "" ) != 0 )
+    strcat( output_file_name, "+" );
+  strcat( output_file_name, heuristic );
+  strcat( output_file_name, "-");
+  strcat( output_file_name, appendix );
+  strcat( output_file_name, extension );
+}
+
+void writeFile(const char * objective_tag) {
+    char output_file_name[MAX_NAME_LENGTH];
+    char * extension = NULL;
+    if ( write_sgf_output ) extension = ".sgf";
+    else if ( write_ord_output ) extension = ".ord";
+    createOutputFileName(output_file_name, preprocessor, heuristic,
+                         objective_tag, extension);
+    FILE * out_stream = fopen(output_file_name, "w");
+    if( out_stream == NULL ) {
+        fprintf(stderr, "Unable to open file %s for output\n", output_file_name);
+        exit( EXIT_FAILURE );
+    }
+    if ( write_sgf_output ) writeSgf(out_stream);
+    else if ( write_ord_output ) writeOrd(out_stream);
+    fclose(out_stream);
 }
 
 /**
@@ -497,6 +553,7 @@ void readDotAndOrd( const char * dot_file, const char * ord_file )
   number_of_nodes = 0;
   number_of_edges = 0;
   number_of_layers = 0;
+  startAddingComments();
   allocateLayersFromOrdFile( ord_file );
   master_node_list = (Nodeptr *) calloc( number_of_nodes, sizeof(Nodeptr) );
   initHashTable( number_of_nodes );
@@ -562,21 +619,8 @@ static void writeNodes( FILE * out, Layerptr layerptr )
     }
 }
 
-/**
- * @todo ord file should have information about heuristic that created it, etc.,
- * embedded in it. Use of the file/graph name can be problematic if we want to
- * check what happens when one heuristic follows another for a whole class
- * using a script. There needs to be some way to differentiate among these
- * files.
- */
-void writeOrd( const char * ord_file )
+void writeOrd(FILE * out)
 {
-  FILE * out = fopen( ord_file, "w" );
-  if( out == NULL )
-    {
-      fprintf( stderr, "Unable to open file %s for output\n", ord_file );
-      exit( EXIT_FAILURE );
-    }
   ordPreamble( out, graph_name, "" );
   int layer = 0;
   for( ; layer < number_of_layers; layer++ )
@@ -591,7 +635,7 @@ void writeOrd( const char * ord_file )
 void writeDot( const char * dot_file_name,
                const char * graph_name,
                const char * header_information,
-               Edgeptr * edge_list,
+               const Edgeptr * edge_list,
                int edge_list_length
                )
 {
@@ -683,4 +727,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2020 12 30 at 22:57:36 GMT] */
+/*  [Last modified: 2021 01 02 at 21:23:02 GMT] */

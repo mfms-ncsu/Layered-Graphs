@@ -12,6 +12,7 @@
 #include<string.h>
 #include<libgen.h>              /* basename() */
 #include"graph.h"
+#include"defs.h"
 #include"graph_io.h"
 #include"Statistics.h"
 #include"heuristics.h"
@@ -123,9 +124,10 @@ int main( int argc, char * argv[] )
            number_of_edges
            );
   
-  writeOrd( ord_file_buffer );
+  FILE * out_stream = fopen(ord_file_buffer, "w");
+  writeOrd(out_stream);
 
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2011 06 03 at 17:57:06 GMT] */
+/*  [Last modified: 2021 01 02 at 20:49:23 GMT] */

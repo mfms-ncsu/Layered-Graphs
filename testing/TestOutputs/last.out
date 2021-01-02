@@ -1,5 +1,5 @@
-++++++++++ Testing min_crossings Wed Dec 30 20:35:51 UTC 2020 ++++++++++++
-========= running experiments with TestData/c_2000_2100_25_4-rnd-004-scr.sgf, 2020-12-30-2035 ===============
+++++++++++ Testing min_crossings Sat Jan  2 21:24:05 UTC 2021 ++++++++++++
+========= running experiments with TestData/c_2000_2100_25_4-rnd-004-scr.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -25,7 +25,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.681
+Runtime,0.692
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,3267,iteration,6841
@@ -69,7 +69,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.665
+Runtime,0.671
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,4310,iteration,78
@@ -93,7 +93,7 @@ Pareto,48^4728;54^4510;65^4502;66^4455;68^4313;72^4310, 1333;1329;1906;1325;89;7
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.941, graph c_2000_2100_25_4-rnd-004
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.977, graph c_2000_2100_25_4-rnd-004
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -113,7 +113,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,2.945
+Runtime,2.981
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,3807,iteration,9743
@@ -137,7 +137,7 @@ Pareto,19^4538;20^3991;22^3807, 6025;8008;9743
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.104, graph c_2000_2100_25_4-rnd-004
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.075, graph c_2000_2100_25_4-rnd-004
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -157,7 +157,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,2.107
+Runtime,2.080
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,4796,iteration,9650
@@ -181,7 +181,7 @@ Pareto,100^4796, 9956
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 6.001, graph c_2000_2100_25_4-rnd-004
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.054, graph c_2000_2100_25_4-rnd-004
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -201,7 +201,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,6.005
+Runtime,5.058
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,6959,iteration,8727
@@ -225,7 +225,7 @@ Pareto,106.381603^6969;106.617119^6967;106.643761^6965;106.673277^6959, 9969;886
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.787, graph c_2000_2100_25_4-rnd-004
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.373, graph c_2000_2100_25_4-rnd-004
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -245,7 +245,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,3.792
+Runtime,3.377
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,3921,iteration,9766
@@ -269,7 +269,7 @@ Pareto,18^4209;20^3921, 8023;9766
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.740, graph c_2000_2100_25_4-rnd-004
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.464, graph c_2000_2100_25_4-rnd-004
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -289,7 +289,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,5.745
+Runtime,5.468
 StartCrossings,50541
 PreCrossings,10641
 HeuristicCrossings,7046,iteration,8734
@@ -310,7 +310,7 @@ Pareto,107.391113^7073;107.448279^7066;107.448279^7064;107.459295^7048;107.46350
 
 ===================================================
 
-========= running experiments with TestData/c_2000_2100_50_8-rnd-019-scr.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/c_2000_2100_50_8-rnd-019-scr.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -336,7 +336,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.569
+Runtime,0.532
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,1555,iteration,435
@@ -379,7 +379,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.567
+Runtime,0.562
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,1794,iteration,2567
@@ -403,7 +403,7 @@ Pareto,38^2003;45^1794, 6901;2567
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.780, graph c_2000_2100_50_8-rnd-019
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.564, graph c_2000_2100_50_8-rnd-019
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -423,7 +423,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,2.784
+Runtime,2.569
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,1471,iteration,8983
@@ -466,7 +466,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,1.987
+Runtime,1.847
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,1812,iteration,5607
@@ -490,7 +490,7 @@ Pareto,90^1812, 5607
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.328, graph c_2000_2100_50_8-rnd-019
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.181, graph c_2000_2100_50_8-rnd-019
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -510,7 +510,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,4.331
+Runtime,4.184
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,3292,iteration,8564
@@ -534,7 +534,7 @@ Pareto,154.316956^3305;154.316956^3295;154.379697^3292, 9199;9968;8564
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.130, graph c_2000_2100_50_8-rnd-019
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.079, graph c_2000_2100_50_8-rnd-019
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -554,7 +554,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,3.133
+Runtime,3.082
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,1370,iteration,9050
@@ -578,7 +578,7 @@ Pareto,13^1536;17^1445;18^1443;19^1436;20^1370, 8036;8658;8661;8674;9050
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.680, graph c_2000_2100_50_8-rnd-019
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.645, graph c_2000_2100_50_8-rnd-019
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -598,7 +598,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,4.685
+Runtime,4.650
 StartCrossings,36615
 PreCrossings,8545
 HeuristicCrossings,3348,iteration,8584
@@ -619,7 +619,7 @@ Pareto,157.201567^3362;157.240976^3358;157.268070^3354;157.281508^3348, 9957;896
 
 ===================================================
 
-========= running experiments with TestData/c_2000_2500_100_8-rnd-014-scr.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/c_2000_2500_100_8-rnd-014-scr.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -645,7 +645,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.791
+Runtime,0.583
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,5373,iteration,8820
@@ -669,7 +669,7 @@ Pareto,43^5429;62^5373, 9989;8820
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mod_bary
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.781, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.578, graph c_2000_2500_100_8-rnd-014
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -689,7 +689,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.786
+Runtime,0.582
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,5388,iteration,4510
@@ -713,7 +713,7 @@ Pareto,43^5547;46^5468;50^5427;52^5388, 7357;9263;4495;4510
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.748, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.789, graph c_2000_2500_100_8-rnd-014
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -733,7 +733,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.753
+Runtime,1.794
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,4102,iteration,9478
@@ -757,7 +757,7 @@ Pareto,24^4246;28^4102, 8002;9478
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.341, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.299, graph c_2000_2500_100_8-rnd-014
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -777,7 +777,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,1.346
+Runtime,1.303
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,5199,iteration,8528
@@ -801,7 +801,7 @@ Pareto,63^5199, 9394
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.133, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.914, graph c_2000_2500_100_8-rnd-014
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -821,7 +821,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,4.138
+Runtime,3.919
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,6928,iteration,6874
@@ -845,7 +845,7 @@ Pareto,334.708617^6938;334.708617^6934;334.727843^6928, 9757;9960;6881
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.655, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.611, graph c_2000_2500_100_8-rnd-014
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -865,7 +865,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,2.660
+Runtime,2.616
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,4157,iteration,9532
@@ -889,7 +889,7 @@ Pareto,20^4473;21^4393;22^4327;23^4257;25^4252;27^4157, 8026;8020;8015;8005;7523
 --- Running preprocessor dfs
 dfs done, number_of_components = 1, size_of_largest_component = 2000
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.083, graph c_2000_2500_100_8-rnd-014
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 4.687, graph c_2000_2500_100_8-rnd-014
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -909,7 +909,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,5.088
+Runtime,4.692
 StartCrossings,29520
 PreCrossings,20773
 HeuristicCrossings,6995,iteration,6833
@@ -930,7 +930,7 @@ Pareto,330.771565^7015;330.771565^7008;330.771565^7006;330.776636^7002;330.90763
 
 ===================================================
 
-========= running experiments with TestData/ex_10.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/ex_10.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -956,7 +956,7 @@ MedianDegree,2.5
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.018
+Runtime,0.014
 StartCrossings,18
 PreCrossings,17
 HeuristicCrossings,14,iteration,2
@@ -1044,7 +1044,7 @@ MedianDegree,2.5
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.062
+Runtime,0.059
 StartCrossings,18
 PreCrossings,17
 HeuristicCrossings,4,iteration,15
@@ -1132,7 +1132,7 @@ MedianDegree,2.5
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.022
+Runtime,0.021
 StartCrossings,18
 PreCrossings,17
 HeuristicCrossings,4,iteration,6
@@ -1176,7 +1176,7 @@ MedianDegree,2.5
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.065
+Runtime,0.064
 StartCrossings,18
 PreCrossings,17
 HeuristicCrossings,10,iteration,11
@@ -1220,7 +1220,7 @@ MedianDegree,2.5
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.025
+Runtime,0.024
 StartCrossings,18
 PreCrossings,17
 HeuristicCrossings,4,iteration,7
@@ -1241,7 +1241,7 @@ Pareto,2.500000^4, 7
 
 ===================================================
 
-========= running experiments with TestData/ex_20.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/ex_20.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -1267,7 +1267,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.021
+Runtime,0.019
 StartCrossings,71
 PreCrossings,44
 HeuristicCrossings,31,iteration,10
@@ -1311,7 +1311,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.020
+Runtime,0.019
 StartCrossings,71
 PreCrossings,44
 HeuristicCrossings,28,iteration,52
@@ -1399,7 +1399,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.067
+Runtime,0.066
 StartCrossings,71
 PreCrossings,44
 HeuristicCrossings,31,iteration,17
@@ -1443,7 +1443,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.049
+Runtime,0.045
 StartCrossings,71
 PreCrossings,44
 HeuristicCrossings,38,iteration,16
@@ -1531,7 +1531,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.062
+Runtime,0.060
 StartCrossings,71
 PreCrossings,44
 HeuristicCrossings,32,iteration,26
@@ -1552,7 +1552,7 @@ Pareto,8.750000^32, 41
 
 ===================================================
 
-========= running experiments with TestData/g_0500_09_11.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/g_0500_09_11.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -1578,7 +1578,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.220
+Runtime,0.211
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,369,iteration,167
@@ -1622,7 +1622,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.206
+Runtime,0.204
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,185,iteration,6036
@@ -1666,7 +1666,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.296
+Runtime,1.227
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,343,iteration,6853
@@ -1710,7 +1710,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.854
+Runtime,0.837
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,326,iteration,4064
@@ -1754,7 +1754,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.187
+Runtime,1.100
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,1253,iteration,5732
@@ -1798,7 +1798,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.408
+Runtime,1.371
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,341,iteration,3107
@@ -1842,7 +1842,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.276
+Runtime,1.212
 StartCrossings,5632
 PreCrossings,2418
 HeuristicCrossings,1254,iteration,8045
@@ -1863,7 +1863,7 @@ Pareto,61.192256^1254, 8045
 
 ===================================================
 
-========= running experiments with TestData/g_0500_09_20.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/g_0500_09_20.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -1889,7 +1889,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.467
+Runtime,0.448
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,12282,iteration,8417
@@ -1933,7 +1933,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.443
+Runtime,0.414
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,11799,iteration,9505
@@ -1958,7 +1958,7 @@ Pareto,72^12208;78^12175;80^12166;81^11893;86^11891;93^11799, 3423;8762;7142;530
 dfs done, number_of_components = 11, size_of_largest_component = 489
 === Running heuristic mce
 *** standard termination here: iteration 5893 crossings 14280 edge_crossings 71 graph g_0500_09_20 ***
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.672, graph g_0500_09_20
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.592, graph g_0500_09_20
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -1978,7 +1978,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.673
+Runtime,1.593
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,13639,iteration,9829
@@ -2002,7 +2002,7 @@ Pareto,63^14241;66^14180;67^14010;69^13995;71^13823;72^13813;73^13809;74^13788;7
 --- Running preprocessor dfs
 dfs done, number_of_components = 11, size_of_largest_component = 489
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.191, graph g_0500_09_20
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.094, graph g_0500_09_20
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -2022,7 +2022,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,1.192
+Runtime,1.095
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,10047,iteration,9768
@@ -2066,7 +2066,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,2.400
+Runtime,2.235
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,12889,iteration,6970
@@ -2110,7 +2110,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,2.077
+Runtime,2.015
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,13658,iteration,4110
@@ -2135,7 +2135,7 @@ Pareto,61^14252;62^13907;63^13863;64^13783;70^13761;76^13741;88^13658, 6978;8888
 dfs done, number_of_components = 11, size_of_largest_component = 489
 === Running heuristic mse
 *** standard termination here: iteration 5893 crossings 11981 edge_crossings 110 graph g_0500_09_20 ***
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.676, graph g_0500_09_20
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.601, graph g_0500_09_20
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -2155,7 +2155,7 @@ MedianDegree,3.5
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,2.678
+Runtime,2.602
 StartCrossings,27620
 PreCrossings,22956
 HeuristicCrossings,11963,iteration,9945
@@ -2176,7 +2176,7 @@ Pareto,123.640067^11972;123.658586^11965;123.658586^11963, 9981;9934;9945
 
 ===================================================
 
-========= running experiments with TestData/g_0500_09_40.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/g_0500_09_40.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -2202,7 +2202,7 @@ MedianDegree,8.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,1.286
+Runtime,1.236
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,79085,iteration,7195
@@ -2246,7 +2246,7 @@ MedianDegree,8.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,1.159
+Runtime,1.151
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,77261,iteration,4468
@@ -2290,7 +2290,7 @@ MedianDegree,8.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,3.168
+Runtime,2.904
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,102225,iteration,1334
@@ -2314,7 +2314,7 @@ Pareto,190^105670;192^105567;195^105093;200^104692;202^104475;211^103679;221^103
 --- Running preprocessor dfs
 dfs done, number_of_components = 3, size_of_largest_component = 498
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.000, graph g_0500_09_40
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.998, graph g_0500_09_40
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -2334,7 +2334,7 @@ MedianDegree,8.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,2.001
+Runtime,1.999
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,71643,iteration,9758
@@ -2378,7 +2378,7 @@ MedianDegree,8.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,6.824
+Runtime,6.494
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,79662,iteration,9792
@@ -2422,7 +2422,7 @@ MedianDegree,8.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,4.866
+Runtime,4.845
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,101890,iteration,5798
@@ -2466,7 +2466,7 @@ MedianDegree,8.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,8.676
+Runtime,8.359
 StartCrossings,121654
 PreCrossings,116316
 HeuristicCrossings,80144,iteration,4935
@@ -2487,7 +2487,7 @@ Pareto,395.099327^80153;395.099327^80148;395.099327^80144, 4983;5055;4935
 
 ===================================================
 
-========= running experiments with TestData/grafo10394.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/grafo10394.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -2513,7 +2513,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.061
+Runtime,0.063
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,112,iteration,2192
@@ -2557,7 +2557,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.060
+Runtime,0.064
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,110,iteration,8486
@@ -2601,7 +2601,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.461
+Runtime,0.472
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,103,iteration,8566
@@ -2689,7 +2689,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.298
+Runtime,0.289
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,219,iteration,204
@@ -2733,7 +2733,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.507
+Runtime,0.505
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,102,iteration,8543
@@ -2777,7 +2777,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.356
+Runtime,0.346
 StartCrossings,465
 PreCrossings,315
 HeuristicCrossings,218,iteration,21
@@ -2798,7 +2798,7 @@ Pareto,20.425749^228;25.829376^218, 497;10001
 
 ===================================================
 
-========= running experiments with TestData/grafo10676.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/grafo10676.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -2868,7 +2868,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.097
+Runtime,0.095
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,510,iteration,4683
@@ -2912,7 +2912,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.025
+Runtime,1.016
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,345,iteration,6271
@@ -2956,7 +2956,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,0.699
+Runtime,0.698
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,406,iteration,1543
@@ -3000,7 +3000,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.547
+Runtime,0.539
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,684,iteration,355
@@ -3044,7 +3044,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.131
+Runtime,1.081
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,485,iteration,5600
@@ -3088,7 +3088,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.594
+Runtime,0.592
 StartCrossings,1217
 PreCrossings,1422
 HeuristicCrossings,684,iteration,355
@@ -3109,7 +3109,7 @@ Pareto,12.098039^684, 355
 
 ===================================================
 
-========= running experiments with TestData/increase.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/increase.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -3135,7 +3135,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.012
+Runtime,0.011
 StartCrossings,13
 PreCrossings,3
 HeuristicCrossings,1,iteration,2
@@ -3223,7 +3223,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.073
+Runtime,0.072
 StartCrossings,13
 PreCrossings,3
 HeuristicCrossings,1,iteration,3
@@ -3311,7 +3311,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.019
+Runtime,0.020
 StartCrossings,13
 PreCrossings,3
 HeuristicCrossings,1,iteration,2
@@ -3355,7 +3355,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.077
+Runtime,0.076
 StartCrossings,13
 PreCrossings,3
 HeuristicCrossings,1,iteration,3
@@ -3399,7 +3399,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.023
+Runtime,0.022
 StartCrossings,13
 PreCrossings,3
 HeuristicCrossings,1,iteration,2
@@ -3420,7 +3420,7 @@ Pareto,1.035714^1, 2
 
 ===================================================
 
-========= running experiments with TestData/north20.50_GKNV-scr.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/north20.50_GKNV-scr.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -3490,7 +3490,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.048
+Runtime,0.047
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,41,iteration,278
@@ -3534,7 +3534,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.343
+Runtime,0.342
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,69,iteration,5707
@@ -3578,7 +3578,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.242
+Runtime,0.239
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,52,iteration,693
@@ -3666,7 +3666,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.378
+Runtime,0.382
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,68,iteration,3611
@@ -3710,7 +3710,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.224
+Runtime,0.236
 StartCrossings,519
 PreCrossings,136
 HeuristicCrossings,87,iteration,159
@@ -3731,7 +3731,7 @@ Pareto,14.236039^89;14.315526^88;15.102705^87, 225;205;159
 
 ===================================================
 
-========= running experiments with TestData/north42.32_GKNV-scr.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/north42.32_GKNV-scr.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -3757,7 +3757,7 @@ MedianDegree,3.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.030
+Runtime,0.035
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,49,iteration,14
@@ -3801,7 +3801,7 @@ MedianDegree,3.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.030
+Runtime,0.031
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,46,iteration,21
@@ -3845,7 +3845,7 @@ MedianDegree,3.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.180
+Runtime,0.184
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,49,iteration,218
@@ -3889,7 +3889,7 @@ MedianDegree,3.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.124
+Runtime,0.125
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,46,iteration,37
@@ -3933,7 +3933,7 @@ MedianDegree,3.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.081
+Runtime,0.087
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,51,iteration,28
@@ -3977,7 +3977,7 @@ MedianDegree,3.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.199
+Runtime,0.220
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,48,iteration,127
@@ -4021,7 +4021,7 @@ MedianDegree,3.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.100
+Runtime,0.109
 StartCrossings,137
 PreCrossings,100
 HeuristicCrossings,51,iteration,29
@@ -4042,7 +4042,7 @@ Pareto,10.225108^51, 29
 
 ===================================================
 
-========= running experiments with TestData/north95.0_UPR-scr.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/north95.0_UPR-scr.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -4068,7 +4068,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.048
+Runtime,0.059
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,2,iteration,89
@@ -4112,7 +4112,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.048
+Runtime,0.065
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,3,iteration,156
@@ -4156,7 +4156,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.131
+Runtime,0.175
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,4,iteration,14
@@ -4200,7 +4200,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.100
+Runtime,0.127
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,4,iteration,261
@@ -4244,7 +4244,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.261
+Runtime,0.301
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,9,iteration,76
@@ -4288,7 +4288,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.176
+Runtime,0.192
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,3,iteration,202
@@ -4332,7 +4332,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.334
+Runtime,0.353
 StartCrossings,158
 PreCrossings,11
 HeuristicCrossings,9,iteration,76
@@ -4353,7 +4353,7 @@ Pareto,43.478571^10;43.550000^9, 79;76
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_0_0-019.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/r_100_120_10_0_0-019.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -4379,7 +4379,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.044
+Runtime,0.045
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,58,iteration,47
@@ -4467,7 +4467,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.216
+Runtime,0.256
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,55,iteration,638
@@ -4511,7 +4511,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.152
+Runtime,0.197
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,58,iteration,934
@@ -4555,7 +4555,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.154
+Runtime,0.207
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,100,iteration,360
@@ -4599,7 +4599,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.250
+Runtime,0.417
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,49,iteration,6724
@@ -4643,7 +4643,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.188
+Runtime,0.297
 StartCrossings,335
 PreCrossings,139
 HeuristicCrossings,105,iteration,144
@@ -4664,7 +4664,7 @@ Pareto,15.888889^105, 1351
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_0_0-026.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/r_100_120_10_0_0-026.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -4690,7 +4690,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.044
+Runtime,0.072
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,71,iteration,26
@@ -4734,7 +4734,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.045
+Runtime,0.072
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,44,iteration,7120
@@ -4778,7 +4778,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.217
+Runtime,0.375
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,52,iteration,6911
@@ -4822,7 +4822,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.152
+Runtime,0.246
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,63,iteration,587
@@ -4866,7 +4866,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.155
+Runtime,0.245
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,101,iteration,12
@@ -4891,7 +4891,7 @@ Pareto,16.888889^102;17.111111^101, 190;127
 dfs done, number_of_components = 1, size_of_largest_component = 100
 === Running heuristic mce
 *** standard termination here: iteration 301 crossings 91 edge_crossings 4 graph r_100_120_10_0p0_0p0_26 ***
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.251, graph r_100_120_10_0p0_0p0_26
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.384, graph r_100_120_10_0p0_0p0_26
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -4911,7 +4911,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.251
+Runtime,0.384
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,52,iteration,8201
@@ -4955,7 +4955,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.190
+Runtime,0.290
 StartCrossings,299
 PreCrossings,113
 HeuristicCrossings,95,iteration,145
@@ -4976,7 +4976,7 @@ Pareto,16.000000^96;16.111111^95, 208;205
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_0_1p5-017.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/r_100_120_10_0_1p5-017.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -5002,7 +5002,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.043
+Runtime,0.056
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,45,iteration,25
@@ -5046,7 +5046,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.043
+Runtime,0.049
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,58,iteration,158
@@ -5090,7 +5090,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.225
+Runtime,0.267
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,55,iteration,430
@@ -5134,7 +5134,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.156
+Runtime,0.187
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,48,iteration,120
@@ -5178,7 +5178,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.157
+Runtime,0.196
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,126,iteration,404
@@ -5222,7 +5222,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.267
+Runtime,0.284
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,48,iteration,1510
@@ -5266,7 +5266,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.189
+Runtime,0.252
 StartCrossings,268
 PreCrossings,233
 HeuristicCrossings,107,iteration,905
@@ -5287,7 +5287,7 @@ Pareto,23.000000^109;23.111111^107, 1265;907
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_0_1p5-032.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/r_100_120_10_0_1p5-032.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -5313,7 +5313,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.043
+Runtime,0.062
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,28,iteration,19
@@ -5357,7 +5357,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.042
+Runtime,0.069
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,29,iteration,41
@@ -5401,7 +5401,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.218
+Runtime,0.353
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,50,iteration,214
@@ -5445,7 +5445,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.157
+Runtime,0.286
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,69,iteration,132
@@ -5489,7 +5489,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.155
+Runtime,0.230
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,110,iteration,244
@@ -5533,7 +5533,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.263
+Runtime,0.416
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,42,iteration,1211
@@ -5577,7 +5577,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.190
+Runtime,0.281
 StartCrossings,233
 PreCrossings,278
 HeuristicCrossings,115,iteration,320
@@ -5598,7 +5598,7 @@ Pareto,23.555556^116;23.777778^115, 1152;361
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_1p5_0-010.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/r_100_120_10_1p5_0-010.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -5624,7 +5624,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.043
+Runtime,0.058
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,35,iteration,68
@@ -5668,7 +5668,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.043
+Runtime,0.057
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,33,iteration,1502
@@ -5712,7 +5712,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.295
+Runtime,0.361
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,49,iteration,301
@@ -5756,7 +5756,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.205
+Runtime,0.252
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,41,iteration,189
@@ -5800,7 +5800,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.164
+Runtime,0.183
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,63,iteration,169
@@ -5844,7 +5844,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.331
+Runtime,0.375
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,33,iteration,1931
@@ -5888,7 +5888,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.200
+Runtime,0.221
 StartCrossings,473
 PreCrossings,169
 HeuristicCrossings,52,iteration,43
@@ -5909,7 +5909,7 @@ Pareto,14.286178^57;15.156061^52, 210;10001
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_1p5_0-024.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/r_100_120_10_1p5_0-024.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -5935,7 +5935,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.043
+Runtime,0.047
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,53,iteration,163
@@ -5979,7 +5979,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.041
+Runtime,0.046
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,61,iteration,202
@@ -6023,7 +6023,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.323
+Runtime,0.345
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,70,iteration,401
@@ -6067,7 +6067,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.219
+Runtime,0.278
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,23,iteration,282
@@ -6111,7 +6111,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.166
+Runtime,0.178
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,65,iteration,3204
@@ -6155,7 +6155,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.371
+Runtime,0.434
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,64,iteration,3240
@@ -6199,7 +6199,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.208
+Runtime,0.243
 StartCrossings,448
 PreCrossings,186
 HeuristicCrossings,65,iteration,3714
@@ -6220,7 +6220,7 @@ Pareto,18.414414^74;18.414414^65, 368;3714
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_1p5_1p5-016.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/r_100_120_10_1p5_1p5-016.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -6246,7 +6246,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.048
+Runtime,0.044
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,12,iteration,20
@@ -6290,7 +6290,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.044
+Runtime,0.048
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,15,iteration,232
@@ -6334,7 +6334,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.271
+Runtime,0.310
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,13,iteration,410
@@ -6378,7 +6378,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.185
+Runtime,0.256
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,25,iteration,129
@@ -6422,7 +6422,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.163
+Runtime,0.220
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,74,iteration,219
@@ -6466,7 +6466,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.294
+Runtime,0.356
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,11,iteration,3609
@@ -6510,7 +6510,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.195
+Runtime,0.213
 StartCrossings,164
 PreCrossings,196
 HeuristicCrossings,74,iteration,225
@@ -6531,7 +6531,7 @@ Pareto,25.949603^74, 225
 
 ===================================================
 
-========= running experiments with TestData/r_100_120_10_1p5_1p5-023.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/r_100_120_10_1p5_1p5-023.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -6557,7 +6557,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.040
+Runtime,0.043
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,107,iteration,18
@@ -6601,7 +6601,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.040
+Runtime,0.042
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,105,iteration,112
@@ -6645,7 +6645,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.321
+Runtime,0.373
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,177,iteration,126
@@ -6689,7 +6689,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.214
+Runtime,0.259
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,166,iteration,130
@@ -6733,7 +6733,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.185
+Runtime,0.201
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,279,iteration,140
@@ -6777,7 +6777,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.360
+Runtime,0.380
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,148,iteration,1628
@@ -6821,7 +6821,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.220
+Runtime,0.256
 StartCrossings,472
 PreCrossings,934
 HeuristicCrossings,279,iteration,134
@@ -6842,7 +6842,7 @@ Pareto,26.571887^295;26.571887^293;26.617341^292;26.976140^279, 3663;670;583;134
 
 ===================================================
 
-========= running experiments with TestData/rome8685.74_GKNV-scr.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/rome8685.74_GKNV-scr.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -6868,7 +6868,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.052
+Runtime,0.049
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,85,iteration,159
@@ -6912,7 +6912,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.048
+Runtime,0.047
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,83,iteration,2276
@@ -6956,7 +6956,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.437
+Runtime,0.459
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,75,iteration,3390
@@ -7000,7 +7000,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.301
+Runtime,0.323
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,102,iteration,608
@@ -7044,7 +7044,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.202
+Runtime,0.216
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,133,iteration,149
@@ -7088,7 +7088,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.458
+Runtime,0.546
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,76,iteration,6373
@@ -7132,7 +7132,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.234
+Runtime,0.255
 StartCrossings,688
 PreCrossings,281
 HeuristicCrossings,133,iteration,149
@@ -7153,7 +7153,7 @@ Pareto,10.118240^134;10.118240^133, 335;237
 
 ===================================================
 
-========= running experiments with TestData/rome8896.60_GKNV-scr.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/rome8896.60_GKNV-scr.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -7179,7 +7179,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.044
+Runtime,0.047
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,47,iteration,187
@@ -7223,7 +7223,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.046
+Runtime,0.049
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,38,iteration,364
@@ -7267,7 +7267,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.389
+Runtime,0.448
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,56,iteration,1327
@@ -7311,7 +7311,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.270
+Runtime,0.309
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,62,iteration,399
@@ -7355,7 +7355,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.205
+Runtime,0.232
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,119,iteration,264
@@ -7399,7 +7399,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.440
+Runtime,0.503
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,32,iteration,8506
@@ -7443,7 +7443,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.242
+Runtime,0.296
 StartCrossings,608
 PreCrossings,226
 HeuristicCrossings,119,iteration,264
@@ -7464,7 +7464,7 @@ Pareto,15.434069^119, 10001
 
 ===================================================
 
-========= running experiments with TestData/t_0500_09_01.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/t_0500_09_01.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -7490,7 +7490,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.219
+Runtime,0.245
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,111,iteration,191
@@ -7534,7 +7534,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.214
+Runtime,0.225
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,132,iteration,5479
@@ -7578,7 +7578,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.393
+Runtime,1.510
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,159,iteration,8316
@@ -7622,7 +7622,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.990
+Runtime,1.063
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,222,iteration,4990
@@ -7666,7 +7666,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.177
+Runtime,1.247
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,400,iteration,45
@@ -7691,7 +7691,7 @@ Pareto,13.062130^432;13.189512^429;15.629019^427;15.699030^424;15.712212^423;15.
 dfs done, number_of_components = 1, size_of_largest_component = 500
 === Running heuristic mce
 *** standard termination here: iteration 4001 crossings 189 edge_crossings 5 graph t_0500_09_01 ***
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.529, graph t_0500_09_01
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.719, graph t_0500_09_01
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -7711,7 +7711,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.530
+Runtime,1.720
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,164,iteration,7003
@@ -7755,7 +7755,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.333
+Runtime,1.426
 StartCrossings,8065
 PreCrossings,686
 HeuristicCrossings,400,iteration,45
@@ -7776,7 +7776,7 @@ Pareto,13.062130^432;13.189512^429;15.629019^427;15.699030^424;15.712212^423;15.
 
 ===================================================
 
-========= running experiments with TestData/t_0500_22_01.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/t_0500_22_01.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -7802,7 +7802,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.146
+Runtime,0.148
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,51,iteration,190
@@ -7846,7 +7846,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.140
+Runtime,0.145
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,25,iteration,5957
@@ -7890,7 +7890,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.680
+Runtime,0.704
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,47,iteration,5166
@@ -7934,7 +7934,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.500
+Runtime,0.518
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,79,iteration,2850
@@ -7978,7 +7978,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.791
+Runtime,0.914
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,130,iteration,45
@@ -8022,7 +8022,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.794
+Runtime,0.947
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,29,iteration,8618
@@ -8066,7 +8066,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,0.913
+Runtime,1.079
 StartCrossings,3396
 PreCrossings,179
 HeuristicCrossings,130,iteration,45
@@ -8087,7 +8087,7 @@ Pareto,22.010852^226;24.845779^225;24.864352^224;24.892160^223;24.924688^222;25.
 
 ===================================================
 
-========= running experiments with TestData/tree_100.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/tree_100.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -8113,7 +8113,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.160
+Runtime,0.180
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,566,iteration,24
@@ -8157,7 +8157,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.162
+Runtime,0.181
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,588,iteration,48
@@ -8201,7 +8201,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.227
+Runtime,1.285
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,522,iteration,8361
@@ -8245,7 +8245,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10002
-Runtime,0.857
+Runtime,0.949
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,471,iteration,1353
@@ -8289,7 +8289,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.528
+Runtime,1.674
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,839,iteration,3
@@ -8314,7 +8314,7 @@ Pareto,6.393939^936;6.393939^931;8.686869^891;8.878788^865;8.898990^864;9.616162
 dfs done, number_of_components = 1, size_of_largest_component = 200
 === Running heuristic mce
 *** standard termination here: iteration 2001 crossings 630 edge_crossings 23 graph tree_100 ***
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.263, graph tree_100
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.384, graph tree_100
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -8334,7 +8334,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.263
+Runtime,1.384
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,539,iteration,9379
@@ -8378,7 +8378,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,1.614
+Runtime,1.719
 StartCrossings,9496
 PreCrossings,933
 HeuristicCrossings,839,iteration,3
@@ -8399,7 +8399,7 @@ Pareto,6.494949^962;8.464646^954;8.525253^946;8.545455^945;8.686869^891;8.878788
 
 ===================================================
 
-========= running experiments with TestData/u_100_20_105_5-rnd-031-scr.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/u_100_20_105_5-rnd-031-scr.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -8425,7 +8425,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.477
+Runtime,0.523
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,329,iteration,1648
@@ -8449,7 +8449,7 @@ Pareto,9^360;14^329, 740;1648
 --- Running preprocessor dfs
 dfs done, number_of_components = 18, size_of_largest_component = 1972
 === Running heuristic mod_bary
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.482, graph u_100_20_105_5-rnd-031
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.531, graph u_100_20_105_5-rnd-031
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -8469,7 +8469,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.487
+Runtime,0.536
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,312,iteration,8381
@@ -8512,7 +8512,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,0.922
+Runtime,0.990
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,432,iteration,8647
@@ -8536,7 +8536,7 @@ Pareto,8^438;9^433;14^432, 9947;9956;8647
 --- Running preprocessor dfs
 dfs done, number_of_components = 18, size_of_largest_component = 1972
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.746, graph u_100_20_105_5-rnd-031
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.842, graph u_100_20_105_5-rnd-031
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -8556,7 +8556,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,0.747
+Runtime,0.844
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,474,iteration,9259
@@ -8599,7 +8599,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,2.979
+Runtime,3.257
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,1389,iteration,8677
@@ -8642,7 +8642,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.434
+Runtime,1.513
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,471,iteration,8704
@@ -8666,7 +8666,7 @@ Pareto,6^521;7^471, 5986;9946
 --- Running preprocessor dfs
 dfs done, number_of_components = 18, size_of_largest_component = 1972
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.493, graph u_100_20_105_5-rnd-031
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.944, graph u_100_20_105_5-rnd-031
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -8686,7 +8686,7 @@ MedianDegree,1.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,3.498
+Runtime,3.950
 StartCrossings,8899
 PreCrossings,2067
 HeuristicCrossings,1383,iteration,6327
@@ -8707,7 +8707,7 @@ Pareto,184.052632^1407;184.157895^1401;184.263158^1396;184.421053^1393;184.63157
 
 ===================================================
 
-========= running experiments with TestData/u_25_80_125_1-rnd-007-scr.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/u_25_80_125_1-rnd-007-scr.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -8733,7 +8733,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.809
+Runtime,0.874
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,13699,iteration,7560
@@ -8777,7 +8777,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.766
+Runtime,0.825
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,13832,iteration,5779
@@ -8801,7 +8801,7 @@ Pareto,57^13971;59^13832, 5778;5779
 --- Running preprocessor dfs
 dfs done, number_of_components = 25, size_of_largest_component = 1958
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.446, graph u_25_80_125_1-rnd-007
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 2.690, graph u_25_80_125_1-rnd-007
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -8821,7 +8821,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,2.452
+Runtime,2.695
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,16508,iteration,9934
@@ -8845,7 +8845,7 @@ Pareto,38^16675;40^16618;41^16609;47^16607;49^16538;50^16531;53^16508, 9978;9974
 --- Running preprocessor dfs
 dfs done, number_of_components = 25, size_of_largest_component = 1958
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.897, graph u_25_80_125_1-rnd-007
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.915, graph u_25_80_125_1-rnd-007
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -8865,7 +8865,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,1.901
+Runtime,1.918
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,13661,iteration,9877
@@ -8889,7 +8889,7 @@ Pareto,94^13661, 9877
 --- Running preprocessor dfs
 dfs done, number_of_components = 25, size_of_largest_component = 1958
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.166, graph u_25_80_125_1-rnd-007
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.463, graph u_25_80_125_1-rnd-007
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -8909,7 +8909,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,5.169
+Runtime,5.467
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,17781,iteration,9046
@@ -8933,7 +8933,7 @@ Pareto,210.531646^17802;210.544304^17798;210.544304^17794;210.759494^17793;210.7
 --- Running preprocessor dfs
 dfs done, number_of_components = 25, size_of_largest_component = 1958
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.182, graph u_25_80_125_1-rnd-007
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.367, graph u_25_80_125_1-rnd-007
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -8953,7 +8953,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,3.187
+Runtime,3.372
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,16141,iteration,9852
@@ -8977,7 +8977,7 @@ Pareto,41^19424;42^19369;44^16186;45^16171;46^16166;48^16162;50^16161;55^16155;5
 --- Running preprocessor dfs
 dfs done, number_of_components = 25, size_of_largest_component = 1958
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 5.768, graph u_25_80_125_1-rnd-007
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 6.079, graph u_25_80_125_1-rnd-007
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -8997,7 +8997,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,5.772
+Runtime,6.084
 StartCrossings,62083
 PreCrossings,28270
 HeuristicCrossings,17357,iteration,8900
@@ -9018,7 +9018,7 @@ Pareto,206.405063^17364;206.924051^17362;206.936709^17357, 9967;8966;8900
 
 ===================================================
 
-========= running experiments with TestData/u_50_40_105_1-rnd-009-scr.sgf, 2020-12-30-2035 ===============
+========= running experiments with TestData/u_50_40_105_1-rnd-009-scr.sgf, 2021-01-02-2124 ===============
 ################################################################
 ########### minimization, release 1.1, 2020/12/22 #############
 --- Running preprocessor dfs
@@ -9044,7 +9044,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,bary
 Iterations,10001
-Runtime,0.533
+Runtime,0.553
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,920,iteration,4261
@@ -9068,7 +9068,7 @@ Pareto,14^1359;16^1132;17^1104;18^1100;19^1098;24^1031;29^958;31^920, 7061;4973;
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic mod_bary
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.516, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 0.546, graph u_50_40_105_1-rnd-009
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -9088,7 +9088,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mod_bary
 Iterations,10001
-Runtime,0.519
+Runtime,0.549
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,1120,iteration,5570
@@ -9112,7 +9112,7 @@ Pareto,17^1569;18^1312;19^1140;21^1120, 9578;768;5605;5570
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.367, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.429, graph u_50_40_105_1-rnd-009
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -9132,7 +9132,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.371
+Runtime,1.433
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,1776,iteration,9446
@@ -9156,7 +9156,7 @@ Pareto,11^2261;12^1777;15^1776, 3987;9927;9446
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic sifting
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.035, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.064, graph u_50_40_105_1-rnd-009
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -9176,7 +9176,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,sifting
 Iterations,10001
-Runtime,1.038
+Runtime,1.067
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,1877,iteration,8705
@@ -9200,7 +9200,7 @@ Pareto,34^2138;35^1877, 2248;8705
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.265, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.476, graph u_50_40_105_1-rnd-009
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -9220,7 +9220,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,3.269
+Runtime,3.481
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,2966,iteration,209
@@ -9244,7 +9244,7 @@ Pareto,110.897436^3014;110.897436^3012;110.923077^3010;110.923077^3009;111.05128
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic mce
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.868, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 1.989, graph u_50_40_105_1-rnd-009
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -9264,7 +9264,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mce
 Iterations,10001
-Runtime,1.871
+Runtime,1.992
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,1897,iteration,9474
@@ -9288,7 +9288,7 @@ Pareto,10^1923;11^1908;13^1907;15^1897, 9934;9915;9913;9474
 --- Running preprocessor dfs
 dfs done, number_of_components = 27, size_of_largest_component = 1943
 === Running heuristic mse
-*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.729, graph u_50_40_105_1-rnd-009
+*** still improving but max iterations or runtime reached: iteration 10000, runtime 3.968, graph u_50_40_105_1-rnd-009
 # comments
 created by dot+ord2sgf, date/time = Sat Dec 19 21:09:51 UTC 2020
 $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
@@ -9308,7 +9308,7 @@ MedianDegree,2.0
 Preprocessor,dfs
 Heuristic,mse
 Iterations,10001
-Runtime,3.733
+Runtime,3.972
 StartCrossings,21144
 PreCrossings,3690
 HeuristicCrossings,2966,iteration,213
