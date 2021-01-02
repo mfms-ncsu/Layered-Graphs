@@ -814,7 +814,7 @@ void middleDegreeSort( void )
     {
       sortByDegree( layers[layer]->nodes, layers[layer]->number_of_nodes );
       weight_first_to_middle( layer );
-      layerMergesort( layer );
+      layerQuicksort( layer );
     }
 }
 
@@ -957,4 +957,4 @@ void swapping( void )
 
 #endif // ! defined(TEST)
 
-/*  [Last modified: 2021 01 02 at 22:50:32 GMT] */
+/*  [Last modified: 2021 01 02 at 23:00:43 GMT] */

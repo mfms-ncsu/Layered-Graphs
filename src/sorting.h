@@ -20,9 +20,9 @@ void layerSort( int layer );
 
 /**
  * Sorts the nodes of the given layer by increasing weight and updates the
- * position fields of the nodes accordingly. Uses mergesort.
+ * position fields of the nodes accordingly. Uses Quicksort.
  */
-void layerMergesort( int layer );
+void layerQuicksort( int layer );
 
 /**
  * Sorts the nodes of the given layer by increasing weight and updates the
@@ -65,4 +65,4 @@ void updateAllPositions( void );
 
 #endif
 
-/*  [Last modified: 2021 01 02 at 22:51:57 GMT] */
+/*  [Last modified: 2011 07 18 at 19:20:59 GMT] */
