@@ -133,57 +133,6 @@ static void printUsage( void )
          );
 }
 
-/**
- * Truncate the string in buffer so that it ends before the first '.' and
- * copy it into the buffer.
- *
- * @return a pointer to the position of the last '/' so as to remove the
- * directory component of the name in the buffer
- *
- * Used to emulate the 'basename' command
- *
- * @todo there must be a better way to do this, but basename() by itself does
- * not work.
- */
-static char * base_name( char * buffer )
-{
-  char * without_directory = basename( buffer );
-  char * pointer_to_last_period = strrchr( without_directory, '.' );
-  *pointer_to_last_period = '\0';
-  return without_directory;
-}
-
-/**
- * get a base name for an output file if appropriate; handles the
- * special case where the specified base name is "_"
- * @param output_base_name a buffer in which to store the base name
- * @param base_name_arg the name specified on the command line (or
- * "_")
- * @param input_file_name name of the dot or sgf input file, used only
- * if specified name is "_"
- */
-static void getOutputBaseName(char * output_base_name,
-                              char * base_name_arg,
-                              const char * input_file_name) {
-    if ( strlen(base_name_arg) == 1
-         && * base_name_arg == '_' ) {
-        free(base_name_arg);
-        char buffer[MAX_NAME_LENGTH];
-        strcpy(buffer, input_file_name );
-#ifdef DEBUG
-        printf("output special case: buffer = %s, input_file_name = %s\n",
-               buffer, input_file_name);
-#endif
-        char * base_name_ptr = base_name(buffer);
-#ifdef DEBUG
-        printf("output special case: buffer = %s, base = %s\n",
-               buffer, base_name_ptr);
-#endif
-        strcpy(output_base_name, base_name_ptr);
-    }
-    else strcpy(output_base_name, base_name_arg);
-}
-
 static void runPreprocessor( void )
 {
     fprintf( stderr, "--- Running preprocessor %s\n", preprocessor );
@@ -407,15 +356,6 @@ int main( int argc, char * argv[] )
       const char * dot_file_name = argv[0];
       const char * ord_file_name = argv[1];
 
-      if ( produce_output && ! stdout_requested ) {
-          produce_ord_output = true;
-          char buffer[MAX_NAME_LENGTH];
-          getOutputBaseName(buffer, base_name_arg, dot_file_name);
-          output_base_name
-              = (char *) calloc(strlen(buffer) + 1, sizeof(char));
-          strcpy(output_base_name, buffer); 
-      } // end, produce output
-
       // read graph
       /**
        * @todo use streams instead of names
@@ -426,15 +366,6 @@ int main( int argc, char * argv[] )
       char * sgf_file_name = argv[0];
       FILE * input_stream = fopen(sgf_file_name, "r");
 
-      if ( produce_output && ! stdout_requested ) {
-          produce_sgf_output = true;
-          char buffer[MAX_NAME_LENGTH];
-          getOutputBaseName(buffer, base_name_arg, sgf_file_name);
-          output_base_name
-              = (char *) calloc(strlen(buffer) + 1, sizeof(char));
-          strcpy(output_base_name, buffer); 
-      } // end, produce output
-
       readSgf(input_stream);
       fclose(input_stream);
       addComment(command_line, true);
@@ -442,6 +373,9 @@ int main( int argc, char * argv[] )
   else if ( argc == 0 ) {
       if ( stdin_requested ) {
           readSgf(stdin);
+          if ( produce_output ) {
+              produce_sgf_output = true;
+          }
       }
       else {
           printf("Need to specify -I to request stdin if no files on command line\n");
@@ -454,6 +388,16 @@ int main( int argc, char * argv[] )
       printf("Wrong number of filename arguments (%d)\n", argc);
       printUsage();
       exit(EXIT_FAILURE);
+  }
+
+  if ( produce_output && ! stdout_requested ) {
+      if ( strcmp(base_name_arg, "_") == 0 ) {
+          free(base_name_arg);
+          output_base_name
+              = (char *) calloc(strlen(graph_name) + 1, sizeof(char));
+          strcpy(output_base_name, graph_name);
+      }
+      else strcpy(output_base_name, base_name_arg);
   }
 
   if ( ! stdout_requested ) {
@@ -490,14 +434,14 @@ int main( int argc, char * argv[] )
   // start the clock
   start_time = getUserSeconds();
 #ifdef DEBUG
-  printf( "start_time = %f\n", start_time );
+  fprintf(stderr,  "start_time = %f\n", start_time );
 #endif
 
   runPreprocessor();
   updateAllCrossings();
   capture_preprocessing_stats();
 #ifdef DEBUG
-  printf( "after preprocessor, runtime = %f\n", RUNTIME );
+  fprintf(stderr,  "after preprocessor, runtime = %f\n", RUNTIME );
 #endif
 
   // end of "iteration 0"
@@ -505,7 +449,7 @@ int main( int argc, char * argv[] )
   runHeuristic();
   capture_heuristic_stats();
 #ifdef DEBUG
-  printf( "after heuristic, runtime = %f\n", RUNTIME );
+  fprintf(stderr,  "after heuristic, runtime = %f\n", RUNTIME );
 #endif
 
   if ( produce_ord_output ) {
@@ -531,7 +475,7 @@ int main( int argc, char * argv[] )
 
 #ifdef DEBUG
   updateAllCrossings();
-  printf("best order restored at end, crossings = %d\n", numberOfCrossings() );
+  fprintf(stderr, "best order restored at end, crossings = %d\n", numberOfCrossings() );
 #endif
 
   // write file with best order for edge crossings
@@ -571,8 +515,8 @@ int main( int argc, char * argv[] )
       restore_order( best_bottleneck_stretch_order );
       objective_suffix = "-bs";
   }
-  
-  if ( produce_sgf_output ) {
+
+  if ( produce_sgf_output && ! stdout_requested ) {
       createOutputFileName(output_file_name, objective_suffix, ".sgf");
       FILE * output_stream = fopen(output_file_name, "w");
       writeSgf(output_stream);
@@ -607,7 +551,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2020 12 31 at 01:01:02 GMT] */
+/*  [Last modified: 2021 01 02 at 00:27:45 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */

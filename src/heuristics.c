@@ -188,7 +188,7 @@ bool end_of_iteration( void )
           createOutputFileName(output_file_name, appendix, ".ord");
           writeOrd(output_file_name);
       }
-      else if ( produce_sgf_output ) {
+      else if ( produce_sgf_output && ! stdout_requested ) {
           createOutputFileName(output_file_name, appendix, ".ord");
           FILE * output_stream = fopen(output_file_name, "w");
           writeSgf(output_stream);
@@ -989,4 +989,4 @@ void swapping( void )
 
 #endif // ! defined(TEST)
 
-/*  [Last modified: 2020 12 30 at 18:12:37 GMT] */
+/*  [Last modified: 2021 01 02 at 00:23:01 GMT] */
