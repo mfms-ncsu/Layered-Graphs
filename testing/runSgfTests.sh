@@ -16,36 +16,43 @@ if [ ! -e $executable ] || [ ! -x $executable ]; then
     exit
 fi
 
-echo "++++++++++ Testing min_crossings `date -u` ++++++++++++" >> $output_file
+echo "++++++++++ Testing minimization `date -u` ++++++++++++" >> $output_file
 for sgf_file in TestData/*.sgf; do
     echo "========= running experiments with $sgf_file, $date ==============="
     echo "========= running experiments with $sgf_file, $date ===============" \
         >> $output_file
     echo "$executable -p dfs -h bary -i 10000 -P b_t -z $sgf_file"
+    echo "$executable -p dfs -h bary -i 10000 -P b_t -z $sgf_file, $date" >> $output_file
     $executable -p dfs -h bary -i 10000 -P b_t -z $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h mod_bary -i 10000 -P b_t -z $sgf_file"
+    echo "$executable -p dfs -h mod_bary -i 10000 -P b_t -z $sgf_file, $date" >> $output_file
     $executable -p dfs -h mod_bary -i 10000 -P b_t -z $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h mce -i 10000 -P b_t -z $sgf_file"
+    echo "$executable -p dfs -h mce -i 10000 -P b_t -z $sgf_file, $date" >> $output_file
     $executable -p dfs -h mce -i 10000 -P b_t -z $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h sifting -i 10000 -P b_t -z $sgf_file"
+    echo "$executable -p dfs -h sifting -i 10000 -P b_t -z $sgf_file, $date" >> $output_file
     $executable -p dfs -h sifting -i 10000 -P b_t -z $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h mse -i 10000 -P s_t -z $sgf_file"
+    echo "$executable -p dfs -h mse -i 10000 -P s_t -z $sgf_file, $date" >> $output_file
     $executable -p dfs -h mse -i 10000 -P s_t -z $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h mce -i 10000 -P b_t -z -R 81453 $sgf_file"
+    echo "$executable -p dfs -h mce -i 10000 -P b_t -z -R 81453 $sgf_file, $date" >> $output_file
     $executable -p dfs -h mce -i 10000 -P b_t -z -R 81453 $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
     echo "$executable -p dfs -h mse -i 10000 -P s_t -z -R 81453 $sgf_file"
+    echo "$executable -p dfs -h mse -i 10000 -P s_t -z -R 81453 $sgf_file, $date" >> $output_file
     $executable -p dfs -h mse -i 10000 -P s_t -z -R 81453 $sgf_file >> $output_file 2>&1
     echo "" >> $output_file
 
@@ -71,4 +78,4 @@ if [ $answer = "y" ]; then
     rm $tmp_last $tmp_next
 fi
 
-#  [Last modified: 2021 01 02 at 21:42:26 GMT]
+#  [Last modified: 2021 01 02 at 22:38:10 GMT]

@@ -78,7 +78,7 @@ static bool unstable_insertion_sort(void *base, size_t nmemb, size_t size,
 }
 
 /**
- * Comparison function to be used by qsort or insertion_sort to compare the
+ * Comparison function to be used by mergesort or insertion_sort to compare the
  * weights of two nodes. Assumes that each array element is a pointer to a
  * node. Insertion sort is preferred in most cases because it is stable (and
  * usually does not increase the asymptotic time).
@@ -94,7 +94,7 @@ static int compare_weights( const void * ptr_i, const void * ptr_j ) {
 }
 
 /**
- * Comparison function to be used by qsort to compare degrees of nodes.
+ * Comparison function to be used by mergesort to compare degrees of nodes.
  */
 static int compare_degrees( const void * ptr_i, const void * ptr_j ) {
   Nodeptr * entry_ptr_i = (Nodeptr *) ptr_i;
@@ -109,7 +109,7 @@ static int compare_degrees( const void * ptr_i, const void * ptr_j ) {
 }
 
 /**
- * Comparison function to be used by qsort to compare the weights of two
+ * Comparison function to be used by mergesort to compare the weights of two
  * nodes. Assumes that each array element is a pointer to a node.
  */
 static int compare_down_edges( const void * ptr_i, const void * ptr_j ) {
@@ -124,7 +124,7 @@ static int compare_down_edges( const void * ptr_i, const void * ptr_j ) {
 }
 
 /**
- * Comparison function to be used by qsort to compare the weights of two
+ * Comparison function to be used by mergesort to compare the weights of two
  * nodes. Assumes that each array element is a pointer to a node.
  */
 static int compare_up_edges( const void * ptr_i, const void * ptr_j ) {
@@ -186,10 +186,10 @@ void layerUnstableSort( int layer )
   updateNodePositions( layer );
 }
 
-void layerQuicksort( int layer )
+void layerMergesort( int layer )
 {
   Layerptr layer_ptr = layers[ layer ];
-  qsort( layer_ptr->nodes, layer_ptr->number_of_nodes,
+  mergesort( layer_ptr->nodes, layer_ptr->number_of_nodes,
          sizeof( Nodeptr ), compare_weights );
   updateNodePositions( layer );
 }
@@ -214,7 +214,7 @@ void sortByUpNodePosition( Edgeptr * edge_array, int num_edges )
 
 void sortByDegree( Nodeptr * node_array, int num_nodes )
 {
-  qsort( node_array, num_nodes, sizeof(Nodeptr), compare_degrees );
+  mergesort( node_array, num_nodes, sizeof(Nodeptr), compare_degrees );
 }
 
-/*  [Last modified: 2014 07 21 at 18:21:49 GMT] */
+/*  [Last modified: 2021 01 02 at 22:51:06 GMT] */
