@@ -65,7 +65,7 @@ bool write_files = false;
 char * base_name_arg = NULL;
 // user specified stdin with -I option
 bool stdin_requested = false;
-// user specified stdout with '-w stdout' option
+// user specified stdout with '-O' option
 // this one is made extern in defs.h so that other parts of program
 // can figure out what type of output is desirable
 bool write_stdout = false;
@@ -117,7 +117,7 @@ static void printUsage( void )
          "          where H is the heuristic(s) used, O is the objective,\n"
          "          and EXT is either sgf or ord, depending on input format\n"
          "     -w _ (underscore) means use the name of the graph as base name\n"
-         "     -w stdout means use stdout and suppress the usual output;\n"
+         "  -O (upper case oh) send output to stdout\n"
          "  -o OBJECTIVE write best configuration for OBJECTIVE as sgf output to stdout\n"
          "      t = total (default), b = bottleneck, s = stretch, bs = bottleneck stretch\n"
          "     if -P is used, the line with Pareto optima is appended as a comment\n"
@@ -226,7 +226,7 @@ int main( int argc, char * argv[] )
   // process command-line options; these must come before the file arguments
   // note: options that have an arg are followed by : but others are
   // not
-  while ( (ch = getopt(argc, argv, "c:fgh:Ii:o:p:P:R:r:s:t:vw:z")) != -1)
+  while ( (ch = getopt(argc, argv, "c:fgh:Ii:Oo:p:P:R:r:s:t:vw:z")) != -1)
     {
       switch(ch)
         {
@@ -246,17 +246,32 @@ int main( int argc, char * argv[] )
           break; 
 
         case 'i':
+            if ( strspn(optarg, "0123456789") != strlen(optarg) ) {
+                printf("Value '%s' for -i option is not an integer\n", optarg);
+                printUsage();
+                exit( EXIT_FAILURE );
+            }
           max_iterations = atoi( optarg );
           standard_termination = false;
           break;
 
         case 'R':
+            if ( strspn(optarg, "0123456789") != strlen(optarg) ) {
+                printf("Value '%s' for -R option is not an integer\n", optarg);
+                printUsage();
+                exit( EXIT_FAILURE );
+            }
           seed = atoi( optarg );
           init_genrand( seed );
           randomize_order = true;
           break;
 
         case 'r':
+            if ( strspn(optarg, ".0123456789") != strlen(optarg) ) {
+                printf("Value '%s' for -r option is not a floating point number\n", optarg);
+                printUsage();
+                exit( EXIT_FAILURE );
+            }
           max_runtime = atof( optarg );
           standard_termination = false;
           break;
@@ -273,9 +288,18 @@ int main( int argc, char * argv[] )
           break;
 
         case 'c':
+            if ( strspn(optarg, "0123456789") != strlen(optarg) ) {
+                printf("Value '%s' for -c option is not an integer\n", optarg);
+                printUsage();
+                exit( EXIT_FAILURE );
+            }
           capture_iteration = atoi( optarg );
           break;
 
+        case 'O':
+            write_stdout = true;
+            break;
+                
         case 'o':
             if ( strcmp(optarg, "t") != 0
                  && strcmp(optarg, "b") != 0
@@ -322,6 +346,11 @@ int main( int argc, char * argv[] )
           break;
 
         case 't':
+            if ( strspn(optarg, "0123456789") != strlen(optarg) ) {
+                printf("Value '%s' for -t option is not an integer\n", optarg);
+                printUsage();
+                exit( EXIT_FAILURE );
+            }
           trace_freq = atoi( optarg );
           break;
 
@@ -362,7 +391,6 @@ int main( int argc, char * argv[] )
 
       readSgf(input_stream);
       fclose(input_stream);
-      addComment(command_line, true);
       if ( write_files ) {
           write_sgf_output = true;
       }
@@ -370,7 +398,6 @@ int main( int argc, char * argv[] )
   else if ( argc == 0 ) {
       if ( stdin_requested ) {
           readSgf(stdin);
-          addComment(command_line, true);
           if ( write_files ) {
               write_sgf_output = true;
           }
@@ -388,6 +415,8 @@ int main( int argc, char * argv[] )
       exit(EXIT_FAILURE);
   }
 
+  addComment(command_line, true);
+  
   if ( write_files ) {
       if ( strcmp(base_name_arg, "_") == 0 ) {
           free(base_name_arg);
@@ -534,7 +563,7 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2021 01 02 at 21:15:07 GMT] */
+/*  [Last modified: 2021 01 03 at 17:19:56 GMT] */
 
 /* the line below is to ensure that this file gets benignly modified via
    'make version' */
