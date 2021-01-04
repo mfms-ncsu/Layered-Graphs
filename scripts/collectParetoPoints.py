@@ -9,8 +9,16 @@ input is a sequence of lines of the form (Pareto output from min_crossings)
 output has one Pareto point per line - format is tab separated
 """
 
+"""
+@todo The script assumes that the numbers are floating point.
+      The only case where non-integers are involved
+      is when one of the objectives is stretch.
+"""
+
 import sys
 import copy
+
+PARETO_SEPARATOR = '^'
 
 def main():
     pareto_list = read_points(sys.stdin)
@@ -32,7 +40,7 @@ def process_line(pareto_input):
     pareto_list = []
     points = pareto_input.split(';')
     for point in points:
-        x, y = point.split('/')
+        x, y = point.split(PARETO_SEPARATOR)
         pareto_list.append((float(x), float(y)))
     return pareto_list
 
@@ -70,4 +78,4 @@ def print_points(output_stream, pareto_list):
 
 main()
 
-#  [Last modified: 2020 05 18 at 15:10:12 GMT]
+#  [Last modified: 2021 01 04 at 22:47:37 GMT]
