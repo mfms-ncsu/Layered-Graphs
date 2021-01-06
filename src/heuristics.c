@@ -253,64 +253,31 @@ void fixNode( Nodeptr node ) { node->fixed = true; }
 void fixEdge( Edgeptr edge ) { edge->fixed = true; }
 void fixLayer( int layer ) { layers[layer]->fixed = true; }
 
-/**
- * @todo the next two functions (and others like them) can simply ue the
- * mater node list
- */
-bool allNodesFixed( void )
-{
-  int layer = 0;
-  for( ; layer < number_of_layers; layer++ )
-    {
-      int position = 0;
-      for( ; position < layers[ layer ]->number_of_nodes; position++ )
-        {
-          Nodeptr node = layers[ layer ]->nodes[ position ];
-          if( ! isFixedNode( node ) ) return false;
-        }
+bool allNodesFixed( void ) {
+    for ( int index = 0; index < number_of_nodes; index++ ) {
+        Nodeptr node = master_node_list[index];
+        if( ! isFixedNode( node ) ) return false;
     }
-  return true;
+    return true;
 }
 
-void clearFixedNodes( void )
-{
-  int layer = 0;
-  for( ; layer < number_of_layers; layer++ )
-    {
-      int position = 0;
-      for( ; position < layers[ layer ]->number_of_nodes; position++ )
-        {
-          Nodeptr node = layers[ layer ]->nodes[ position ];
-          node->fixed = false;
-        }
+void clearFixedNodes( void ) {
+    for ( int index = 0; index < number_of_nodes; index++ ) {
+        Nodeptr node = master_node_list[index];
+        node->fixed = false;
     }
 }
 
-void clearFixedEdges( void )
-{
-  int layer = 1;
-  for( ; layer < number_of_layers; layer++ )
-    {
-      int node_position = 0;
-      for( ; node_position < layers[ layer ]->number_of_nodes; node_position++ )
-        {
-          Nodeptr node = layers[ layer ]->nodes[ node_position ];
-          int edge_position = 0;
-          for( ; edge_position < node->down_degree; edge_position++ )
-            {
-              Edgeptr edge = node->down_edges[ edge_position ];
-              edge->fixed = false;
-            }
-        }
+void clearFixedEdges( void ) {
+    for ( int index = 0; index < number_of_edges; index++ ) {
+        Edgeptr edge = master_edge_list[index];
+        edge->fixed = false;
     }
 }
 
-void clearFixedLayers( void )
-{
-  int layer = 0;
-  for( ; layer < number_of_layers; layer++ )
-    {
-      layers[ layer ]->fixed = false;
+void clearFixedLayers( void ) {
+    for( int layer = 0; layer < number_of_layers; layer++ ) {
+        layers[ layer ]->fixed = false;
     }
 }
 
@@ -343,25 +310,17 @@ int maxDegreeLayer( void )
   return max_deg_layer;
 }
 
-Nodeptr maxDegreeNode( void )
-{
-  int layer = 0;
-  int max_degree = 0;
-  Nodeptr max_degree_node = NULL;
-  for( ; layer < number_of_layers; layer++ )
-    {
-      int position = 0;
-      for( ; position < layers[ layer ]->number_of_nodes; position++ )
-        {
-          Nodeptr node = layers[ layer ]->nodes[ position ];
-          if ( DEGREE( node ) > max_degree )
-            {
-              max_degree = DEGREE( node );
+Nodeptr maxDegreeNode( void ) {
+    int max_degree = 0;
+    Nodeptr max_degree_node = NULL;
+    for ( int index = 0; index < number_of_nodes; index++ ) {
+        Nodeptr node = master_node_list[index];
+        if ( DEGREE( node ) > max_degree ) {
+              max_degree = DEGREE(node);
               max_degree_node = node;
-            }
         }
     }
-  return max_degree_node;
+    return max_degree_node;
 }
 
 // ******* The actual heuristics
@@ -957,4 +916,4 @@ void swapping( void )
 
 #endif // ! defined(TEST)
 
-/*  [Last modified: 2021 01 02 at 23:00:43 GMT] */
+/*  [Last modified: 2021 01 06 at 15:25:52 GMT] */

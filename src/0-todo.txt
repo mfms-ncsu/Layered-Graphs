@@ -72,8 +72,6 @@ no_improvement() should focus on specific objectives; actually this is hardly us
 -----------------------------------------
 Issues that need to be addressed
 
-- in crossings.c, the function updatePositionsForLayer(), gives nodes consecutive position numbers based on their sorted order; but this function does not appear to be called from anywhere
-
 - other places where node->position is altered
         - restore_order() in order.c, to recreate a specific ordering for, e.g., output or thw next stage
         - in reposition_node() in sifting.c, to put a node into a new position and shift other nodes left or right as needed; not clear that sifting would be useful for verticality, unless a special variant is created (move each chosen node into its most vertical position)

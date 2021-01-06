@@ -136,7 +136,7 @@ int numberOfCrossingsEdge( Edgeptr edge )
 
 void updateAllCrossings( void )
 {
-  updateAllPositions();
+    //  updateAllPositions();
   for( int i = 1; i < number_of_layers; i++ )
     {
       updateCrossingsBetweenLayers( i );
@@ -145,23 +145,10 @@ void updateAllCrossings( void )
 
 void updateCrossingsForLayer( int layer )
 {
-  updateNodePositions( layer );
+    //  updateNodePositions( layer );
   if( layer > 0 ) updateCrossingsBetweenLayers( layer );
   if( layer < number_of_layers - 1 )
     updateCrossingsBetweenLayers( layer + 1 );
-}
-
-/**
- * This does not appear to be used
- */
-void updatePositionsForLayer( int layer )
-{
-  Layerptr layer_ptr = layers[ layer ];
-  for ( int i = 0; i < layer_ptr->number_of_nodes; i++ )
-    {
-      Nodeptr node = layer_ptr->nodes[i];
-      node->position = i;
-    }
 }
 
 /**
@@ -202,15 +189,15 @@ void updateCrossingsBetweenLayers( int upper_layer )
 {
   // sort edges lexicographically based primarily on upper layer endpoints
   Layerptr layer = layers[ upper_layer ];
-  int index = 0;                /* current index into edge array */
-  int upper_position = 0;
-  for( ; upper_position < layer->number_of_nodes; upper_position++ )
+  int edge_index = 0;                /* current index into edge array */
+  int node_index_in_upper_layer = 0;
+  for( ; node_index_in_upper_layer < layer->number_of_nodes; node_index_in_upper_layer++ )
     {
-      Nodeptr node = layer->nodes[upper_position];
+      Nodeptr node = layer->nodes[node_index_in_upper_layer];
       sortByDownNodePosition( node->down_edges, node->down_degree );
       add_edges_to_array( between_layers[ upper_layer ]->edges,
-                          node->down_edges, node->down_degree, index );
-      index += node->down_degree;
+                          node->down_edges, node->down_degree, edge_index );
+      edge_index += node->down_degree;
     }
   initialize_crossings( upper_layer );
   between_layers[ upper_layer ]->number_of_crossings
@@ -387,10 +374,10 @@ void printCrossings( void )
 #include"graph_io.h"
 
 // the following are to avoid bringing in more modules than necessary
-int capture_iteration;
-int max_iterations;
-void barycenterDownSweep(int layer) {}
-void barycenterUpSweep(int layer) {}
+/* int capture_iteration; */
+/* int max_iterations; */
+/* void barycenterDownSweep(int layer) {} */
+/* void barycenterUpSweep(int layer) {} */
 
 int main( int argc, char * argv[] )
 {
@@ -435,4 +422,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2020 12 19 at 18:44:39 GMT] */
+/*  [Last modified: 2021 01 06 at 15:49:59 GMT] */

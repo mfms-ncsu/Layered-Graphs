@@ -119,34 +119,29 @@ void sift( Nodeptr node )
 }
 
 static void reposition_node( Nodeptr node, Nodeptr * nodes,
-                             int after_position )
-{
-  // There are three cases to consider: if the node should go immediately
-  // after its predecessor or after itself, there is nothing to be done; if
-  // it should go  immediately after an earlier node, it goes into
-  // after_position + 1 and the intervening nodes are shifted right; if it
-  // should go after a later node, it goes into after_position and the
-  // intervening nodes, including the one it goes after, are shifted left.
-  int i = node->position;
-  if( after_position < node->position - 1 )
-    {
-      for( ; i > after_position + 1; i-- )
-        {
-          nodes[ i ] = nodes[ i - 1 ];
-          nodes[ i ]->position = i;
+                             int after_position ) {
+    // There are three cases to consider: if the node should go immediately
+    // after its predecessor or after itself, there is nothing to be done; if
+    // it should go immediately after an 'earlier' node, it goes into
+    // after_position + 1 and the intervening nodes are shifted right; if it
+    // should go after a later node, it goes into after_position and the
+    // intervening nodes, including the one it goes after, are shifted left.
+    int i = node->position;
+    if( after_position < node->position - 1 ) {
+        for( ; i > after_position + 1; i-- ) {
+            nodes[i] = nodes[i - 1];
+            nodes[i]->position = i;
         }
-      nodes[ after_position + 1 ] = node;
-      node->position = after_position + 1;
+        nodes[after_position + 1] = node;
+        node->position = after_position + 1;
     }
-  else if( after_position > node->position )
-    {
-      for( ; i < after_position; i++ )
-        {
-          nodes[ i ] = nodes[ i + 1 ];
-          nodes[ i ]->position = i;
+    else if( after_position > node->position ) {
+        for( ; i < after_position; i++ ) {
+            nodes[i] = nodes[i + 1];
+            nodes[i]->position = i;
         }
-      nodes[ after_position ] = node;
-      node->position = after_position;
+        nodes[after_position] = node;
+        node->position = after_position;
     }
 }
 
@@ -314,4 +309,4 @@ void sift_node_for_total_stretch(Nodeptr node) {
 
 } // end, sift node for total stretch
 
-/*  [Last modified: 2016 05 20 at 20:53:54 GMT] */
+/*  [Last modified: 2021 01 06 at 15:47:00 GMT] */

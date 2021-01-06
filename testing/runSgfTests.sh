@@ -10,7 +10,7 @@ if ! [ -d History ]; then
     mkdir History
 fi
 output_file=History/$date-sgf.out
-last_output=TestOutputs/last.out
+last_output=LastOutputs/last-sgf.out
 if [ ! -e $executable ] || [ ! -x $executable ]; then
     echo "$executable not found or not executable"
     exit
@@ -78,4 +78,4 @@ if [ $answer = "y" ]; then
     rm $tmp_last $tmp_next
 fi
 
-#  [Last modified: 2021 01 02 at 22:38:10 GMT]
+#  [Last modified: 2021 01 06 at 15:57:44 GMT]

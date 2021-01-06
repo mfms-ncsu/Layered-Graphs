@@ -1,13 +1,12 @@
 /**
  * @file heuristics.h
  * @brief Interface for functions implementing all of the heuristics
- * Those labeled <strong><em>parallel</em></strong> are designed specifically
- * for parallel implementation and their iterations are defined by
- * "synchronization points"
+ *
+ * Every heuristic is responsible for maintaining the following two invariants.
+ *  - for every node, node->position is correct after each iteration
+ *  - the array of nodes on each layer is sorted by increasing position
  *
  * @author Matthias Stallmann
- * @date 2008/12/29
- * $Id: heuristics.h 110 2015-06-12 12:26:27Z mfms $
  */
 
 #ifndef HEURISTICS_H
@@ -185,4 +184,4 @@ void swapping( void );
 
 #endif
 
-/*  [Last modified: 2021 01 02 at 20:56:54 GMT] */
+/*  [Last modified: 2021 01 06 at 16:04:34 GMT] */
