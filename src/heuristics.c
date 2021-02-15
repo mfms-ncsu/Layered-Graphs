@@ -114,10 +114,11 @@ void tracePrint( int layer, const char * message )
 }
 
 /**
- * @return true if none of the crossing measures of interest have improved
+ * @return true if none of the measures of interest have improved
  * since the last call to this function
  *
  * <em>Side effect:</em> all measures are updated
+ * @todo should probably rethink this to focus on relevant measures
  */
 static bool no_improvement( void )
 {
@@ -132,7 +133,7 @@ static bool no_improvement( void )
     && ! better_total_stretch
     && ! better_bottleneck_stretch
     ;
-} 
+}
 
 /**
  * Prints a message if number of crossings (of various types) are still
@@ -209,15 +210,14 @@ static void print_standard_termination_message()
   /** message already printed? */
   static bool standard_termination_message_printed = false;
 
-  if ( ! standard_termination_message_printed )
-    {
+  if ( ! standard_termination_message_printed ) {
         fprintf(stderr, "*** standard termination here: iteration %d crossings %d"
-              " edge_crossings %d"
+              " bottleneck %d"
               " graph %s ***\n",
               iteration, total_crossings.best,
               max_edge_crossings.best,
-              graph_name );
-    }
+              graph_name);
+  }
   standard_termination_message_printed = true;
 }
 
@@ -916,4 +916,4 @@ void swapping( void )
 
 #endif // ! defined(TEST)
 
-/*  [Last modified: 2021 01 06 at 15:25:52 GMT] */
+/*  [Last modified: 2021 02 15 at 20:50:03 GMT] */
