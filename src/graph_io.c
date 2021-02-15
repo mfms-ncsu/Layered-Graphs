@@ -202,24 +202,23 @@ void allocateLayers(void) {
     }
 }
 
-
 // The input algorithm (for dot and ord files) is as follows:
-//   1. Read the ord file (first pass) and
+//   1. Read the ord file (first pass) and             - allocateLayersFromOrdFile()
 //       (a) create each layer and expand the 'layers' array as needed
 //       (b) count the number of nodes on each layer and store in
 //           'number_of_nodes'; also count the global number of nodes
 //       (c) allocate the 'nodes' array for each layer
-//   2. Read the ord file again and 
+//   2. Read the ord file again and                    - assignNodesToLayers()
 //       (a) create each node
 //       (b) add each node to the appropriate layer
-//   3. Read the dot file (first pass) and
+//   3. Read the dot file (first pass) and             - allocateAdjacencyLists()
 //       (a) count the 'up_degree' and 'down_degree' of each node
 //       (b) go through all the nodes and allocate the 'up_edges' and
 //           the 'down_edges'
 //       (c) reset 'up_degree' and 'down_degree' to 0 so that edges can
 //           be put in the right positions on the second pass 
 //   4. Read the dot file again and put the nodes into the adjacency lists
-//      based on the edges
+//      based on the edges                             - createEdges()
 //
 // Note: The last phase ignores directions of the edges in the dot file and
 // only looks at layer information to determine 'up' and 'down' edges for
@@ -366,13 +365,13 @@ void addEdge(const char * source, const char * target)
 }
 
 /**
- * Sets number of nodes for the layer and allocates space for them. Note: the
- * global number of nodes is updated in allocateLayers().
+ * Sets number of nodes for the layer and allocates space for them.
+ * Used only when reading dot and ord files.
  */
 static void setNumberOfNodes( int layer, int number )
 {
-  layers[ layer ]->number_of_nodes = number;
-  layers[ layer ]->nodes = (Nodeptr *) calloc( number, sizeof(Nodeptr) );
+    layers[layer]->number_of_nodes = number;
+    layers[layer]->nodes = (Nodeptr *) calloc(number, sizeof(Nodeptr));
 }
 
 /**
@@ -768,4 +767,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2021 02 15 at 18:13:01 GMT] */
+/*  [Last modified: 2021 02 15 at 20:42:47 GMT] */

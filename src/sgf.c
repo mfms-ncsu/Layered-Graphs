@@ -140,7 +140,8 @@ void readSgf(FILE * sgf_stream) {
     allocateLayers();
     readSgfNodes(sgf_stream);
     readSgfEdges(sgf_stream);
-    allocateNodeListsForLayers();
+    // Note: the function below is called as part of addNodesToLayers()
+    //    allocateNodeListsForLayers();
     addNodesToLayers();
     number_of_isolated_nodes = countIsolatedNodes();
     removeHashTable();
@@ -183,4 +184,4 @@ void writeSgf(FILE * output_stream) {
     writeSgfEdges(output_stream);
 }
 
-/*  [Last modified: 2020 12 30 at 18:25:45 GMT] */
+/*  [Last modified: 2021 02 15 at 20:33:00 GMT] */
