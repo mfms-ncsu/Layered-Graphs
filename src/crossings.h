@@ -22,6 +22,11 @@
 void initCrossings( void );
 
 /**
+ * dallocates data structures that keep track of crossings
+ */
+void deallocateCrossings(void);
+
+/**
  * @return the total number of crossings in the graph
  */
 int numberOfCrossings( void );
@@ -98,4 +103,4 @@ void printCrossings( void );
 
 #endif
 
-/*  [Last modified: 2016 05 19 at 20:23:37 GMT] */
+/*  [Last modified: 2021 02 15 at 17:16:28 GMT] */

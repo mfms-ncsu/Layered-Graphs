@@ -63,6 +63,17 @@ void initChannels(void) {
 }
 
 /**
+ * deallocate data structures for channels
+ */
+void deallocateChannels(void) {
+    for ( int i = 1; i < number_of_layers; i++ ) {
+        free(channels[i]->edges);
+        free(channels[i]);
+    }
+    free(channels);
+}
+
+/**
  * @return the total stretch of edges in channel i; assumes the positions of
  * nodes on the two layers have been updated correctly
  */
@@ -160,4 +171,4 @@ Edgeptr maxStretchEdge() {
   return max_stretch_edge;
 }
 
-/*  [Last modified: 2019 09 27 at 15:48:58 GMT] */
+/*  [Last modified: 2021 02 15 at 18:17:13 GMT] */

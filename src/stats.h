@@ -132,6 +132,11 @@ void print_run_statistics( FILE * output_stream );
  */
 void getParetoList(char * buffer);
 
+/**
+ * deallocates the Pareto list
+ */
+void deallocateParetoList(void);
+
 #endif
 
-/*  [Last modified: 2020 12 30 at 17:49:28 GMT] */
+/*  [Last modified: 2021 02 15 at 17:59:28 GMT] */

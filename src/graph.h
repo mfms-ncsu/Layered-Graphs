@@ -14,37 +14,6 @@
  * Layers are referred to by number except when internal info is needed.<br>
  * Nodes are referred to by pointers to node_struct's and all information
  * about a node (including layer and position) is stored in the struct.
- *
- * To traverse all the nodes of a graph, do the following; see also master_node_list:
- *
-     for( int layer = 0; layer < number_of_layers; layer++ )
-       {
-         for( int position = 0; position < layers[ layer ]->number_of_nodes; position++ )
-           {
-             Nodeptr node = layers[ layer ]->nodes[ position ];
-             // do something with the node
-           }
-       }
- *
- * To traverse all the edges of the graph (as down edges of layers 1 through
- * number_of_layers - 1), do -- this is O(m); see also master_edge_list:
-
-  for( int layer = 1; layer < number_of_layers; layer++ )
-    {
-      for(
-          int node_position = 0;
-          node_position < layers[ layer ]->number_of_nodes;
-          node_position++ )
-        {
-          Nodeptr node = layers[ layer ]->nodes[ node_position ];
-          for( int edge_position = 0; edge_position < node->down_degree; edge_position++ )
-            {
-              Edgeptr edge = node->down_edges[ edge_position ];
-              // do something with the edge
-            }
-        }
-    }
-
  */
 
 #include<stdbool.h>
@@ -145,4 +114,4 @@ extern char * comments;
 
 #endif
 
-/*  [Last modified: 2020 12 30 at 00:36:40 GMT] */
+/*  [Last modified: 2021 02 15 at 18:15:29 GMT] */

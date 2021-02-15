@@ -151,6 +151,19 @@ static PARETO_LIST pareto_insert(double objective_one,
   return new_list;
 }
 
+/**
+ * recursive helper function for deallocation of the linked list
+ */
+static void deallocatePLhelper(PARETO_LIST list) {
+    if ( list == NULL ) return;
+    deallocatePLhelper(list->rest);
+    free(list);
+}
+
+void deallocateParetoList(void) {
+    deallocatePLhelper(pareto_list);
+}
+
 CROSSING_STATS_INT total_crossings;
 CROSSING_STATS_INT max_edge_crossings;
 CROSSING_STATS_INT favored_edge_crossings;
@@ -189,7 +202,7 @@ static void init_specific_crossing_stats_double( CROSSING_STATS_DOUBLE * stats,
 void init_crossing_stats( void )
 {
   init_specific_crossing_stats_int( & total_crossings, "Crossings" );
-  init_specific_crossing_stats_int( & max_edge_crossings, "EdgeCrossings" );
+  init_specific_crossing_stats_int( & max_edge_crossings, "BottleneckCrossings" );
   init_specific_crossing_stats_double( & total_stretch, "Stretch" );
   init_specific_crossing_stats_double( & bottleneck_stretch, "BottleneckStretch" );
   if ( pareto_objective != NO_PARETO )
@@ -550,4 +563,4 @@ void print_run_statistics( FILE * output_stream )
     }
 }
 
-/*  [Last modified: 2020 12 30 at 20:44:32 GMT] */
+/*  [Last modified: 2021 02 15 at 18:27:37 GMT] */

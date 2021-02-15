@@ -92,6 +92,11 @@ void addNodesToLayers(void);
 void readDotAndOrd( const char * dot_file, const char * ord_file );
 
 /**
+ * Deallocates memory allocated during reading of graph; see
+ */
+void deallocateGraph(void);
+
+/**
  * Prints the graph in a verbose format on standard output for debugging
  * purposes. May also be used for piping to a graphical trace later.
  */
@@ -157,4 +162,4 @@ char * getNextComment(char * comment_buffer);
 
 #endif
 
-/*  [Last modified: 2021 01 02 at 21:05:45 GMT] */
+/*  [Last modified: 2021 02 15 at 17:00:05 GMT] */

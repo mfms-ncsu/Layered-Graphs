@@ -32,6 +32,11 @@ typedef struct channel_struct {
 void initChannels(void);
 
 /**
+ * deallocate data structures for channels
+ */
+void deallocateChannels(void);
+
+/**
  * channels[i] is information about edges between
  * layers i - 1 and i; the entry for i = 0 is not used
  */
@@ -69,4 +74,4 @@ double maxEdgeStretch();
  */
 Edgeptr maxStretchEdge();
 
-/*  [Last modified: 2016 05 20 at 18:39:03 GMT] */
+/*  [Last modified: 2021 02 15 at 17:45:58 GMT] */

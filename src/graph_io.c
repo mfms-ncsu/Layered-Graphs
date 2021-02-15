@@ -123,8 +123,8 @@ Nodeptr makeNumberedNode(int id, int layer, int position) {
     printf("-> makeNumberedNode: id = %d, layer = %d, position = %d\n",
            id, layer, position);
 #endif
-    Nodeptr new_node = (Nodeptr) malloc(sizeof(struct node_struct));
-    char * name = malloc(strlen(nameFromId(id)) + 1);
+    Nodeptr new_node = (Nodeptr) calloc(1, sizeof(struct node_struct));
+    char * name = calloc(strlen(nameFromId(id)) + 1, sizeof(char));
     strcpy(name, nameFromId(id));
     new_node->name = name;
     new_node->id = id;
@@ -195,7 +195,7 @@ void addNodesToLayers(void) {
 
 void allocateLayers(void) {
     for ( int layer_num = 0; layer_num < number_of_layers; layer_num++ ) {
-        layers[layer_num] = (Layerptr) malloc(sizeof(struct layer_struct));
+        layers[layer_num] = (Layerptr) calloc(1, sizeof(struct layer_struct));
         layers[layer_num]->number_of_nodes = 0;
         layers[layer_num]->nodes = NULL;
         layers[layer_num]->fixed = false;
@@ -248,8 +248,8 @@ Nodeptr makeNode( const char * name )
 {
   static int current_id = 0;
 
-  Nodeptr new_node = (Nodeptr) malloc( sizeof(struct node_struct));
-  new_node->name = (char *) malloc( strlen(name) + 1 );
+  Nodeptr new_node = (Nodeptr) calloc(1, sizeof(struct node_struct));
+  new_node->name = (char *) calloc(strlen(name) + 1, sizeof(char));
   strcpy( new_node->name, name );
   // delay assignment of id's until edges are added so that the numbering
   // depends on .dot file only (easier to standardize)
@@ -279,18 +279,28 @@ void addNodeToLayer( Nodeptr node, int layer )
   layers[ layer ]->nodes[ current_position++ ] = node;
 }
 
-void makeLayer()
-{
-  Layerptr new_layer = (Layerptr) malloc( sizeof(struct layer_struct) );
-  new_layer->number_of_nodes = 0;
-  new_layer->nodes = NULL;
-  if( number_of_layers >= layer_capacity )
-    {
-      layer_capacity *= 2;
-      layers
-        = (Layerptr *) realloc( layers, layer_capacity * sizeof(Layerptr) );
+void makeLayer() {
+    Layerptr new_layer = (Layerptr) calloc(1, sizeof(struct layer_struct));
+    new_layer->number_of_nodes = 0;
+    new_layer->nodes = NULL;
+    if( number_of_layers >= layer_capacity ) {
+        layer_capacity *= 2;
+        layers
+            = (Layerptr *) realloc(layers, layer_capacity * sizeof(Layerptr));
     }
-  layers[ number_of_layers++ ] = new_layer;
+    layers[number_of_layers++] = new_layer;
+}
+
+static void deallocateLayer(int layer_number) {
+    free(layers[layer_number]->nodes);
+    free(layers[layer_number]);
+}
+
+static void deallocateLayers(void) {
+    for ( int i = 0; i < number_of_layers; i++ ) {
+        deallocateLayer(i);
+    }
+    free(layers);
 }
 
 void addEdge(const char * source, const char * target)
@@ -329,7 +339,7 @@ void addEdge(const char * source, const char * target)
                lower_node->name, lower_node->layer);
       abort();
   }
-  Edgeptr new_edge = malloc( sizeof(struct edge_struct) );
+  Edgeptr new_edge = calloc(1, sizeof(struct edge_struct));
   new_edge->up_node = upper_node;
   new_edge->down_node = lower_node;
   new_edge->crossings = 0;
@@ -608,6 +618,37 @@ char * getNextComment(char * comment_buffer) {
     return ++next_comment;
 }
 
+// --------------- *** Deallocation *** -------------
+
+static void deallocateNodes(void) {
+    for ( int i = 0; i < number_of_nodes; i++ ) {
+        Nodeptr node = master_node_list[i];
+        free(node->name);
+        free(node->up_edges);
+        free(node->down_edges);
+    }
+    free(master_node_list);
+}
+
+static void deallocateEdges(void) {
+    for ( int i = 0; i < number_of_edges; i++ ) {
+        Edgeptr edge = master_edge_list[i];
+        free(edge);
+    }
+    free(master_edge_list);
+}
+
+static void deallocateComments(void) {
+    free(comments);
+}
+
+void deallocateGraph(void) {
+    deallocateNodes();
+    deallocateEdges();
+    deallocateLayers();
+    deallocateComments();
+}
+
 // --------------- Output to dot and ord files
 
 static void writeNodes( FILE * out, Layerptr layerptr )
@@ -727,4 +768,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2021 01 02 at 21:23:02 GMT] */
+/*  [Last modified: 2021 02 15 at 18:13:01 GMT] */

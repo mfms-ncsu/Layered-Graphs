@@ -63,12 +63,18 @@ static int count_down_edges( int layer_number )
 static InterLayerptr makeInterLayer( int upper_layer )
 {
   InterLayerptr new_interlayer
-    = (InterLayerptr) malloc( sizeof(struct inter_layer_struct ) );
+      = (InterLayerptr) calloc(1, sizeof(struct inter_layer_struct));
   new_interlayer->number_of_edges = count_down_edges( upper_layer );
   new_interlayer->edges
-    = (Edgeptr *) calloc( new_interlayer->number_of_edges,
-                       sizeof(Edgeptr) );
+    = (Edgeptr *) calloc(new_interlayer->number_of_edges,
+                       sizeof(Edgeptr));
   return new_interlayer;
+}
+
+static void deallocateInterLayer(int upper_layer) {
+    InterLayerptr interlayer = between_layers[upper_layer];
+    free(interlayer->edges);
+    free(interlayer);
 }
 
 /**
@@ -80,10 +86,14 @@ void initCrossings( void )
 {
   between_layers
     = (InterLayerptr *) calloc( number_of_layers, sizeof(InterLayerptr) );
-  int i = 1;
-  for( ; i < number_of_layers; i++ )
-    {
+  for( int i = 1; i < number_of_layers; i++ ) {
       between_layers[i] = makeInterLayer( i );
+  }
+}
+
+void deallocateCrossings(void) {
+    for ( int i = 1; i < number_of_layers; i++ ) {
+        deallocateInterLayer(i);
     }
 }
 
@@ -209,7 +219,7 @@ void updateCrossingsBetweenLayers( int upper_layer )
 int maxCrossingsLayer( void ) {
   int max_crossings_layer = -1;
   int max_crossings = -1;
-  int * layer_sequence = (int *) malloc( number_of_layers * sizeof(int) );
+  int * layer_sequence = (int *) calloc(number_of_layers, sizeof(int));
   for ( int i = 0; i < number_of_layers; i++ ) {
     layer_sequence[i] = i;
   }
@@ -422,4 +432,4 @@ int main( int argc, char * argv[] )
 
 #endif
 
-/*  [Last modified: 2021 01 06 at 15:49:59 GMT] */
+/*  [Last modified: 2021 02 15 at 17:18:40 GMT] */

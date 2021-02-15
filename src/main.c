@@ -99,7 +99,7 @@ static void printUsage( void )
           "   * two file names - assumed to be a dot and an ord file\n");
   printf( " the opts are zero or more of the following\n" );
   printf(
-         "  -I read from standard input, assume sgf format"
+         "  -I read from standard input, assume sgf format\n"
          "  -h (median | bary | mod_bary | mcn | sifting | mce | mce_s | mse\n"
          "     [main heuristic - default none]\n"
          "  -p (bfs | dfs | mds) [preprocessing - default none]\n"
@@ -112,7 +112,7 @@ static void printUsage( void )
          "  -c ITERATION [capture the order after this iteration in a file or stdout]\n"
          "  -P PARETO_OBJECTIVES (b_t | s_t | b_s) pair of objectives for Pareto optima\n"
          "      b = bottleneck, t = total, s = stretch (default = none)\n"
-         "      'bottleneck' is also known as 'min-max edge'"
+         "      'bottleneck' is also known as 'min-max edge'\n"
          "  -w BASE produce file(s) with name(s) BASE-H-O.EXT,\n"
          "          where H is the heuristic(s) used, O is the objective,\n"
          "          and EXT is either sgf or ord, depending on input format\n"
@@ -194,6 +194,16 @@ void captureCommandLine(char * cmd_line_buffer, int argc, char * argv[]) {
         if ( counter > 0 ) strcat(cmd_line_buffer, " ");
         strcat(cmd_line_buffer, local_buffer);
     }
+}
+
+/**
+ * Deallocates memory allocated during input or computation
+ */
+void deallocateAll(void) {
+    deallocateGraph();
+    deallocateCrossings();
+    deallocateChannels();
+    deallocateParetoList();
 }
 
 /**
@@ -557,15 +567,9 @@ int main( int argc, char * argv[] )
   cleanup_order( best_bottleneck_stretch_order );
   free( best_bottleneck_stretch_order );
 
-  /**
-   * @todo Need functions to deallocate everything (in the appropriate modules)
-   */
+  deallocateAll();
+
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2021 01 03 at 17:19:56 GMT] */
-
-/* the line below is to ensure that this file gets benignly modified via
-   'make version' */
-
-/*xxxxxxxxxx*/
+/*  [Last modified: 2021 02 15 at 18:00:37 GMT] */
