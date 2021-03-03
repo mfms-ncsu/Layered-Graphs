@@ -18,6 +18,7 @@
 #include"Statistics.h"
 #include"heuristics.h"
 #include"random_tree.h"
+#include"random.h"
 #include"check_edge_duplication.h"
 
 static void usage_message( char * prog_name )
@@ -149,7 +150,7 @@ static void add_edges( int desired_num_edges )
       // if there's not already an edge between them, add one
 
       // pick a node that's not on layer 0
-      int first_node_index = random() % number_of_nodes;
+      int first_node_index = genrand_int31() % number_of_nodes;
       Nodeptr first_node = master_node_list[ first_node_index ];
       int first_node_layer_number = first_node->layer;
 #ifdef DEBUG
@@ -163,7 +164,7 @@ static void add_edges( int desired_num_edges )
       // pick another node on the layer below that of the first node
       int second_node_layer_number = first_node_layer_number - 1;
       Layerptr second_node_layer = layers[ second_node_layer_number ];
-      int second_node_layer_position = random() % second_node_layer->number_of_nodes;
+      int second_node_layer_position = genrand_int31() % second_node_layer->number_of_nodes;
       Nodeptr second_node = second_node_layer->nodes[ second_node_layer_position ];
       int second_node_index = second_node->id;
 
@@ -195,7 +196,7 @@ int main( int argc, char * argv[] )
   int edges = atoi( argv[3] );
   long seed = atoi( argv[4] );
 
-  srandom( seed );
+  init_genrand(seed);
 
   // read the input graph
   char dot_name_buffer[MAX_NAME_LENGTH];
@@ -251,4 +252,4 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2021 01 02 at 21:16:11 GMT] */
+/*  [Last modified: 2021 03 03 at 16:19:10 GMT] */

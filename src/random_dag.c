@@ -10,6 +10,7 @@
 
 #include "graph.h"
 #include "graph_io.h"
+#include "random.h"
 #include "random_tree.h"
 #include "random_dag.h"
 #include "check_edge_duplication.h"
@@ -119,7 +120,7 @@ void create_random_dag( int num_nodes,
       // if there's not already an edge between them, add one
 
       // pick a node that's not on layer 0
-      int first_node_index = random() % number_of_nodes;
+      int first_node_index = genrand_int31() % number_of_nodes;
       Nodeptr first_node = master_node_list[ first_node_index ];
       int first_node_layer_number = first_node->layer;
 #ifdef DEBUG
@@ -133,7 +134,7 @@ void create_random_dag( int num_nodes,
       // pick another node on the layer below that of the first node
       int second_node_layer_number = first_node_layer_number - 1;
       Layerptr second_node_layer = layers[ second_node_layer_number ];
-      int second_node_layer_position = random() % second_node_layer->number_of_nodes;
+      int second_node_layer_position = genrand_int31() % second_node_layer->number_of_nodes;
       Nodeptr second_node = second_node_layer->nodes[ second_node_layer_position ];
       int second_node_index = second_node->id;
 
@@ -152,4 +153,4 @@ void create_random_dag( int num_nodes,
   destroy_hash_table_for_pairs();
 }
 
-/*  [Last modified: 2011 07 07 at 16:12:28 GMT] */
+/*  [Last modified: 2021 03 03 at 16:21:51 GMT] */

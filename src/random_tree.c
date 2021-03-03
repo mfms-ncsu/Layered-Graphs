@@ -13,6 +13,7 @@
 
 #include "graph.h"
 #include "graph_io.h"
+#include "random.h"
 #include "random_tree.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -261,7 +262,7 @@ void create_random_tree( int num_nodes,
         = branching_factor > branch_limit ? branch_limit : branching_factor;
       int out_degree = 0;
       if ( max_branches > 0 )
-        out_degree = random() % max_branches;
+        out_degree = genrand_int31() % max_branches;
       // need to have at least one successor if there are no nodes left
       if ( out_degree == 0
            && current_node_id + 1 >= number_of_tree_nodes )
@@ -326,7 +327,7 @@ int main( int argc, char * argv[] )
   int num_layers = atoi( argv[2] );
   int branching = atoi( argv[3] );
 
-  srandom( 1 );
+  init_genrand(1);
 
   create_random_tree( num_nodes, num_layers, branching );
 
@@ -343,4 +344,4 @@ int main( int argc, char * argv[] )
 }
 #endif
 
-/*  [Last modified: 2011 06 03 at 19:01:11 GMT] */
+/*  [Last modified: 2021 03 03 at 16:23:07 GMT] */

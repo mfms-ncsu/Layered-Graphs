@@ -16,6 +16,7 @@
 #include"graph_io.h"
 #include"Statistics.h"
 #include"heuristics.h"
+#include"random.h"
 #include"random_tree.h"
 #include"random_dag.h"
 
@@ -94,7 +95,7 @@ int main( int argc, char * argv[] )
     }
 
 
-  srandom( seed );
+  init_genrand(seed);
 
   create_random_dag( nodes, edges, layers, branching ); 
   //  create_random_tree( nodes, layers, branching ); 
@@ -130,4 +131,4 @@ int main( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-/*  [Last modified: 2021 01 02 at 20:49:23 GMT] */
+/*  [Last modified: 2021 03 03 at 16:20:43 GMT] */

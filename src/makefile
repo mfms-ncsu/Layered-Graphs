@@ -16,7 +16,7 @@ OBJECTS = sifting.o dfs.o sorting.o heuristics.o barycenter.o crossings.o\
 	order.o swap.o median.o channel.o stretch.o timing.o random.o
 
 # object files used by programs that generate random instances
-CREATION_OBJECTS = check_edge_duplication.o random_dag.o random_tree.o graph_io.o Statistics.o dot.o ord.o sgf.o hash.o
+CREATION_OBJECTS = check_edge_duplication.o random.o random_dag.o random_tree.o graph_io.o Statistics.o dot.o ord.o sgf.o hash.o
 
 # header files common to all heuristics; also make sure recompilation takes
 # place if there are changes to the makefile
