@@ -86,7 +86,7 @@ static PARETO_LIST pareto_insert(double objective_one,
 #ifdef DEBUG
   printf("-> pareto_insert: %f, %f, %d, ",
          objective_one, objective_two, iteration);
-  print_pareto_list(list, stdout);
+  //  print_pareto_list(list, stdout);
   printf("\n");
 #endif
   PARETO_LIST new_list = NULL;
@@ -145,7 +145,7 @@ static PARETO_LIST pareto_insert(double objective_one,
   }
 #ifdef DEBUG
   printf("<- pareto_insert: ");
-  print_pareto_list(new_list, stdout);
+  //  print_pareto_list(new_list, stdout);
   printf("\n");
 #endif
   return new_list;
@@ -281,6 +281,21 @@ void update_best_double( CROSSING_STATS_DOUBLE * stats, Orderptr order,
 #endif  
 }
 
+/**
+ * @todo There are some obvious inefficiencies here:
+ * - totalStretch() and maxEdgeStretch() independently compute stretch
+ * for each edge; it makes no sense to call both, never mind calling
+ * both twice in case of Pareto updates
+ * - it makes no sense to compute and report stretch information if
+ * not relevant; not doing so cuts runtime in half
+ * - the same holds for maxEdgeCrossings()
+ * - total crossings are maintained and updated in a variety of
+ * places, all of which eventually call change_crossings(), where an
+ * insertion sort is done to count inversions
+ * - maxEdgeCrossings() relies on the fact that total crossings have
+ * been properly maintained; change_crossings() is used to update
+ * crossings for a single node or edge when an algorithm does a swap
+ */
 void update_best_all( void )
 {
   update_best_int( & total_crossings, best_crossings_order, numberOfCrossings );
@@ -563,4 +578,4 @@ void print_run_statistics( FILE * output_stream )
     }
 }
 
-/*  [Last modified: 2021 02 15 at 18:27:37 GMT] */
+/*  [Last modified: 2021 03 03 at 00:01:06 GMT] */

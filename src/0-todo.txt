@@ -22,9 +22,7 @@ Consider runtime options that assume three stages: preprocessing (e.g., dfs), so
 *** Get rid of ***
 
 - sifting variations (-s)
-- mce variations (-e)
-- the -g option; made obsolete by naming heuristics differently
-- various parallel versions of barycenter
+- the -g option; made obsolete by naming heuristics differently; but see above
 - termination based on lack of improvement for barycenter variations
 
 *** Modify ***
@@ -32,6 +30,8 @@ Consider runtime options that assume three stages: preprocessing (e.g., dfs), so
 - an option to specify the desired objective(s), independent of heuristic, so that output focuses on those only; this would be independent of Pareto output; probably need to rethink output: currently best x is reported for all possible x and all stages
 
 - output is not conducive to csv because each minimum or Pareto point comes with an iteration number that is reported on the same line; need to think in terms of a conversion script and/or separate lines for the iteration reports [* may be okay if important info comes immediately after separator (comma) *]
+
+- the -z option does neighboring swaps until the total number of crossings is no longer decreased; how about changing that so that we stop swapping only when the desired objective(s) show no improvement
 
 *** Add ***
 
@@ -73,7 +73,7 @@ no_improvement() should focus on specific objectives; actually this is hardly us
 Issues that need to be addressed
 
 - other places where node->position is altered
-        - restore_order() in order.c, to recreate a specific ordering for, e.g., output or thw next stage
+        - restore_order() in order.c, to recreate a specific ordering for, e.g., output or the next stage
         - in reposition_node() in sifting.c, to put a node into a new position and shift other nodes left or right as needed; not clear that sifting would be useful for verticality, unless a special variant is created (move each chosen node into its most vertical position)
         - there are lots of places various heuristics rely on node->position, but ...
 
