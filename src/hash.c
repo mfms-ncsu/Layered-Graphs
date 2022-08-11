@@ -13,6 +13,7 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
+#include<assert.h>
 
 #define LOAD_FACTOR 0.75
 #define POLYNOMIAL_VALUE 37
@@ -68,6 +69,8 @@ static void printHashTable();
 
 void initHashTable( int number_of_items )
 {
+  assert( number_of_items > 0 
+          || "initHashTable: number_of_items <= 0" );
   modulus = getTableSize( number_of_items );
   hash_table = (Nodeptr *) calloc( modulus, sizeof(Nodeptr) );
   // the following is not really necessary since calloc fills the allocated
@@ -80,15 +83,28 @@ void initHashTable( int number_of_items )
 
 void insertInHashTable( const char * name, Nodeptr node )
 {
+  assert( (name != NULL && strlen(name) > 0)
+          || "attempting to insert empty string into hash table" );
+  assert( node != NULL
+          || "attempting to insert NULL node into hash table" );
+
   unsigned int index = getIndex(name);
+#ifdef DEBUG
+  printf("-> insertInHashTable, name = %s, index = %d\n", name, index);
+#endif
   if ( index < 0 ) {
       fprintf( stderr, "insertInHashTable: No room for '%s' in table\n",
                name );
       abort();
   }
   if ( hash_table[index] != NULL ) {
+      Nodeptr existing_node = hash_table[index];
       fprintf( stderr, "insertInHashTable: Entry for '%s' already exists\n",
                name );
+      fprintf( stderr, "existing entry has layer %d and position %d\n",
+              existing_node->layer, existing_node->position);
+      fprintf( stderr, "existing entry has layer %d and position %d\n",
+              existing_node->layer, existing_node->position);
       abort();
   }
   hash_table[index] = node;

@@ -35,6 +35,10 @@ Consider runtime options that assume three stages: preprocessing (e.g., dfs), so
 
 *** Add ***
 
+- some heuristics designed to randomize the order; useful when doing a chain of runs, which currently get stuck; could use existing heuristics as a model
+   * a variant of mod_bary where the first layer in each pass is given random weights; can be done each time the max crossings layer is chosen or just once per pass
+   * a sifting heuristic where each iteration swaps the target node with a random node on its layer
+
 (* done *) - facilities for reading and writing sgf files; the program would base the I/O method on the extension(s) of the input file(s); still to do
 
    * read and store sgf comments

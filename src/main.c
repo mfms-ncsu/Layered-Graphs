@@ -34,6 +34,7 @@
 char * command_line = NULL;
 char * objective = NULL;
 int max_iterations = INT_MAX;
+int max_passes = INT_MAX;
 double runtime = 0;
 double max_runtime = DBL_MAX;
 double start_time = 0;
@@ -49,6 +50,14 @@ bool randomize_order = false;
  * @todo not clear which value of this option works best; stay tuned ...
  */
 bool balanced_weight = false;
+
+/**
+ * The base name of the input file.
+ * This may be different from output_base_name if the -w option is used
+ * or the input file name does not match the graph name.
+ * A warning is issued in the latter case.
+ */
+static char input_base_name[MAX_NAME_LENGTH];
 
 /**
  * write_files is set when user specifies the -w option
@@ -92,19 +101,20 @@ static bool do_post_processing = false;
  */
 static void printUsage( void )
 {
-  printf( "Usage: minimization [opts] [file(s)]\n"
+  fprintf(stderr, "Usage: minimization [opts] [file(s)]\n"
           " the file(s) part is\n"
           "   * missing - read from stdin and assume sgf format (only if -I is an opt)\n"
           "   * one file name - assumed to be an sgf file\n"
           "   * two file names - assumed to be a dot and an ord file\n");
-  printf( " the opts are zero or more of the following\n" );
-  printf(
+  fprintf(stderr, " the opts are zero or more of the following\n" );
+  fprintf(stderr,
          "  -I read from standard input, assume sgf format\n"
          "  -h (median | bary | mod_bary | mcn | sifting | mce | mce_s | mse\n"
          "     [main heuristic - default none]\n"
          "  -p (bfs | dfs | mds) [preprocessing - default none]\n"
          "  -z if post processing (repeated swaps until no improvement) is desired\n"
-         "  -i MAX_ITERATIONS [stop if no improvement]\n"
+         "  -i MAX_ITERATIONS [default: stop if no improvement]\n"
+         "  -a MAX_PASSES     [default: stop if no improvement]\n"
          "  -R SEED edge list, node list, or sequence of layers will be randomized\n"
          "     after each pass of mod_bary, mce, mcn, mse, sifting, etc.\n"
          "     to break ties differently when sorting; SEED is an integer seed\n"
@@ -142,7 +152,7 @@ static void runPreprocessor( void )
     middleDegreeSort();
   else
     {
-      printf( "Bad preprocessor '%s'\n", preprocessor );
+      fprintf(stderr,  "*** FATAL ERROR: Bad preprocessor '%s'\n", preprocessor );
       printUsage();
       exit( EXIT_FAILURE );
     }
@@ -177,7 +187,7 @@ static void runHeuristic( void )
     maximumStretchEdge();
   }
   else {
-      printf( "Bad heuristic '%s'\n", heuristic );
+      fprintf(stderr,  "*** FATAL ERROR: Bad heuristic '%s'\n", heuristic );
       printUsage();
       exit( EXIT_FAILURE );
   }
@@ -221,8 +231,7 @@ void deallocateAll(void) {
  */
 int main( int argc, char * argv[] )
 {
-    fprintf(stderr, "################################################################\n");
-    fprintf(stderr, "########### minimization, release 1.1, 2020/12/22 #############\n");
+  fprintf(stderr, "----------- minimization, release 1.1, 2020/12/22 ----------\n");
 
   char cmd_line_buffer[MAX_NAME_LENGTH];
   
@@ -236,7 +245,7 @@ int main( int argc, char * argv[] )
   // process command-line options; these must come before the file arguments
   // note: options that have an arg are followed by : but others are
   // not
-  while ( (ch = getopt(argc, argv, "c:fgh:Ii:Oo:p:P:R:r:s:t:vw:z")) != -1)
+  while ( (ch = getopt(argc, argv, "a:c:fgh:Ii:Oo:p:P:R:r:s:t:vw:z")) != -1)
     {
       switch(ch)
         {
@@ -257,7 +266,7 @@ int main( int argc, char * argv[] )
 
         case 'i':
             if ( strspn(optarg, "0123456789") != strlen(optarg) ) {
-                printf("Value '%s' for -i option is not an integer\n", optarg);
+                fprintf(stderr, "*** FATAL ERROR: Value '%s' for -i option is not an integer\n", optarg);
                 printUsage();
                 exit( EXIT_FAILURE );
             }
@@ -265,9 +274,22 @@ int main( int argc, char * argv[] )
           standard_termination = false;
           break;
 
-        case 'R':
+        case 'a':
             if ( strspn(optarg, "0123456789") != strlen(optarg) ) {
-                printf("Value '%s' for -R option is not an integer\n", optarg);
+                fprintf(stderr,"Value '%s' for -a option is not an integer\n", optarg);
+                printUsage();
+                exit(EXIT_FAILURE);
+            }
+          max_passes = atoi( optarg );
+          standard_termination = false;
+          break;
+
+        case 'R':
+        /**
+         * @todo there's a better way to convert to an int and check at the same time
+         */
+            if ( strspn(optarg, "0123456789") != strlen(optarg) ) {
+                fprintf(stderr, "*** FATAL ERROR: Value '%s' for -R option is not an integer\n", optarg);
                 printUsage();
                 exit( EXIT_FAILURE );
             }
@@ -278,7 +300,7 @@ int main( int argc, char * argv[] )
 
         case 'r':
             if ( strspn(optarg, ".0123456789") != strlen(optarg) ) {
-                printf("Value '%s' for -r option is not a floating point number\n", optarg);
+                fprintf(stderr, "*** FATAL ERROR: Value '%s' for -r option is not a floating point number\n", optarg);
                 printUsage();
                 exit( EXIT_FAILURE );
             }
@@ -291,7 +313,7 @@ int main( int argc, char * argv[] )
           else if ( strcmp( optarg, "s_t" ) == 0 ) pareto_objective = STRETCH_TOTAL; 
           else if ( strcmp( optarg, "b_s" ) == 0 ) pareto_objective = BOTTLENECK_STRETCH; 
           else {
-            printf( "Bad value '%s' for option -P\n", optarg );
+            fprintf(stderr,  "*** FATAL ERROR: Bad value '%s' for option -P\n", optarg );
             printUsage();
             exit( EXIT_FAILURE );
           }
@@ -299,7 +321,7 @@ int main( int argc, char * argv[] )
 
         case 'c':
             if ( strspn(optarg, "0123456789") != strlen(optarg) ) {
-                printf("Value '%s' for -c option is not an integer\n", optarg);
+                fprintf(stderr, "*** FATAL ERROR: Value '%s' for -c option is not an integer\n", optarg);
                 printUsage();
                 exit( EXIT_FAILURE );
             }
@@ -315,7 +337,7 @@ int main( int argc, char * argv[] )
                  && strcmp(optarg, "b") != 0
                  && strcmp(optarg, "s") != 0
                  && strcmp(optarg, "bs") != 0 ) {
-                printf( "Bad value '%s' for option -o\n", optarg );
+                fprintf(stderr,  "*** FATAL ERROR: Bad value '%s' for option -o\n", optarg );
                 printUsage();
                 exit(EXIT_FAILURE);
             }
@@ -335,7 +357,7 @@ int main( int argc, char * argv[] )
           else if( strcmp( optarg, "random" ) == 0 ) sift_option = RANDOM;
           else
             {
-              printf( "Bad value '%s' for option -s\n", optarg );
+              fprintf(stderr,  "*** FATAL ERROR: Bad value '%s' for option -s\n", optarg );
               printUsage();
               exit( EXIT_FAILURE );
             }
@@ -345,7 +367,7 @@ int main( int argc, char * argv[] )
           if( strcmp( optarg, "total" ) == 0 ) sifting_style = TOTAL;
           else if( strcmp( optarg, "max" ) == 0 ) sifting_style = MAX; 
           else {
-            printf( "Bad value '%s' for option -g\n", optarg );
+            fprintf(stderr,  "*** FATAL ERROR: Bad value '%s' for option -g\n", optarg );
             printUsage();
             exit( EXIT_FAILURE );
           }
@@ -357,7 +379,7 @@ int main( int argc, char * argv[] )
 
         case 't':
             if ( strspn(optarg, "0123456789") != strlen(optarg) ) {
-                printf("Value '%s' for -t option is not an integer\n", optarg);
+                fprintf(stderr, "*** FATAL ERROR: Value '%s' for -t option is not an integer\n", optarg);
                 printUsage();
                 exit( EXIT_FAILURE );
             }
@@ -377,11 +399,7 @@ int main( int argc, char * argv[] )
   argc -= optind;
   argv += optind;
 
-  /**
-   * @todo Allow either one or two arguments; extract base name and
-   * extension; if only one file and extension is .sgf, read sgf; otherwise
-   * read dot and ord.
-   */
+  input_base_name[0] = '\0';
   if ( argc == 2 ) {
       const char * dot_file_name = argv[0];
       const char * ord_file_name = argv[1];
@@ -398,7 +416,10 @@ int main( int argc, char * argv[] )
   else if ( argc == 1 ) {
       char * sgf_file_name = argv[0];
       FILE * input_stream = fopen(sgf_file_name, "r");
-
+      if ( input_stream == NULL ) {
+        fprintf(stderr, "*** FATAL ERROR: file %s could not be opened\n", sgf_file_name);
+        exit(EXIT_FAILURE);
+      }
       readSgf(input_stream);
       fclose(input_stream);
       if ( write_files ) {
@@ -413,17 +434,26 @@ int main( int argc, char * argv[] )
           }
       }
       else {
-          printf("Need to specify -I to request stdin if no files on command line\n");
-          printf("or need either one sgf file or a dot and ord file\n");
+          fprintf(stderr, "*** FATAL ERROR: Need to specify -I to request stdin if no files on command line\n");
+          fprintf(stderr, "or need either one sgf file or a dot and ord file\n");
           printUsage();
           exit(EXIT_FAILURE);
       }
   }
   else {
-      printf("Wrong number of filename arguments (%d)\n", argc);
+      fprintf(stderr, "*** FATAL ERROR: Wrong number of filename arguments (%d)\n", argc);
       printUsage();
       exit(EXIT_FAILURE);
   }
+
+  if ( write_files 
+       && strlen(input_base_name) > 0
+       && strcmp(input_base_name, graph_name) != 0 ) {
+         fprintf(stderr, "*** Warning: filename base %s does not match graph name %s\n",
+                 input_base_name, graph_name);
+         fprintf(stderr, "***          output base defaults to graph name\n");
+  }
+
 
   addComment(command_line, true);
   
@@ -530,10 +560,13 @@ int main( int argc, char * argv[] )
   // write to stdout if requested; note that this is independent of
   // writing files so possible to do both
   if ( write_stdout ) {
+      char runtime_buffer[MAX_NAME_LENGTH];
+      sprintf(runtime_buffer, "Runtime,%4.2f", RUNTIME);
+      addComment(runtime_buffer, true);
       if ( pareto_objective != NO_PARETO ) { 
-          char buffer[MAX_NAME_LENGTH];
-          getParetoList(buffer);
-          addComment(buffer, true);
+          char pareto_buffer[MAX_NAME_LENGTH];
+          getParetoList(pareto_buffer);
+          addComment(pareto_buffer, true);
       }
       if ( objective == NULL ) objective = "t";
 
@@ -571,5 +604,3 @@ int main( int argc, char * argv[] )
 
   return EXIT_SUCCESS;
 }
-
-/*  [Last modified: 2021 02 15 at 18:00:37 GMT] */

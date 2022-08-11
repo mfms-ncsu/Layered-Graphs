@@ -4,7 +4,7 @@
  * @author Matt Stallmann, based on Saurabh Gupta's crossing heuristics
  * implementation.
  * @date 2008/12/19
- * $Id: graph_io.h 90 2014-08-13 20:31:25Z mfms $
+ * @todo Functions related to dot and ord files should be moved to the appropriate modules
  */
 
 #include<stdbool.h>
@@ -15,6 +15,11 @@
 
 #include"graph.h"
 #include"sgf.h"
+
+/**
+ * @brief Get the base name of the file and copy it into the buffer
+ */
+void getBaseName(char * buffer, const char * file_name);
 
 /**
  * utility function that converts a number to a string
@@ -143,7 +148,7 @@ void startAddingComments(void);
 /**
  * Adds the given string as a comment to the comments string
  * @param needs_eol true if an end of line character should be added
- *        if comment comes from input via fgets, it will already be present
+ *        this may no longer be needed (always true)
  */
 void addComment(const char * comment, bool needs_eol);
 

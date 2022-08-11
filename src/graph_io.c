@@ -27,6 +27,7 @@ Nodeptr * master_node_list;
 Edgeptr * master_edge_list;
 int number_of_nodes = 0;
 int number_of_layers = 0;
+int max_layer_width = 0;
 int number_of_edges = 0;
 int number_of_isolated_nodes = 0;
 Layerptr * layers = NULL;
@@ -61,6 +62,26 @@ static int layer_capacity = MIN_LAYER_CAPACITY;
 static char name_buffer[MAX_NAME_LENGTH];
 
 /**
+ * @brief Get the base name of the file and copy it into the buffer
+ */
+void getBaseName(char * buffer, const char * file_name) {
+  char * last_slash = strrchr(file_name, '/');
+  char * last_dot = strrchr(file_name, '.');
+  if ( last_dot == NULL ) {
+    fprintf(stderr, "*** FATAL ERROR: file name %s has no extension\n", file_name);
+    exit(EXIT_FAILURE);
+  }
+  if ( last_slash != NULL ) {
+    int basename_length = strlen(last_slash) - strlen(last_dot) - 1;
+    strncpy(buffer, last_slash + 1, basename_length);
+  }
+  else {
+    int basename_length = strlen(file_name) - strlen(last_dot);
+    strncpy(buffer, file_name, basename_length);
+  }
+}
+
+/**
  * utility function that converts a number to a string
  * @return a pointer to the buffer - have to use strcpy to use the
  * string since buffer contents will change
@@ -87,7 +108,7 @@ void createOutputFileName(char * output_file_name,
       && strcmp( heuristic, "" ) != 0 )
     strcat( output_file_name, "+" );
   strcat( output_file_name, heuristic );
-  strcat( output_file_name, "-");
+  strcat( output_file_name, "-" );
   strcat( output_file_name, appendix );
   strcat( output_file_name, extension );
 }
@@ -124,9 +145,8 @@ Nodeptr makeNumberedNode(int id, int layer, int position) {
            id, layer, position);
 #endif
     Nodeptr new_node = (Nodeptr) calloc(1, sizeof(struct node_struct));
-    char * name = calloc(strlen(nameFromId(id)) + 1, sizeof(char));
-    strcpy(name, nameFromId(id));
-    new_node->name = name;
+    new_node->name = calloc(strlen(nameFromId(id)) + 1, sizeof(char));
+    strcpy(new_node->name, nameFromId(id));
     new_node->id = id;
     new_node->layer = layer;
     new_node->position = position;
@@ -135,8 +155,10 @@ Nodeptr makeNumberedNode(int id, int layer, int position) {
     new_node->up_crossings = new_node->down_crossings = 0;
     new_node->marked = new_node->fixed = false;
     new_node->preorder_number = -1;
-    insertInHashTable(new_node->name, new_node);
     addToNodeList(new_node);
+#ifdef DEBUG
+    printf("<- makeNumberedNode, number_of_nodes = %d\n", number_of_nodes);
+#endif
     return new_node;
 }
 
@@ -149,17 +171,25 @@ void allocateNodeListsForLayers(void) {
 
 /**
  * inserts the node into the layer based on its position (for sgf)
- * @todo this happens automatically for ord files and all crossing
- * information is currently based on sorted order on each layer,
- * something that may need to change when verticality is considered
+ * checks for dupicate positions
  */
 void insertIntoLayer(Nodeptr node, int layer_num, int num_nodes_so_far) {
     Layerptr layer = layers[layer_num];
     int current_position = num_nodes_so_far;
     while ( current_position > 0
-            && layer->nodes[current_position - 1]->position > node->position ) {
-        layer->nodes[current_position] = layer->nodes[current_position - 1];
-        current_position--;
+            && layer->nodes[current_position - 1]->position >= node->position ) {
+      if ( layer->nodes[current_position - 1]->position
+            == node->position ) {
+        fprintf(stderr, "*** FATAL: two nodes have the same position on their layer\n");
+        fprintf(stderr, "    nodes are [id,layer,position]: [%d,%d,%d] and [%d,%d,%d]\n",
+                       layer->nodes[current_position-1]->id,
+                       layer->nodes[current_position-1]->layer,
+                       layer->nodes[current_position-1]->position,
+                       node->id, node->layer, node->position);
+        abort();
+      }
+      layer->nodes[current_position] = layer->nodes[current_position - 1];
+      current_position--;
     }
     layer->nodes[current_position] = node;   
 }
@@ -177,6 +207,9 @@ void addNodesToLayers(void) {
     for ( int index = 0; index < number_of_nodes; index++ ) {
         int layer_num = master_node_list[index]->layer;
         layers[layer_num]->number_of_nodes++;
+        if ( layers[layer_num]->number_of_nodes > max_layer_width ) {
+          max_layer_width = layers[layer_num]->number_of_nodes;
+        }
     }
     allocateNodeListsForLayers();
     // number of nodes added so far
@@ -309,22 +342,24 @@ void addEdge(const char * source, const char * target)
 #endif
   static int num_edges_so_far = 0;
   Nodeptr node1 = getFromHashTable(source);
+  if ( node1 == NULL ) {
+    fprintf( stderr, "*** FATAL: source node %s does not exist.\n", source );
+    abort();
+  }
   Nodeptr node2 = getFromHashTable(target);
+  if ( node2 == NULL ) {
+    fprintf( stderr, "*** FATAL: target node %s does not exist.\n", target );
+    abort();
+  }
+#ifdef DEBUG
+  fprintf(stderr, " node1.position = %d, node2.position = %d\n",
+          node1->position, node2->position);
+#endif
   if ( node1->layer == node2->layer ) {
-    fprintf( stderr, "FATAL: addEdge, nodes on same layer.\n" );
+    fprintf( stderr, "*** FATAL: addEdge, nodes on same layer.\n" );
     fprintf( stderr, " Nodes %s and %s are on layer %d.\n",
              node1->name, node2->name, node1->layer);
     abort();
-  }
-
-  if ( node1 == NULL ) {
-      fprintf(stderr, "FATAL: addEdge, missing node %s\n", node1->name);
-      abort();
-  }
-
-  if ( node2 == NULL ) {
-      fprintf(stderr, "FATAL: addEdge, missing node %s\n", node2->name);
-      abort();
   }
 
   Nodeptr upper_node
@@ -332,7 +367,7 @@ void addEdge(const char * source, const char * target)
   Nodeptr lower_node
     = ( node1->layer < node2->layer ) ? node1 : node2;
   if ( upper_node->layer - lower_node->layer != 1 ) {
-      fprintf( stderr, "FATAL: addEdge, nodes not on adjacent layers.\n" );
+      fprintf( stderr, "*** FATAL: addEdge, nodes not on adjacent layers.\n" );
       fprintf( stderr, " Nodes %s is on layer %d and %s is on layer %d.\n",
                upper_node->name, upper_node->layer,
                lower_node->name, lower_node->layer);
@@ -385,7 +420,7 @@ static void allocateLayersFromOrdFile( const char * ord_file )
   FILE * in = fopen( ord_file, "r" );
   if( in == NULL )
     {
-      fprintf( stderr, "Unable to open file %s for input\n", ord_file );
+      fprintf( stderr, "*** FATAL ERROR: Unable to open file %s for input\n", ord_file );
       exit( EXIT_FAILURE );
     }
   layer_capacity = MIN_LAYER_CAPACITY;
@@ -398,7 +433,7 @@ static void allocateLayersFromOrdFile( const char * ord_file )
     {
       if( layer != expected_layer )
         {
-          fprintf( stderr, "Fatal error: Expected layer %d, found layer %d\n",
+          fprintf( stderr, "*** FATAL error: Expected layer %d, found layer %d\n",
                    expected_layer, layer );
           abort();
         }
@@ -421,6 +456,11 @@ static void allocateLayersFromOrdFile( const char * ord_file )
 static void assignNodesToLayers( const char * ord_file )
 {
   FILE * in = fopen( ord_file, "r" );
+  if ( in == NULL ) {
+    fprintf(stderr, "*** FATAL ERROR: file %s could not be opened\n", ord_file);
+    exit(EXIT_FAILURE);
+  }
+
   int layer;
   char name_buf[MAX_NAME_LENGTH];
   while( nextLayer( in, & layer ) )
@@ -442,14 +482,14 @@ void incrementDegrees( const char * source, const char * target )
   Nodeptr node1 = getFromHashTable( source );
   if( node1 == NULL )
     {
-      fprintf( stderr, "Fatal error: Node '%s' does not exist in .ord file\n"
+      fprintf( stderr, "*** FATAL error: Node '%s' does not exist in .ord file\n"
                " edge is %s->%s\n", source, source, target);
       abort();
     }
   Nodeptr node2 = getFromHashTable( target );
   if( node2 == NULL )
     {
-      fprintf( stderr, "Fatal error: Node '%s' does not exist in .ord file\n"
+      fprintf( stderr, "*** FATAL error: Node '%s' does not exist in .ord file\n"
                " edge is %s->%s\n", target, source, target);
       abort();
     }
@@ -471,7 +511,7 @@ void allocateAdjacencyLists( const char * dot_file )
   FILE * in = fopen( dot_file, "r" );
   if( in == NULL )
     {
-      fprintf( stderr, "Unable to open file %s for input\n", dot_file );
+      fprintf( stderr, "*** FATAL ERROR: Unable to open file %s for input\n", dot_file );
       exit( EXIT_FAILURE );
     }
   initDot( in );
@@ -513,6 +553,11 @@ void allocateAdjacencyLists( const char * dot_file )
 void createEdges( const char * dot_file )
 {
   FILE * in = fopen( dot_file, "r" );
+  if( in == NULL )
+    {
+      fprintf( stderr, "*** FATAL ERROR: Unable to open file %s for input\n", dot_file );
+      exit( EXIT_FAILURE );
+    }
   initDot( in );
   char src_buf[MAX_NAME_LENGTH];
   char dst_buf[MAX_NAME_LENGTH];
@@ -590,6 +635,7 @@ void startAddingComments(void) {
 }
 
 void addComment(const char * comment, bool needs_eol) {
+    // one extra space for the '\n', another for '\0'
     comments = realloc(comments, strlen(comments) + strlen(comment) + 2);
     strcat(comments, comment);
     if ( needs_eol )
@@ -682,7 +728,7 @@ void writeDot( const char * dot_file_name,
   FILE * out = fopen( dot_file_name, "w" );
   if( out == NULL )
     {
-      fprintf( stderr, "Unable to open file %s for output\n", dot_file_name );
+      fprintf( stderr, "*** FATAL ERROR: Unable to open file %s for output\n", dot_file_name );
       exit( EXIT_FAILURE );
     }
   dotPreamble( out, graph_name, header_information );
@@ -766,5 +812,3 @@ int main( int argc, char * argv[] )
 }
 
 #endif
-
-/*  [Last modified: 2021 02 15 at 20:42:47 GMT] */

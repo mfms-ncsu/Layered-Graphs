@@ -16,11 +16,19 @@
 // parameters based on command-line options
 
 /**
- * Maximum number of iterations for the main heuristic; this is the number of
- * times a layer is sorted. If neither max_iterations nor max_runtime is
- * specified, standard_termination is used.
+ * Maximum number of iterations for the main heuristic.
+ * This is the number of the order of nodes on a layer is modified.
+ * If neither max_iterations nor max_runtime is specified, standard_termination is used.
  */
 extern int max_iterations;
+
+/**
+ * Maximum number of passes of the main heuristic.
+ * Definition of a pass is heuristic-specific:
+ *   - for layer sorting heuristics, a pass is when all layers have been sorted
+ *   - for sifting heuristics, a pass is when all nodes have been sifted
+ */
+extern int max_passes;
 
 /**
  * Time that the preprocessor (or heuristic if none) started running
@@ -187,8 +195,11 @@ extern bool write_sgf_output;
 extern bool write_stdout;
 
 /**
- * output file names are of the form output_base_name-x.ord, where x is
- * information about the heuristic used 
+ * Output file names are of the form output_base_name-x.ord, where x is
+ * information about the heuristic used.
+ * If the input is an sgf file, output will be output_base_name-x.sgf.
+ * The output_base_name is specified via the -w option
+ * with the special case -w _ meaning the graph_name will be used
  */
 extern char * output_base_name;
 
@@ -204,6 +215,3 @@ extern bool verbose;
 extern int trace_freq;
 
 #endif
-
-/*  [Last modified: 2021 01 02 at 19:37:32 GMT] */
-

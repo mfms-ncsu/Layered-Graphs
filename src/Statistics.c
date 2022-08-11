@@ -177,5 +177,3 @@ int main()
 }
 
 #endif
-
-//  [Last modified: 2009 05 19 at 13:05:11 GMT]

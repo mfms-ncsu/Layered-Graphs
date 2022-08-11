@@ -93,23 +93,36 @@ void median( void );
  */
 void barycenter( void );
 
+/**
+ * @brief Implements the modified barycenter heuristic, which goes as follows.
+ * Repeat the following until all layers have been marked.
+ *  - find a layer k for which incident edges have the most crossings and mark it
+ *    layer k is sorted based on barycenter weights of both the upper and lower neighbors
+ *  - subsequent iterations sort
+ *    + layers k-1 to 0 based on upper neighbor
+ *    + layers k+1 to L-1 based on lower neighbor (L = # of layers)
+ * Do this repeatedly, each repetition is a pass
+ */
 void modifiedBarycenter( void );
 
+// !!! The following heuristics, designed for parallel implementation,
+// !!! are deprecated; they are ineffective
+
 /**
- * Computes weights on each layer independently and alternates sweep directions
+ * !!! Computes weights on each layer independently and alternates sweep directions
  * <em>(parallel)</em>
  */
 void staticBarycenter( void );
 
 /**
- * Alternates barycenter iterations between even and odd layers, computing
+ * !!! Alternates barycenter iterations between even and odd layers, computing
  * weights for both adjoining layers each time.
  * <em>(parallel)</em>
  */
 void evenOddBarycenter( void );
 
 /**
- * Alternates between odd and even numbered layers, but instead of
+ * !!! Alternates between odd and even numbered layers, but instead of
  * alternating at every iteration and using both neighboring layers to assign
  * weights, this version uses the downward layer (starting with odd layers)
  * for a number of iterations corresponding to the number of layers, and then
@@ -118,7 +131,7 @@ void evenOddBarycenter( void );
  */
 
 /**
- * Alternates between even numbered and odd numbered layers. Unlike alt_bary,
+ * !!! Alternates between even numbered and odd numbered layers. Unlike alt_bary,
  * which bases sorting on both neighboring layers simultaneously, this
  * version rotates between doing upward, downward, and both.
  * <em>(parallel)</em>
@@ -128,7 +141,7 @@ void rotatingBarycenter( void );
 void upDownBarycenter( void );
 
 /**
- * Each processor does a full-blown barycenter algorithm. Starts are
+ * !!! Each processor does a full-blown barycenter algorithm. Starts are
  * staggered at distance max(layers/processors,2) and each sweep wraps around  
  * to make the best use of of each processor. Startting layer shifts by 1 at
  * each iteration.
@@ -138,12 +151,35 @@ void upDownBarycenter( void );
  */
 void slabBarycenter( void );
 
-void maximumCrossingsNode( void );
+// !!! END OF DEPRECATED HEURISTICS !!!
 
 /**
  * mce as described in M. Stallmann, JEA 2012.
+ * 
+ * The variations described below modify two aspects of mce.
+ * 1. Basis for choosing a node to sift - mce uses endpoint(s) of an edge with most crossings.
+ * Could also use
+ *    - node whose incident edges have most crossings
+ *    - edge with largest stretch
+ *    - edge with largest nonverticality
+ *    - nodes whose incident edges have maximum stretch or nonverticality
+ * 2. Objective to use for deciding where to place the sifted node x.
+ *    - minimize maximum number of crossings among edges incident on x (mce)
+ *    - minimize total crossings
+ *    - minimize maximum stretch/nonverticality for edges incident on x
+ *    - minimize total stretch/nonverticality
+ * 
+ * @todo could also consider minimizing total number of ___ for edges incident on x
  */
 void maximumCrossingsEdge( void );
+
+/**
+ * @brief A variation of mce: instead of choosing the edges with maximum number
+ *        of crossings each iteration and sifting the endpoints,
+ *        finds the node whose incident edges have the maximum number of crossings
+ *        and sift it
+ */
+void maximumCrossingsNode( void );
 
 /**
  * A variation of the mce heuristic in which the two endpoints of the edge
@@ -179,6 +215,8 @@ void middleDegreeSort( void );
  * Swaps neighboring nodes when this improves the total number of crossings
  * until no improvement is possible.
  * <em>(embarrasingly parallel)</em>
+ * 
+ * @todo could do swapping based on any other objective
  */
 void swapping( void );
 

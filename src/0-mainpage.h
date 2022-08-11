@@ -115,5 +115,3 @@ Descriptions of the heuristics implemented as part of this project.
     href="ftp://ftp.ncsu.edu/pub/unity/lockers/ftp/csc_anon/tech/2016/TR-2016-6.pdf">technical
     report</a>) is chosen at each iteration and the nodes on layers of the
     endpoints are sorted so as to minimize total stretch.
-
-/*  [Last modified: 2017 06 09 at 17:50:46 GMT] */

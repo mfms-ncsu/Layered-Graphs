@@ -145,9 +145,13 @@ void initDot( FILE * in )
   ch = skip_blanks_and_comments( ch, in );
   /** @todo eventually will want to pick up the first comment */
   ungetc( ch, in );
-  char digraph[MAX_NAME_LENGTH];
-  fscanf( in, "%s", digraph );
-  if( strcmp( digraph, "digraph" ) != 0 )
+  char digraph[strlen("digraph") + 1];
+  int success = fscanf( in, "%8s", digraph );
+  if ( success == EOF ) {
+    sprintf( error_message, "expected 'digraph', got EOF" );
+    error(true);
+  }
+  if ( strcmp( digraph, "digraph" ) != 0 )
     {
       sprintf( error_message, "expected 'digraph', got '%s'", digraph );
       error( true );

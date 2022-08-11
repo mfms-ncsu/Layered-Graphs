@@ -9,10 +9,11 @@
 /**
  * @todo The incrementing of 'iteration' is far from transparent; it takes
  * place in end_of_iteration(), which is called from a number of different
- * places, most in other modules; perhaps this is okay, but the comments
- * should at least indicate what's going on. Furthermore, the stopping
- * criteria are buried in lots of different places and the functions that are
- * invoked have other side effects.
+ * places, most in other modules.
+ * The right way to do this is (probably):
+ *   - get rid of the end_of_iteration() call in main.c
+ *   - have each heuristic increment iteration at the *beginning* of an iteration
+ *   - don't increment iteration in end_of_iteration()
  */
 
 #include<stdio.h>
@@ -44,6 +45,7 @@
 #define TRACE_FREQ_THRESHOLD 2
 
 int iteration = 0;
+int pass = 0;
 int post_processing_iteration = 0;
 
 int min_crossings = INT_MAX;
@@ -149,7 +151,7 @@ static void print_last_iteration_message( void )
       /**
        * @todo more information in the "still improving" message
        */
-        fprintf(stderr, "*** still improving but max iterations or runtime reached:"
+        fprintf(stderr, "$$$ still improving but max iterations or runtime reached:"
               " iteration %d, runtime %2.3f, graph %s\n",
               iteration, RUNTIME, graph_name );
     }
@@ -167,16 +169,16 @@ bool end_of_iteration( void )
       writeFile(appendix);
   }
 #ifdef DEBUG
-  printf( " ### crossings at end of iteration:\n"
+  printf( " ### crossings at end of iteration %d:\n"
           "   current: total = %d,"
           " edge = %d"
           "\n"
           "   best:    total = %d,"
           " edge = %d"
           "\n"
-          "   iteration:  %d"
           "          %d"
           "\n",
+          iteration,
           numberOfCrossings(),
           maxEdgeCrossings(),
           total_crossings.best,
@@ -186,17 +188,16 @@ bool end_of_iteration( void )
           );
 #endif // DEBUG
   bool done = false;
-  if ( iteration >= max_iterations ||  RUNTIME >= max_runtime )
-    {
+  update_best_all();
+  if ( iteration >= max_iterations ||  RUNTIME >= max_runtime ) {
       done = true;
       print_last_iteration_message();
-    }
-  update_best_all();
+  }
+  iteration++;
 #ifdef DEBUG
   printf( "<- end_of_iteration: iteration = %d, max_iterations = %d, done = %d\n",
           iteration, max_iterations, done );
 #endif
-  iteration++;
   return done;
 }
 
@@ -211,9 +212,9 @@ static void print_standard_termination_message()
   static bool standard_termination_message_printed = false;
 
   if ( ! standard_termination_message_printed ) {
-        fprintf(stderr, "*** standard termination here: iteration %d crossings %d"
+        fprintf(stderr, "=== standard termination here: iteration %d crossings %d"
               " bottleneck %d"
-              " graph %s ***\n",
+              " graph %s ===\n",
               iteration, total_crossings.best,
               max_edge_crossings.best,
               graph_name);
@@ -222,10 +223,11 @@ static void print_standard_termination_message()
 }
 
 /**
- * @return True if termination is based on "convergence" rather than the number
- * of iterations and the heuristic exhibits no improvement in any of the
- * crossing counts.
- *
+ * Called at the end of a pass.
+ * @return true if one of the following holds
+ *          - # of iterations >= what user specified with the -i option
+ *          - # of passes >= what user specified with the -a option
+ *          - no improvement has occurred in any objective if neither -i nor -a specified
  * Prints a message about failure to improve even if stopping criterion is
  * number of iterations.
  */
@@ -241,6 +243,8 @@ static bool terminate()
 
   if ( standard_termination && no_improvement_seen ) return true;
   if ( iteration >= max_iterations ) return true;
+  if ( pass >= max_passes ) return true;
+  pass++;
   return false;
 }
 
@@ -331,7 +335,7 @@ Nodeptr maxDegreeNode( void ) {
 
 void median( void )
 {
-  tracePrint( -1, "*** start median" );
+  tracePrint( -1, "^^^ start median" );
   while( ! terminate() )
     {
       // return if max iterations have been reached as reported by one of the
@@ -346,7 +350,7 @@ void median( void )
 
 void barycenter( void )
 {
-  tracePrint( -1, "*** start barycenter" );
+  tracePrint( -1, "^^^ start barycenter" );
   while( ! terminate() )
     {
       // return if max iterations have been reached as reported by one of the
@@ -361,13 +365,14 @@ void barycenter( void )
 
 void modifiedBarycenter( void )
 {
-  tracePrint( -1, "*** start modified barycenter" );
-  while( ! terminate() )
-    {
+  tracePrint( -1, "^^^ start modified barycenter" );
+  while( ! terminate() ) {
       clearFixedLayers();
-      while ( true )            /* quit when all layers are fixed */
-        {
+      /* quit when all layers are fixed */
+      while ( true ) {
+          // find un-fixed layer with maximum crossings
           int layer = maxCrossingsLayer();
+          // -1 indicates none found
           if ( layer == -1 ) break;
           fixLayer( layer );
 
@@ -391,7 +396,8 @@ void modifiedBarycenter( void )
 }
 
 /**
- * Handles sifting of a node and all related bookkeeping
+ * Handles sifting of a node and all related bookkeeping.
+ * Here sifting is based on minimizing the total number of crossings.
  * @return true if max_iterations reached
  */
 static bool sift_iteration( Nodeptr node )
@@ -405,12 +411,11 @@ static bool sift_iteration( Nodeptr node )
 }
 
 /**
- * Handles sifting of both endpoints of an edge and all related bookkeeping
+ * Handles sifting of both endpoints of an edge and all related bookkeeping.
+ * Here sifting is based on minimizing the maximum number of crossings
+ * among edges incident on the node being sifted.
  *
  * @return true if max iterations reached
- *
- * @todo Consider sifting only one endpoint even if both are not fixed and
- * leaving the edge unfixed in that case. 
  */
 static bool edge_sift_iteration( Edgeptr edge )
 {
@@ -476,7 +481,7 @@ static bool total_stretch_sift_iteration( Nodeptr node ) {
 
 void maximumCrossingsNode( void )
 {
-  tracePrint( -1, "*** start maximum crossings node" );
+  tracePrint( -1, "^^^ start maximum crossings node" );
   while( ! terminate() )
     {
       clearFixedNodes();
@@ -498,7 +503,7 @@ void maximumCrossingsNode( void )
 }
 
 void maximumCrossingsEdgeWithSifting( void ) {
-  tracePrint( -1, "*** start maximum crossings edge with sifting" );
+  tracePrint( -1, "^^^ start maximum crossings edge with sifting" );
   while( ! terminate() ) {
       clearFixedNodes();
       clearFixedEdges();
@@ -546,7 +551,7 @@ static bool end_mce_pass( Edgeptr edge )
 
 void maximumCrossingsEdge( void )
 {
-  tracePrint( -1, "*** start maximum crossings edge" );
+  tracePrint( -1, "^^^ start maximum crossings edge" );
   while( ! terminate() )
     {
       clearFixedNodes();
@@ -582,7 +587,7 @@ void maximumCrossingsEdge( void )
 }
 
 void maximumStretchEdge( void ) {
-  tracePrint( -1, "*** start maximum strech edge with total stretch sifting" );
+  tracePrint( -1, "^^^ start maximum strech edge with total stretch sifting" );
   while( ! terminate() ) {
       clearFixedNodes();
       clearFixedEdges();
@@ -681,9 +686,9 @@ void sifting( void ) {
   // list is resorted before each pass
   sortByDegree( master_node_list, number_of_nodes );
 #ifdef DEBUG
-  printf( "  sifting: nodes after sorting -\n" );
+  fprintf(stderr, "  sifting: nodes after sorting -\n" );
   for( index = 0; index < number_of_nodes; index++ )
-    printf( "    node_array[%2d] = %s\n", index, node_array[index]->name );
+    fprintf(stderr, "    node_array[%2d] = %s\n", index, node_array[index]->name );
 #endif
 
   /* the sifting algorithm from the Matuszewski et al. paper, except that a
@@ -773,7 +778,7 @@ void middleDegreeSort( void )
     {
       sortByDegree( layers[layer]->nodes, layers[layer]->number_of_nodes );
       weight_first_to_middle( layer );
-      layerQuicksort( layer );
+      layerSort( layer );
     }
 }
 
@@ -875,7 +880,7 @@ void swapping( void )
   printf( "-> swapping, post_processing_crossings = %d\n", post_processing_crossings );
 #endif
 
-  tracePrint( -1, "*** start swapping ***" );
+  tracePrint( -1, "<-> start swapping" );
   while ( improved )
     {
       // look for improvements by swapping nodes i, i+1 on layers L, L+1,
