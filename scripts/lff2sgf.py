@@ -91,7 +91,7 @@ def write_sgf(file_stream, graph, name):
     edge_list = graph[1]
     file_stream.write("c generated %s\n" % date())
     file_stream.write("c  by lff2sgf.py\n")
-    file_stream.write("t %s %d %d %d\n"
+    file_stream.write("t {} {} {} {}\n"
                       .format(name, len(node_list), len(edge_list), _number_of_layers))
     for node in node_list:
         file_stream.write("n %d %d %d\n" % tuple(node))

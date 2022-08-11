@@ -6,19 +6,10 @@
 <h2 align="center">Scripts for creating and processing layered graph data</h2>
 
 <pre>
-  Note: A conversion script from sgf to the Galant format for layered graphsD  is in
-     https://github.com/mfms-ncsu/galant
-  directory Conversion-Scripts
 </pre>
 <h3>Files in lexicographic order</h3>
 <hr>
 <ul>
-<li>
-<strong><a href="0-index.html">0-index.html</a> --</strong><br>
-<pre>
-</pre>
-</li>
-<hr><br>
 <li>
 <strong><a href="channelDegrees.py">channelDegrees.py</a> --</strong><br>
 <pre>
@@ -31,11 +22,12 @@
 <strong><a href="collectParetoPoints.py">collectParetoPoints.py</a> --</strong><br>
 <pre>
 Designed to gather multiple Pareto points into a single Pareto list;
- it's a simple filter - stdin to stdout - for now
+ it's a simple filter - stdin to stdout,
+ but has options to specify input and output files as well as output format
 
-input is a sequence of lines of the form (Pareto output from min_crossings)
+input is a sequence of lines of the form (Pareto output from minimization)
   x1^y1;x2^y2;...
-output has one Pareto point per line - format is tab separated
+output format is specified by the -f or --format option
 </pre>
 </li>
 <hr><br>
@@ -48,6 +40,23 @@ output has one Pareto point per line - format is tab separated
  a bit vector for the corresponding subset.
 
 @todo make this work for sgf files
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="dot+ord2sgf.sh">dot+ord2sgf.sh</a> --</strong><br>
+<pre>
+Uses dot_and_ord_to_sgf in ../src
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="harvest_sgf_data.sh">harvest_sgf_data.sh</a> --</strong><br>
+<pre>
+outputs lines of the form
+   TAG VALUE       (separated by tab)
+for tags LG-Nodes, LG-Edges, and LG-Layers,
+representing number of nodes, edges, and layers in the sgf input file
 </pre>
 </li>
 <hr><br>
@@ -67,6 +76,36 @@ output has one Pareto point per line - format is tab separated
 </li>
 <hr><br>
 <li>
+<strong><a href="lff2sgf.py">lff2sgf.py</a> --</strong><br>
+<pre>
+ Translates from (l)ayer (f)irst (f)ormat (for lack of a better name),
+ used in recent papers, such as
+ Martí, R., Campos, V., Hoff, A., Peiró, J.,
+  "Heuristics for the min–max arc crossing problem in graphs."
+  in Expert Systems with Applications 109, 100 – 113.
+ and files downloaded from
+ https://grafo.etsii.urjc.es/optsicom/mmacp/mmacpfiles/MinMaxGDPlib.zip
+
+The lff format begins with a line of the form
+  NUMBER_NODES NUMBER_OF_EDGES NUMBER_OF_LAYERS
+The second line lists the number of nodes on each layer, starting with the "bottom"
+(or "left" based on figures in the Martí et al. paper).
+All edges are directed from earlier layers to later ones, not that this matters.
+
+Each subsequent line has two integers, the endpoints of an edge.
+Node numbers for these edges are implicit from the number of nodes on the layers.
+For example, if the second line in the file is.
+ 2 3 4
+then nodes 1 and 2 are on layer 1, nodes 3-5 on layer 2 and nodes 6-9 on layer 3.
+
+sgf format is described in, among others, mlcm2sgf.py
+IMPORTANT: The minimization program in src assumes layers are numbered starting at 0.
+
+Usage: lff2sgf INPUT_FILE > OUTPUT_FILE
+</pre>
+</li>
+<hr><br>
+<li>
 <strong><a href="mlcm2sgf.py">mlcm2sgf.py</a> --</strong><br>
 <pre>
  Translates from mlcm format, as documented at
@@ -78,17 +117,17 @@ descibed in M. Chimani, P. Hungerlaender, M. Juenger, P. Mutzel. An SDP
 Approach to Multi-level Crossing Minimization. ACM Journal of Experimental
 Algorithmics, Volume 17(3), Article 3.3, 2012. It goes as follows:
 
-<Number-of-Levels>
-<Number-of-Edges-Between-First-and-Second-Level>
-<Number-of-Edges-Between-Second-and-Third-Level>
+Number-of-Levels
+Number-of-Edges-Between-First-and-Second-Level
+Number-of-Edges-Between-Second-and-Third-Level
 ...
-<Number-of-Nodes-on-First-Level>
-<Number-of-Nodes-on-Second-Level>
+Number-of-Nodes-on-First-Level
+Number-of-Nodes-on-Second-Level
 ...
-<Index-of-Node-on-First-Layer> <Index-of-Node-on-Second-Level>
-<Index-of-Node-on-First-Layer> <Index-of-Node-on-Second-Level>
+Index-of-Node-on-First-Layer Index-of-Node-on-Second-Level
+Index-of-Node-on-First-Layer Index-of-Node-on-Second-Level
 ...
-<Index-of-Node-on-Second-Layer> <Index-of-Node-on-Third-Level>
+Index-of-Node-on-Second-Layer Index-of-Node-on-Third-Level
 ...
 
 The node indices start at 0 on each level, i.e., each level has a node
@@ -101,7 +140,7 @@ sfg format is as follows:
    ...
    c comment line k
 
-   t graph_name
+   t graph_name num_nodes num_edges num_layers
 
    n id_1 layer_1 position_1
    n id_2 layer_2 position_2
@@ -118,27 +157,66 @@ sfg format is as follows:
 <strong><a href="ralay.py">ralay.py</a> --</strong><br>
 <pre>
 ralay.py - offers a mechanism for producing layered graphs with
-different variances with respect to number of nodes per layer, number of
-dummy nodes, degrees of nodes, shapes, etc.. Output is in sgf format, which
-can be converted to dot or graphml, as desired. Graphs are guaranteed to be
-connected (and interesting) because each node has indegree 1 (unless on layer 0)
-and outdegree 1 (unless on the highest layer).
-
-@author Matthias Stallmann
-@date 2018/6/18
+  different variances with respect to number of nodes per layer, number of
+  dummy nodes, degrees of nodes, shapes, etc.. Output is in sgf format, which
+  can be converted to dot or graphml, as desired. Graphs are guaranteed to be
+  connected (and interesting) because each node has indegree 1 (unless on layer 0)
+  and outdegree 1 (unless on the highest layer).
 </pre>
 </li>
 <hr><br>
 <li>
-<strong><a href="raleigh_notes.md">raleigh_notes.md</a> --</strong><br>
+<strong><a href="repeatHeuristics.sh">repeatHeuristics.sh</a> --</strong><br>
 <pre>
-  Detailed description of how ralay.py works.
+runs a sequence of heuristics, using minimization software, ../src/minimization,
+a specified number of times, feeding optimum output of each run to the input of the next;
+the sequence of heuristics and their options is read from a config file;
+an optional argument gives a seed, allowing randomized versions of the heuristics;
+an example of a config file is test_repeatHeuristics.txt;
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="runstats2csv.sh">runstats2csv.sh</a> --</strong><br>
+<pre>
+reads a file in which each line contains a tag and a value and converts it
+to a csv file where
+  - there is a column for each distinct tag, with that tag as header
+  - all values having that tag are in the column, in order of appearance
+for example, if the file has a collection of lines of the form
+     runtime VALUE
+the output will have a column with header runtime and all instances of VALUE below it.
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="scrambleSgf.py">scrambleSgf.py</a> --</strong><br>
+<pre>
+Randomly permutes nodes and edges of an sgf file;
+order in which nodes appear and their position in a layer are permuted independently
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="sgf2layered_graphml.py">sgf2layered_graphml.py</a> --</strong><br>
+<pre>
+ translates from sgf format, described in the script, to the graphml format
+ used by Galant. This program is a simple filter, translating from
+ standard input to standard output.
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="sgf2lff.py">sgf2lff.py</a> --</strong><br>
+<pre>
+Translates from sgf format to lff format.
+These formats are described in mlcm2sgf.py and lff2sgf.py, respectively.
 </pre>
 </li>
 <hr><br>
 </ul>
 <address>
 <a href="http://people.engr.ncsu.edu/mfms/">Matthias F. (Matt) Stallmann</a><br>
-Created: Mon May 18 11:14:14 EDT 2020
+Created: Mon Aug  8 09:38:31 EDT 2022
 </address>
 </body> </html>

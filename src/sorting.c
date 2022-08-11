@@ -88,13 +88,13 @@ static int compare_weights( const void * ptr_i, const void * ptr_j ) {
   Nodeptr * entry_ptr_j = (Nodeptr *) ptr_j;
   Nodeptr node_i = * entry_ptr_i;
   Nodeptr node_j = * entry_ptr_j;
-  if( node_i->weight > node_j->weight ) return 1;
+  if ( node_i->weight > node_j->weight ) return 1;
   else if( node_i->weight < node_j->weight ) return -1;
   else return 0;
 }
 
 /**
- * Comparison function to be used by qsort to compare degrees of nodes.
+ * Comparison function to be used by sorting to compare degrees of nodes.
  */
 static int compare_degrees( const void * ptr_i, const void * ptr_j ) {
   Nodeptr * entry_ptr_i = (Nodeptr *) ptr_i;
@@ -109,7 +109,7 @@ static int compare_degrees( const void * ptr_i, const void * ptr_j ) {
 }
 
 /**
- * Comparison function to be used by qsort to compare the weights of two
+ * Comparison function to be used by sorting to compare the weights of two
  * nodes. Assumes that each array element is a pointer to a node.
  */
 static int compare_down_edges( const void * ptr_i, const void * ptr_j ) {
@@ -124,7 +124,7 @@ static int compare_down_edges( const void * ptr_i, const void * ptr_j ) {
 }
 
 /**
- * Comparison function to be used by qsort to compare the weights of two
+ * Comparison function to be used by mergesort to compare the weights of two
  * nodes. Assumes that each array element is a pointer to a node.
  */
 static int compare_up_edges( const void * ptr_i, const void * ptr_j ) {
@@ -186,14 +186,6 @@ void layerUnstableSort( int layer )
   updateNodePositions( layer );
 }
 
-void layerQuicksort( int layer )
-{
-  Layerptr layer_ptr = layers[ layer ];
-  qsort( layer_ptr->nodes, layer_ptr->number_of_nodes,
-         sizeof( Nodeptr ), compare_weights );
-  updateNodePositions( layer );
-}
-
 /**
  * Sort the array of edges by the positions of the nodes on the lower layer
  */
@@ -214,7 +206,7 @@ void sortByUpNodePosition( Edgeptr * edge_array, int num_edges )
 
 void sortByDegree( Nodeptr * node_array, int num_nodes )
 {
-  qsort( node_array, num_nodes, sizeof(Nodeptr), compare_degrees );
+  insertion_sort( node_array, num_nodes, sizeof(Nodeptr), compare_degrees );
 }
 
 /*  [Last modified: 2014 07 21 at 18:21:49 GMT] */
