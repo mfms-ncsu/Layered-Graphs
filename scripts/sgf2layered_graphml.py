@@ -144,5 +144,3 @@ def main():
     print_graphml(internal_graph)
 
 main()
-
-#  [Last modified: 2020 12 29 at 23:28:06 GMT]

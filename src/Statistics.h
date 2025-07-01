@@ -34,6 +34,7 @@ double get_median( Statistics s );
 double get_mean( Statistics s );
 double get_max( Statistics s );
 double get_standard_deviation( Statistics s );
+double get_variance( Statistics s );
 int get_number_of_data_points( Statistics s );
 void add_data( Statistics s, double data_point );
 
@@ -47,7 +48,7 @@ void print_statistics( Statistics s, FILE * output_stream, const char * format )
 /**
  * deallocates data structures for s
  */
-void free_statistics( Statistics s );
+void deallocateStatistics( Statistics s );
 
 #endif
 

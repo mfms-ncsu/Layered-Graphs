@@ -1,0 +1,12 @@
+/* a cycle with six nodes, two layers, plus a diagonal across
+  seed_info = created by sgf_to_dot_and_ord: 6 nodes, 7 edges, 2 layers
+ */
+digraph c6_plus_one {
+ 0 -> 3;
+ 0 -> 5;
+ 1 -> 3;
+ 1 -> 4;
+ 2 -> 4;
+ 2 -> 5;
+ 2 -> 3;
+}

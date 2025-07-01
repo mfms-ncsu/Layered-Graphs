@@ -1,0 +1,13 @@
+# Ordering for graph c6_plus_one
+# 
+
+# Order for layer 0: 
+0 {
+ 0 1 2
+} # end of layer 0
+
+# Order for layer 1: 
+1 {
+ 3 4 5
+} # end of layer 1
+

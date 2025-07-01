@@ -12,6 +12,9 @@ _Other options:_
 * shape (--shape); details later
 * number of dummy nodes (--dummies)
 
+**Naming convention**
+Standard name is of the form `r_nodes_edges_layers_dv_seed.sgf`
+
 **Degree variance** is the most complex parameter to control. Whenever a neighbor w needs to be chosen for a node v, the following restrictions apply:
 * if v is not on the lowest layer and has no incoming edges, w must come from a lower layer than v
 * if v is not on the highest layer and has no outgoing edges, w must come from a higher layer
@@ -21,10 +24,10 @@ Certain potential neighbors have priority and the selection will be restricted t
 * a w on a lower layer with no outgoing edges
 * a w on a higher layer with no incoming edges
 
-Now for how degree variance works. Let N be the list of potential neighbors based on the above criteria. Divide N into buckets N[1], ... , N[max], where each N[d] contains nodes with indegree or outdegree d, as appropriate (indegree for nodes on higher layers, outdegree for nodes on lower layers); here, max_k is the maximum degree among the the potential neighbors.
-Let M[k] = the k-th nonempty bucket, for k = 0, ... , max_k-1
+Now for how degree variance works. Let N be the list of potential neighbors based on the above criteria. Divide N into buckets N[1], ... , N[max], where each N[d] contains nodes with indegree or outdegree d, as appropriate (indegree for nodes on higher layers, outdegree for nodes on lower layers); here, max_k is the maximum degree among the the potential neighbors.
+Let M[k] = the k-th nonempty bucket, for k = 0 , ... , max_k - 1
 * If deg_variance (dv) is 0, chose a random node w from M[0]
-* If 0 < dv <= 1, let r be a random number in the interval [0,dv) and choose a random w from M[floor(r*max_k)]
+* If 0 < dv <= 1, let r be a random number in the interval [0,dv) and choose a random w from M[floor(r * max_k)]
 * If dv > 1, let r be a random number from  an exponential distribution with mean 1/dv and choose w randomly from M[k], where k = floor(max_k * (1 - r)) and let k = 0 if it's negative. The goal is to get a small number of high degree nodes tailing off to larger numbers of low degree nodes. Intuition is that, by preferring high degree nodes when adding edges, the degrees of the lower degree nodes are not likely to increase.
 
 **Layer width** is controlled by the ``-mw`` and ``-MW`` options, referred to as *m* and *M* in what follows. The number of nodes on each layer is chosen uniformly at random from the interval [*m*,*M*] with the following restrictions, letting *u* be the number of layers whose width will be chosen after that of the current layer and *n'* be the number of nodes not yet placed on layers (including those to be placed on the current layer).

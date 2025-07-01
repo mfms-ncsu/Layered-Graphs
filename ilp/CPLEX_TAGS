@@ -1,0 +1,11 @@
+00-Instance
+Variables
+Constraints
+NonZeros
+value
+StatusCode
+runtime
+CPXtime
+num_branches
+SolutionFound
+ProvedOptimal

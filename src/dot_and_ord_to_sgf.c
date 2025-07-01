@@ -22,22 +22,6 @@
  *
  * edges are directed so that the nodes appearing earlier in the input are
  * sources
- *
- * @todo comments from the original dot file are not preserved and should be
- * added by an external script for now.
- *
- * Deviations (not relevant here):
- * - edge direction may not be correct yet, but can be fixed using
- * sgfDirect.awk
- * - nodes, edges, and layers may be missing in the title (t) line, but can
- * be deduced
- * - the 'n' lines may be missing, but can be deduced from the title
- * - layers and positions may be missing in the 'n' lines but can be filled
- * in by existing programs and/or scripts
- * - the 'e' lines may have additional information, e.g., to identify edges
- * as 'favored' (details not worked out yet)
- *
- * $Id: dot_and_ord_to_sgf.c 73 2014-07-17 20:36:15Z mfms $
  */
 
 
@@ -50,6 +34,9 @@
 #include"defs.h"
 #include"graph_io.h"
 #include"graph.h"
+
+char * heuristic = NULL;
+char * preprocessor = NULL;
 
 /**
  * prints usage message
@@ -64,6 +51,11 @@ static void printUsage( void ) {
  * Writes an sgf file based on the current graph to standard output
  */
 static void write_sgf( void ) {
+  startGettingComments();
+  char buffer[MAX_NAME_LENGTH];
+  while ( getNextComment(buffer) ) {
+      printf("c %s\n", buffer);
+  }
   printf( "t %s %d %d %d\n",
            graph_name,
            number_of_nodes,
@@ -102,5 +94,3 @@ int main( int argc, char * argv[] )
 
   return EXIT_SUCCESS;
 }
-
-/*  [Last modified: 2020 12 19 at 21:06:53 GMT] */

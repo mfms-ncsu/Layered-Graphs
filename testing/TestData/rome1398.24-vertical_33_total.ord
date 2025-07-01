@@ -1,0 +1,23 @@
+# Ordering for graph rome1398.24_GKNV-vertical_33_total
+# 
+
+# Order for layer 0: 
+0 {
+ 1 0
+} # end of layer 0
+
+# Order for layer 1: 
+1 {
+ 9 8 7 10 6 5 4 3 2
+} # end of layer 1
+
+# Order for layer 2: 
+2 {
+ 19 20 21 18 15 17 16 14 11 13 12
+} # end of layer 2
+
+# Order for layer 3: 
+3 {
+ 25 24 23 22
+} # end of layer 3
+

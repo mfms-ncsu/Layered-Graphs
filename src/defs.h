@@ -10,8 +10,14 @@
 #define DEFS_H
 
 #include<stdbool.h>
+#include<stdio.h>
 
-#include"order.h"
+/**
+ * @todo not clear why some definitions are in constants.h or why positions.h needs to be included:
+ *       maybe put everything in one place
+ */
+#include"constants.h"
+#include"positions.h"
 
 // parameters based on command-line options
 
@@ -49,18 +55,6 @@ extern double start_time;
 extern double max_runtime;
 
 /**
- * True if using the standard, "natural" stopping criterion for the iterative
- * heuristic, e.g., no improvement after a sweep for barycenter.
- */
-extern bool standard_termination;
-
-/**
- * True if there is a list of favored edges based on predecessors and
- * successors of a central node
- */
-extern bool favored_edges;
-
-/**
  * True if taking average of averages when calculating barycenter or median
  * weights wrt both neighboring layers.  False if dividing total position by
  * total degree.
@@ -69,6 +63,14 @@ extern bool balanced_weight;
 
 extern char * heuristic;
 extern char * preprocessor;
+
+/**
+ * @brief true if the context is a heuristic that optimizes verticality;
+ *        this is not the same as having verticality as the objective;
+ *        you can run a verticality heuristic and output the configuration with
+ *        minimum crossings
+ */
+extern bool verticality_heuristic;
 
 /**
  * minimization objective, currently used to determine sgf output, if any;
@@ -82,30 +84,45 @@ extern char * objective;
 /**
  * structure to save layer orderings for minimum crossings so far
  */
-extern Orderptr best_crossings_order;
+extern Positionptr best_crossings_order;
 /**
  * structure to save layer orderings for minimum edge crossings so far
  */
-extern Orderptr best_edge_crossings_order;
+extern Positionptr best_edge_crossings_order;
 /**
  * structure to save layer orderings for minimum total edge stretch so far
  */
-extern Orderptr best_total_stretch_order;
+extern Positionptr best_total_stretch_order;
 /**
  * structure to save layer orderings for minimum bottleneck edge stretch so far
  */
-extern Orderptr best_bottleneck_stretch_order;
+extern Positionptr best_bottleneck_stretch_order;
 /**
  * structure to save layer orderings for minimum crossings involving favored
  * edges so far
  */
-extern Orderptr best_favored_crossings_order;
+extern Positionptr best_favored_crossings_order;
+/**
+ * structure to save layer orderings for minimum nonverticality so far
+ */
+extern Positionptr best_nonverticality_order;
+/**
+ * structure to save layer orderings for minimum bottleneck verticality so far 
+ */
+extern Positionptr best_bottleneck_verticality_order;
 
 /**
  * True if the edge list (node list) is to be randomized after each pass of
  * mce (sifting)
  */
 extern bool randomize_order;
+
+/**
+ * If true, do a random sift of the endpoints of a random edge at the beginning of each pass.
+ * A random sift puts the sifted node in a random position on its layer.
+ * Currently implemented for verticality heurisitics.
+ */
+extern bool do_random_sift;
 
 /**
  * For barycenter heuristic: how to deal with nodes that have no
@@ -132,7 +149,7 @@ extern enum sift_option_enum { LAYER, DEGREE, RANDOM } sift_option;
  * options are denoted by TOTAL and MAX, respectively. DEFAULT means use
  * TOTAL for sifting and mcn, MAX for mce.
  *
- * @todo The introduction of mce_s as a separate heuristic makes this enum
+ * @todo The introduction of mce_t as a separate heuristic makes this enum
  * superfluous for now, but maybe it should be revived for the sake of
  * symmetry and completeness -- so that the sifting heuristic can be used
  * with bottleneck minimization
@@ -140,37 +157,19 @@ extern enum sift_option_enum { LAYER, DEGREE, RANDOM } sift_option;
 extern enum sifting_style_enum { DEFAULT, TOTAL, MAX } sifting_style;
 
 /**
- * During a pass of maximum crossings edge, each iteration fixes both an edge
- * and the two endpoints of the edge. A pass can end in one of three ways:
- * - all nodes are fixed (NODES); each node is sifted only once
- * - all edges are fixed (EDGES); both endpoints of an edge are sifted at
- * each iteration (fixing of nodes is irrelevant)
- * - as soon as both endpoints of the current edge are fixed (EARLY)
- * NODES appears to work best.
- * The new option, ONE_NODE, sifts only one endpoint of the max crossings
- * edge, the one with the most node crossings; does not appear to work very
- * well.
- */
-extern enum mce_option_enum { NODES, EDGES, EARLY, ONE_NODE } mce_option;
-
-/**
  * For Pareto optimization we can choose a variety of different objectives;
  * for now we consider two at a time. This option currently affects only what
  * gets updated and reported, not the behavior of any heuristic.
  *  NO_PARETO = no Pareto optimization, i.e., don't report Pareto points
- *  BOTTLENECK_TOTAL = maxEdgeCrossings(),numberOfCrossings()
- *  STRETCH_TOTAL = totalStretch(),numberOfCrossings()
- *  BOTTLENECK_STRETCH = maxEdgeCrossings(),totalStretch()
+ *  BOTTLENECK_TOTAL = maxEdgeCrossings(), numberOfCrossings()
+ *  TOTAL_STRETCH = numberOfCrossings(), totalStretch()
+ *  BOTTLENECK_STRETCH = maxEdgeCrossings(), totalStretch()
+ *  TOTAL_VERTICAL = numberOfCrossings(), updateAllVerticality()
+ *  BOTTLENECK_VERTICAL = maxEdgeCrossings(), updateAllVerticality()
  */
 extern enum pareto_objective_enum
- { NO_PARETO, BOTTLENECK_TOTAL, STRETCH_TOTAL, BOTTLENECK_STRETCH } pareto_objective; 
-
-/**
- * Save the order at the end of the given iteration in a file called
- * capture-x.ord, where x is the iteration number. If the value is negative,
- * no capture takes place.
- */
-extern int capture_iteration;
+ { NO_PARETO, BOTTLENECK_TOTAL, TOTAL_STRETCH, BOTTLENECK_STRETCH,
+                                TOTAL_VERTICAL, BOTTLENECK_VERTICAL } pareto_objective;
 
 /**
  * true if one or more files representing best values of objective or
@@ -193,15 +192,6 @@ extern bool write_sgf_output;
  *  representing best value of the OBJECTIVE to go to stdout
  */
 extern bool write_stdout;
-
-/**
- * Output file names are of the form output_base_name-x.ord, where x is
- * information about the heuristic used.
- * If the input is an sgf file, output will be output_base_name-x.sgf.
- * The output_base_name is specified via the -w option
- * with the special case -w _ meaning the graph_name will be used
- */
-extern char * output_base_name;
 
 /**
  * True if verbose information about the graph should be printed

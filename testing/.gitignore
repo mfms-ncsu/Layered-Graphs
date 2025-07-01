@@ -1,2 +1,8 @@
-# want the .out files in TestOutputs to be included
+# want the test instances and .out files in TestOutputs to be included
 !*.out
+!*.dot
+!*.ord
+!*.sgf
+# no need to save extra outputs from test runs
+*last*
+*next* 

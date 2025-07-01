@@ -173,6 +173,10 @@ bool nextNode( FILE * in, char * node_buffer )
   return false;
 }
 
+/************************************************************************************/
+/*                                Output functions                                  */
+/************************************************************************************/
+
 static int current_column = 0;  // keeps track of column while printing
 static int nodes_on_line = 0; // number of nodes on current line
 static int output_layer = -1;   // current layer during output
@@ -218,5 +222,3 @@ void outputNode( FILE * out, const char * node )
   current_column += strlen( node );
   ++nodes_on_line;
 }
-
-//  [Last modified: 2019 09 27 at 16:20:10 GMT]

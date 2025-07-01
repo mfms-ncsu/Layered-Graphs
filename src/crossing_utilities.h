@@ -17,7 +17,7 @@
 #include"graph.h"
 
 /**
- * Counts the inversions when an array of edges and updates crossings for the
+ * Counts the inversions for an array of edges and updates crossings for the
  * edges and their nodes accordingly [*** this is a side effect ***].
  *
  * @param edge_array an array of edges sorted by their down nodes

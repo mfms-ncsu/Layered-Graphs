@@ -1,0 +1,121 @@
+Here we describe software that implements a large collection of simple
+heuristics targeting the various layered graph objectives.
+
+\subsection{Iterative improvement}
+
+Iterative improvement heuristics start with a given configuration, random or the result of preprocessing -- see Section~\ref{sec:preprocessing}, and perform rearrangements until a stopping criterion is achevied.
+Each heuristic defines an \emph{iteration}, a single rearrangement of nodes on a layer, and a \emph{pass}, a sequence of iterations that either systematically rearrange every layer or every single node.
+Heuristics terminate either after a fixed number of passes or when a pass fails to improve the objective or any of a set of objectives.
+
+\subsubsection{Basic paradigms}
+
+There are two basic types of iterative improvement heuristics: sorting and node-insertion.
+
+\medskip
+\noindent \textbf{Sorting.}
+Each iteration of a sorting heuristic works as follows.
+\begin{enumerate}
+        \item choose a layer $k$
+        \item assign weights to nodes on layer $k$ based on positions of their neighbors on layers $k-1$ and/or $k+1$
+        \item sort the nodes on layer $k$ by increasing weight
+\end{enumerate}
+
+Examples of sorting heuristics are the median and the barycenter heuristics -- see~\cite{1999-DiBattista}.
+Let $L$ be the number of layers.
+Then in both of these heuristics a pass consists of an \emph{upsweep}, where $k=2,\ldots,L$ and weights are based on layer $k-1$, followed by a \emph{downsweep}, where $k=L-1,\ldots,1$ and weights are based on layer $k+1$.
+The difference is that the in the median heuristic, the weight of $x$ is the median of the positions of its neighbors, whereas in the barycenter it is the mean.
+
+In a variant called \emph{mod-bary}, the survivor among several variants of \emph{maximum crossings layer}~\cite{2008-MSThesis-Gupta}, each pass works as follows.
+\begin{enumerate}
+    \item choose unmarked layer $k^*$ whose incident edges have the maximum number of crossings and mark it
+    \item sort nodes on layer $k^*$ with weights based on neighbor positions on layers $k^*-1$ (if $k^* >1$) \emph{and} $k^*+1$ (if $k^*<L$)
+    \item do an upsweep for layers $k^*+1,\ldots,L-1$
+    \item do a downsweep for layers $k^*-1,\ldots,1$
+    \item the pass ends when all layers are marked
+\end{enumerate}
+In many cases mod-bary outperforms barycenter (which, in turn, almost always outperforms the median heuristic).
+
+\medskip
+\noindent \textbf{Node-insertion.}
+Each pass of a node-insertion heuristic works as follows.
+\begin{enumerate}
+    \item choose unmarked node $x$
+    \item put $x$ into an optimal position on its layer based on some objective, shifting other nodes as needed
+\end{enumerate}
+
+The first published node-insertion heuristic, called \emph{sifting}, is due to Matuszewski et al.~\cite{1999-GD-Matuszewski-p217}. In their version no marking takes place.
+Nodes are simply considered by increasing or decreasing degree in each pass.
+Each $x$ in turn is moved to a position that minimizes total crossings.
+The heuristic switches to the opposite order when a pass does not yield improvement.
+
+Another node-insertion heuristic, specifically designed for the bottleneck crossing problem, is \emph{maximum crossings edge (mce)}~\cite{2012-JEA-Stallmann}. To choose node $x$, the mce heuristic first identifies the edge $vw$ with the maximum number of crossings, making sure that at least one of $v,w$ is unmarked. Then $v$ and/or $w$ is moved. Suppose $x=v$ is moved. Instead of moving $x$ to a position that minimizes the total number of crossings overall, as sifting does, mce moves $x$ to a position that minimizes the maximum number of crossings for any edge incident on $x$.
+
+A simpler version of mce, which targets total crossings, is \emph{maximum crossings node (mcn)} (see Gupta~\cite{2008-MSThesis-Gupta}). Here $x$ is the node whose incident edges have the most crossings and, as in sifting, $x$ is moved to the position that minimizes total crossings.
+
+The mce and mcn heuristics motivate two other variations: mce-t, where $x$ is chosen as in mce but the position of $x$ is chosen to minimize total crossings; and mcn-e, where $x$ is the (unmarked) node with the maximum number of crossings but the position of $x$ is based on minimizing the maximum number of crossings for any edge incident on $x$. 
+
+\subsection{Verticality}
+
+Optimizing verticality, i.e., minimizing non-verticality, requires special care.
+When $n_{\ell}$, the number of nodes on layer $\ell$ is less than $W$, the largest number of nodes on any layer, the positions of nodes on layer $\ell$ may not be contiguous.
+This means that the sorted order of nodes on $\ell$ does not uniquely determine node positions and placing a node in its optimum position on layer $\ell$ may not involve shifting of other nodes.
+
+\subsubsection{Vertical barycenter}
+
+We implemented a non-verticality-minimizing heuristic based on mod-bary, called \emph{vertical-bary}. Each iteration starts the same way as in mod-bary, with $k^*$ the layer whose incident edges have maximum total nonverticality. Then, to choose positions based on the sorted order, we can apply a dynamic programming algorithm that chooses optimum positions for layer $\ell$ given fixed positions on the relevant neighboring layers and the sorted order of nodes on the current layer $\ell$.
+The relevant neighboring layers are $\ell-1$ and $\ell+1$ if $\ell=k^*$ and either $\ell-1$ or $\ell+1$ otherwise.
+
+Let $d_{x,p}$ be the nonverticality induced by putting node $x$ in position $p$ on layer $\ell$ and let $p^*(x)$ be the position of $x$ in an assignment of positions that minimizes $\sum_{x ~\mathrm{on}~ \ell} d_{x,p^*(x)}$. Our goal is to find $p*(x)$ for all $x$ on $\ell$.
+
+Let $C[i,j]=$ the minimum total nonverticality for nodes $1,\ldots,i$ (in the sorted order) using positions $1,\ldots,j$ only, and let $P[i,j] =$ \textbf{true} if the optimum position for $i$ is $j$, \textbf{false} otherwise.
+Starting with $C[0,0]=0$ and $C[j,0]=\infty$ for all $j$ as base cases, $C[i,j]$ is the minimum of
+\begin{eqnarray*}
+C[i-1,j-1] + d_{i,j} && \mbox{ put node } i \mbox{ in position } j
+\\
+C[i,j-1] && \mbox{ put node } i \mbox{ in a position } < j
+\end{eqnarray*}
+If the first option is minimum, then $P[i,j] =$ \textbf{true}, otherwise $P[i,j] =$ \textbf{false}.
+
+Note that the desired total nonverticality is $C[n_{\ell},W]$ and we only need $i \leq j \leq W$ and $i \leq n_{\ell}$.
+The number of table entries in a dynamic programming algorithm, ignoring the base cases, is therefore $n_{\ell} (W - n_{\ell})$, the worst case being when $n_{ell}\approx W/2$.
+
+To extract $p^*(i)$ for $i = 1, \ldots, n_{\ell}$ apply the following recursive procedure starting with Positions($n_{\ell},W$).
+
+\begin{tabbing}
+    xxx \= xxx \= xxx \= xxx \= xxx \= xxx \= xxx \= xxx
+            \= \kill
+\textbf{procedure} Positions($i,j$) \\
+\>\textbf{if} $i=0$ \textbf{return} \\
+\>\textbf{if} $P[i,j]$ \\
+\>\>$p^*(i) =j$ \\
+\>\>Positions($i-1,j-1$) \\
+\>\textbf{else} \\
+\>\>Positions($i,j-1$) \\
+\textbf{end}
+\end{tabbing}
+
+\subsubsection{Maximum nonverticality edge}
+
+The \emph{maximum nonverticality edge (mnve)} heuristic behaves in a way similar to mce with the following observations.
+\begin{itemize}
+    \item It is more like mce-n in that it positions node $x$ to minimize total nonverticality.
+    \item The optimum position for $x$ could be unoccupied: in that case no shifting takes place.
+\end{itemize}
+A variant that minimizes the maximum nonverticality among edges incident on $x$ with target objective bottleneck nonverticality could be easily implemented.
+
+\subsection{Combining heuristics}
+
+\subsection{Preprocessing} \label{sec:preprocessing}
+
+Experiments have shown that preprocessing the graph before applying an iterative improvement heuristic leads to better and more consistent results.
+The most effective techniques involve depth-first or breadth-first search
+followed with a sort of each layer by increasing discovery time of the nodes.
+For two-layer instances breadth-first search, particularly a guided two-pass version, is especially effective -- see~\cite{2001-JEA-Stallmann}.
+With more layers depth-first search is a better choice.
+
+The sorting based on these graph traversals brings nodes that are close to each other in the graph near each other on their respective layers.
+
+\subsection{Post processing}
+
+\cmt{for large scale experimental results using mod-bary with iterative improvement heuristics, go to the research drive \texttt{rs1} and look under\\
+Old-Research/Layered-Graphs-Old/LargeScale-Experiments}

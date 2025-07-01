@@ -21,6 +21,9 @@
 #include"random.h"
 #include"check_edge_duplication.h"
 
+char * heuristic = NULL;
+char * preprocessor = NULL;
+
 static void usage_message( char * prog_name )
 {
   char * truncated_prog_name = basename( prog_name );
@@ -59,8 +62,8 @@ static void print_stats( void )
   printf( "LayerSize\t" );
   print_statistics( layer_info, stdout, "%2.1f" );
   printf( "\n" );
-  free_statistics( layer_info );
-  free_statistics( degree_info );
+  deallocateStatistics( layer_info );
+  deallocateStatistics( degree_info );
 }
 
 /**
@@ -71,8 +74,8 @@ static void add_edge( Nodeptr upper_node, Nodeptr lower_node )
 {
 #ifdef DEBUG
   printf( "-> add_edge: upper_node = (%s,%d,%d), lower_node = (%s,%d,%d)\n",
-          upper_node->name, upper_node->layer, upper_node->position,
-          lower_node->name, lower_node->layer, lower_node->position );
+          upper_node->name, upper_node->layer, upper_node->layer_index,
+          lower_node->name, lower_node->layer, lower_node->layer_index );
 #endif
   assert( upper_node->layer == lower_node->layer + 1 );
   Edgeptr new_edge = (Edgeptr) calloc( 1, sizeof(struct edge_struct) );

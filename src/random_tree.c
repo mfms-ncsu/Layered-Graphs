@@ -64,7 +64,7 @@ static Nodeptr create_node( int node_number )
   new_node->name = (char *) malloc( strlen(name_buffer) + 1 );
   strcpy( new_node->name, name_buffer );
 
-  new_node->layer = new_node->position = -1; /* to indicate "uninitialized" */
+  new_node->layer = new_node->layer_index = -1; /* to indicate "uninitialized" */
   new_node->up_degree = new_node->down_degree = 0;
   new_node->up_edges = new_node->down_edges = NULL;
   new_node->up_crossings = new_node->down_crossings = 0;
@@ -120,11 +120,11 @@ static void add_node_to_layer( Nodeptr node, int layer )
                                (layer_ptr->number_of_nodes + CAPACITY_INCREMENT) * sizeof(Nodeptr) );
     }
   node->layer = layer;
-  node->position = layer_ptr->number_of_nodes;
+  node->layer_index = layer_ptr->number_of_nodes;
   layer_ptr->nodes[ layer_ptr->number_of_nodes++ ] = node;
 #ifdef DEBUG
   printf( "<- add_node_to_layer: position = %d, number_of_nodes = %d\n",
-          node->position, layer_ptr->number_of_nodes );
+          node->layer_index, layer_ptr->number_of_nodes );
 #endif
 }
 
@@ -165,8 +165,8 @@ static void add_edge( Nodeptr upper_node, Nodeptr lower_node )
 {
 #ifdef DEBUG
   printf( "-> add_edge: upper_node = (%s,%d,%d), lower_node = (%s,%d,%d)\n",
-          upper_node->name, upper_node->layer, upper_node->position,
-          lower_node->name, lower_node->layer, lower_node->position );
+          upper_node->name, upper_node->layer, upper_node->layer_index,
+          lower_node->name, lower_node->layer, lower_node->layer_index );
 #endif
   assert( upper_node->layer == lower_node->layer + 1 );
   Edgeptr new_edge = (Edgeptr) calloc( 1, sizeof(struct edge_struct) );
@@ -303,7 +303,7 @@ void create_random_tree( int num_nodes,
         printf( " %d(%d,%d)",
                 master_node_list[i]->id,
                 master_node_list[i]->layer,
-                master_node_list[i]->position );
+                master_node_list[i]->layer_index );
       printf( "\n" );
       printf( " master_edge_list, number_of_edges = %d\n", number_of_edges );
       for ( int i = 0; i < number_of_edges; i++ )

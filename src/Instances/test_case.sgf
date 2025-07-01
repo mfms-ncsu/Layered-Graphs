@@ -1,0 +1,11 @@
+c a very simple two layer example for testing the DP algorithm
+t simple_example 7 2 2
+n 0 0 0
+n 1 0 1
+n 2 1 0
+n 3 1 1
+n 4 1 2
+n 5 1 3
+n 6 1 4
+e 0 2
+e 1 3

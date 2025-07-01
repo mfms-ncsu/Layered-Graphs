@@ -21,22 +21,24 @@
 /**
  * Prints an edge (for debugging)
  */
-static void print_edge( Edgeptr edge )
+static void print_edge(FILE * outstream, Edgeptr edge)
 {
-  printf("[%d, %d]", edge->up_node->position, edge->down_node->position );
+  Nodeptr up = edge->up_node;
+  Nodeptr down = edge->down_node;
+  fprintf(outstream, "(%s %s)[%d, %d]", up->name, down->name, up->layer_index, down->layer_index );
 }
 
 /**
  * Prints the current sequence of edges between the layers - used for
  * debugging
  */
-static void print_edge_array( Edgeptr * edge_array, int number_of_edges )
+static void print_edge_array(FILE * outstream, Edgeptr * edge_array, int number_of_edges )
 {
   int i = 0;
   for( ; i < number_of_edges; i++ )
     {
-      print_edge( edge_array[i] );
-      printf("\n");
+      print_edge(outstream, edge_array[i] );
+      fprintf(outstream, "\n");
     }
 }
 #endif
@@ -66,12 +68,17 @@ int insert_and_count_inversions_down( Edgeptr * edge_array,
                                       int starting_index,
                                       int diff )
 {
+#ifdef DEBUG
+  fprintf(stderr, "-> insert_and_count_inversions_down, edge = ");
+  print_edge(stderr, edge_array[starting_index]);
+  fprintf(stderr, "\n");
+#endif
   int number_of_crossings = 0;
   int index = starting_index - 1;
   Edgeptr edge_to_insert = edge_array[starting_index];
   while( index >= 0
-         && edge_array[index]->down_node->position
-         > edge_to_insert->down_node->position )
+         && edge_array[index]->down_node->layer_index
+         > edge_to_insert->down_node->layer_index )
     {
       number_of_crossings++;
       update_crossings( edge_array[index], edge_to_insert, diff );
@@ -79,16 +86,20 @@ int insert_and_count_inversions_down( Edgeptr * edge_array,
       index--;
     }
   edge_array[index + 1] = edge_to_insert;
+#ifdef DEBUG
+  fprintf(stderr, "<- insert_and_count_inversions_down, crossings = %d, edge array =\n", number_of_crossings);
+  print_edge_array(stderr, edge_array, starting_index + 1);
+#endif
   return number_of_crossings;
 }
 
 int count_inversions_down( Edgeptr * edge_array, int number_of_edges, int diff )
 {
 #ifdef DEBUG
-  printf("-> count_inversions_down\n");
-  printf( " edge array for upper layer %d:\n",
+  fprintf(stderr, "-> count_inversions_down\n");
+  fprintf(stderr,  " edge array for upper layer %d:\n",
           edge_array[0]->up_node->layer );
-  print_edge_array( edge_array, number_of_edges );
+  print_edge_array(stderr, edge_array, number_of_edges);
 #endif
   int number_of_inversions = 0;
   int i = 1;
@@ -98,10 +109,10 @@ int count_inversions_down( Edgeptr * edge_array, int number_of_edges, int diff )
         += insert_and_count_inversions_down( edge_array, i, diff );
     }
 #ifdef DEBUG
-  printf("<- count_inversions_down, number = %d\n", number_of_inversions);
-  printf( " edge array for upper layer %d:\n", 
+  fprintf(stderr, "<- count_inversions_down, number = %d\n", number_of_inversions);
+  fprintf(stderr, " edge array for upper layer %d:\n", 
           edge_array[0]->up_node->layer );
-  print_edge_array( edge_array, number_of_edges );
+  print_edge_array(stderr, edge_array, number_of_edges);
 #endif
   return number_of_inversions;
 }
@@ -113,8 +124,8 @@ int insert_and_count_inversions_up( Edgeptr * edge_array,
   int index = starting_index - 1;
   Edgeptr edge_to_insert = edge_array[starting_index];
   while( index >= 0
-         && edge_array[index]->up_node->position
-         > edge_to_insert->up_node->position )
+         && edge_array[index]->up_node->layer_index
+         > edge_to_insert->up_node->layer_index )
     {
       number_of_crossings++;
       update_crossings( edge_array[index], edge_to_insert, diff );
@@ -128,8 +139,8 @@ int insert_and_count_inversions_up( Edgeptr * edge_array,
 int count_inversions_up( Edgeptr * edge_array, int number_of_edges, int diff  )
 {
 #ifdef DEBUG
-  printf("-> count_inversions_up\n");
-  print_edge_array( edge_array, number_of_edges );
+  fprintf(stderr, "-> count_inversions_up\n");
+  print_edge_array(stderr, edge_array, number_of_edges );
 #endif
   int number_of_inversions = 0;
   int i = 1;
@@ -139,8 +150,8 @@ int count_inversions_up( Edgeptr * edge_array, int number_of_edges, int diff  )
         += insert_and_count_inversions_up( edge_array, i, diff );
     }
 #ifdef DEBUG
-  printf("<- count_inversions_up, number = %d\n", number_of_inversions);
-  print_edge_array( edge_array, number_of_edges );
+  fprintf(stderr, "<- count_inversions_up, number = %d\n", number_of_inversions);
+  print_edge_array(stderr, edge_array, number_of_edges );
 #endif
   return number_of_inversions;
 }
@@ -154,5 +165,3 @@ void add_edges_to_array( Edgeptr * edge_array, Edgeptr * edges_to_add,
       edge_array[ start_pos + edges_added ] = edges_to_add[ edges_added ];
     }
 }
-
-/*  [Last modified: 2014 03 10 at 16:39:24 GMT] */

@@ -24,11 +24,11 @@ double stretch(Edgeptr e) {
   int w_layer_size = layers[w_layer]->number_of_nodes;
   double v_scale = v_layer_size > 1 ? v_layer_size - 1.0 : 2.0;
   double w_scale = w_layer_size > 1 ? w_layer_size - 1.0 : 2.0;
-  double stretch = fabs( v->position / v_scale - w->position / w_scale );
+  double stretch = fabs( v->layer_index / v_scale - w->layer_index / w_scale );
 #ifdef DEBUG
   printf("<- stretch, v: scale, position = %f, %d; w: scale, position = %f, %d;"
          " stretch = %f\n",
-         v_scale, v->position, w_scale, w->position, stretch);
+         v_scale, v->layer_index, w_scale, w->layer_index, stretch);
 #endif
   return stretch;
 }

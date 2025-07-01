@@ -30,6 +30,7 @@ args = parser.parse_args()
 """
 def read_sol(input):
     global _graph_name
+    get_date_and_time(input)
     _graph_name = get_graph_name(input)
     get_run_information(input)
     solution = get_solution(input)
@@ -50,20 +51,33 @@ def read_sol(input):
         
     return node_list, edge_list
     
+# adds a header comment and a comment line with date and 
+def get_date_and_time(input):
+    global _comments
+    _comments.append("created from a cplex_ilp solution")
+    for line in input:
+        words = line.split()
+        if len(words) > 0 and words[0] == "CurrentTime":
+            _comments.append(line.strip())
+            return
+    sys.stderr.write("*** Error: no date and time information ***\n")
+    sys.exit()
+   
+
 # retrieves the name of the graph from the file name
 def get_graph_name(input):
     global _comments
     for line in input:
         words = line.split()
         if len(words) > 0 and words[0] == "InputFile":
-            # drop the .lp from the input file name
-            """
-            @todo make this more sophisticated (strip out directory)
-            """
-            return words[1][:-3]
-        else:
-            _comments.append(line.strip())
-    return "unknown_name"
+            full_name = words[1]
+            base_name = full_name.split('/')[-1]
+            # get rid of extension and end up with a list
+            base_list = base_name.split('.')[:-1]
+            return '.'.join(base_list)
+    sys.stderr.write("*** Error: no file name ***\n")
+    sys.exit()
+
 
 # get information about the cplex run and store it with the comments, stop
 # when you get to the Objective value
@@ -73,11 +87,14 @@ def get_run_information(input):
         if len(words) > 0 and (
                 words[0] == "runtime"
                 or words[0] == "TimedOut"
+                or words[0] == "SolutionFound"
                 or words[0] == "ProvedOptimal" ):
             _comments.append(line.strip())
         elif len(words) > 0 and words[0] == "value":
             _comments.append(line.strip())
             return
+    sys.stderr.write("*** Error: objective value not given ***\n")
+    sys.exit()
 
 # @ return a tuple of the form (i, L, P) for a line of the form
 # p_i_L P
@@ -117,14 +134,21 @@ def get_solution(input):
             solution.append(line) 
     return solution
     
+def get_number_of_layers(node_list):
+    # number of layers = 1 = max layer number
+    max_layer_number = -1
+    for node in node_list:
+        layer_number = int(node[1])
+        max_layer_number = max(layer_number, max_layer_number)
+    return max_layer_number + 1
+
 if __name__ == '__main__':
     node_list, edge_list = read_sol(sys.stdin)
     for line in _comments:
-        print('c ', line)
-    print('t ', _graph_name)
+        print('c', line)
+    number_of_layers = get_number_of_layers(node_list)
+    print('t', _graph_name, len(node_list), len(edge_list), number_of_layers)
     for n in node_list:
-        print('n ', n[0], n[1], n[2])
+        print('n', n[0], n[1], n[2])
     for e in edge_list:
-        print('e ', e[0], e[1])
-
-#  [Last modified: 2020 05 15 at 18:17:36 GMT]
+        print('e', e[0], e[1])

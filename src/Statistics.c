@@ -62,6 +62,16 @@ double get_mean( Statistics s ) { return s->sum / s->number_of_data_points; }
 
 double get_max( Statistics s ) { return s->data[ s->number_of_data_points - 1 ]; }
 
+double get_variance( Statistics s ) {
+  double mean = get_mean( s );
+  double sum_of_diffs_squared = 0;
+  for ( int i = 0; i < s->number_of_data_points; i++ ) {
+    double diff = s->data[i] - mean;
+    sum_of_diffs_squared += diff * diff;
+  }
+  return sum_of_diffs_squared / s->number_of_data_points;
+}
+
 double get_standard_deviation( Statistics s )
 {
   double sum_of_squares = 0;
@@ -127,19 +137,19 @@ void add_data( Statistics s, double data_point )
 void print_statistics( Statistics s, FILE * output_stream, const char * format )
 {
   fprintf( output_stream, format, get_min(s) );
-  fprintf( output_stream, "\t" );
+  fprintf( output_stream, "," );
   fprintf( output_stream, format, get_median(s) );
-  fprintf( output_stream, "\t" );
+  fprintf( output_stream, "," );
   fprintf( output_stream, format, get_mean(s) );
-  fprintf( output_stream, "\t" );
+  fprintf( output_stream, "," );
   fprintf( output_stream, format, get_max(s) );
-  fprintf( output_stream, "\t" );
+  fprintf( output_stream, "," );
   fprintf( output_stream, format, get_standard_deviation(s) );
-  fprintf( output_stream, "\t" );
+  fprintf( output_stream, "," );
   fprintf( output_stream, "%d", get_number_of_data_points(s) );
 }
 
-void free_statistics( Statistics s )
+void deallocateStatistics( Statistics s )
 {
   assert( s != NULL );
   if ( s->data != NULL ) free( s->data );
@@ -173,7 +183,7 @@ int main()
   printf( "Stats = \t" );
   print_statistics( s, stdout, "%5.2lf" );
   printf( "\n" );
-  free_statistics( s );
+  deallocateStatistics( s );
 }
 
 #endif

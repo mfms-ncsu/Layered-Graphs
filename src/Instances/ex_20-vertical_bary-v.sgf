@@ -1,0 +1,60 @@
+c created by dot+ord2sgf, date/time = Sat Dec 19 21:09:50 UTC 2020
+c $Id: dot+ord2sgf 66 2014-03-29 16:58:11Z mfms $
+c ./minimization -h vertical_bary -i 10 -w _ ../testing/TestData/ex_20.sgf
+t ex_20 20 36 4
+n 0 0 1
+n 1 0 0
+n 2 0 2
+n 3 0 3
+n 4 0 4
+n 5 1 1
+n 6 1 0
+n 7 1 4
+n 8 1 3
+n 9 1 2
+n 10 2 1
+n 11 2 4
+n 12 2 2
+n 13 2 0
+n 14 2 3
+n 15 3 1
+n 16 3 3
+n 17 3 0
+n 18 3 2
+n 19 3 4
+e 0 5
+e 1 5
+e 3 5
+e 0 6
+e 1 6
+e 0 7
+e 3 7
+e 4 7
+e 2 8
+e 3 8
+e 4 8
+e 0 9
+e 6 10
+e 8 10
+e 7 11
+e 8 11
+e 5 12
+e 9 12
+e 5 13
+e 5 14
+e 8 14
+e 9 14
+e 11 15
+e 12 15
+e 13 15
+e 14 15
+e 10 16
+e 11 16
+e 14 16
+e 13 17
+e 10 18
+e 11 18
+e 12 18
+e 14 18
+e 11 19
+e 12 19

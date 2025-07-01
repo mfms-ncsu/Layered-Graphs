@@ -102,9 +102,9 @@ void insertInHashTable( const char * name, Nodeptr node )
       fprintf( stderr, "insertInHashTable: Entry for '%s' already exists\n",
                name );
       fprintf( stderr, "existing entry has layer %d and position %d\n",
-              existing_node->layer, existing_node->position);
+              existing_node->layer, existing_node->layer_index);
       fprintf( stderr, "existing entry has layer %d and position %d\n",
-              existing_node->layer, existing_node->position);
+              existing_node->layer, existing_node->layer_index);
       abort();
   }
   hash_table[index] = node;

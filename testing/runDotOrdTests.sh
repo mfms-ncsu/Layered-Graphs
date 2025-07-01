@@ -1,15 +1,12 @@
 #! /bin/bash
 #  Script for running regression tests on minimization program with dot and ord files
-#
-#   @author Matt Stallmann
-#   @date 2016/03/31
 
 executable=../src/minimization
 date=`date -u +"%F-%H%M"`
 if ! [ -d History ]; then
     mkdir History
 fi
-output_file=History/$date.out
+output_file=History/$date-do.out
 last_output=LastOutputs/last.out
 
 # modified output files:
@@ -35,45 +32,45 @@ for dot_file in TestData/*.dot; do
     echo "### running experiments with $base, $date"
     echo "### running experiments with $base, $date" \
         >> $output_file
-    echo "### $executable -p dfs -h bary -i 10000 -P b_t -z $dot_file $ord_file"
-    echo "### $executable -p dfs -h bary -i 10000 -P b_t -z $dot_file $ord_file, $date" >> $output_file
-    $executable -p dfs -h bary -i 10000 -P b_t -z $dot_file $ord_file \
+    echo "### $executable -p dfs -h bary -i 10000 -P b_t $dot_file $ord_file"
+    echo "### $executable -p dfs -h bary -i 10000 -P b_t $dot_file $ord_file, $date" >> $output_file
+    $executable -p dfs -h bary -i 10000 -P b_t $dot_file $ord_file \
         >> $output_file 2>&1
     echo "" >> $output_file
 
-    echo "### $executable -p dfs -h mod_bary -i 10000 -P b_t -z $dot_file $ord_file"
-    echo "### $executable -p dfs -h mod_bary -i 10000 -P b_t -z $dot_file $ord_file, $date" >> $output_file
-    $executable -p dfs -h mod_bary -i 10000 -P b_t -z $dot_file $ord_file \
+    echo "### $executable -p dfs -h mod_bary -i 10000 -P b_t $dot_file $ord_file"
+    echo "### $executable -p dfs -h mod_bary -i 10000 -P b_t $dot_file $ord_file, $date" >> $output_file
+    $executable -p dfs -h mod_bary -i 10000 -P b_t $dot_file $ord_file \
         >> $output_file 2>&1
     echo "" >> $output_file
 
-    echo "### $executable -p dfs -h mce -i 10000 -P b_t -z $dot_file $ord_file"
-    echo "### $executable -p dfs -h mce -i 10000 -P b_t -z $dot_file $ord_file, $date" >> $output_file
-    $executable -p dfs -h mce -i 10000 -P b_t -z $dot_file $ord_file \
+    echo "### $executable -p dfs -h mce -i 10000 -P b_t $dot_file $ord_file"
+    echo "### $executable -p dfs -h mce -i 10000 -P b_t $dot_file $ord_file, $date" >> $output_file
+    $executable -p dfs -h mce -i 10000 -P b_t $dot_file $ord_file \
         >> $output_file 2>&1
     echo "" >> $output_file
 
-    echo "### $executable -p dfs -h sifting -i 10000 -P b_t -z $dot_file $ord_file"
-    echo "### $executable -p dfs -h sifting -i 10000 -P b_t -z $dot_file $ord_file, $date" >> $output_file
-    $executable -p dfs -h sifting -i 10000 -P b_t -z $dot_file $ord_file \
+    echo "### $executable -p dfs -h sifting -i 10000 -P b_t $dot_file $ord_file"
+    echo "### $executable -p dfs -h sifting -i 10000 -P b_t $dot_file $ord_file, $date" >> $output_file
+    $executable -p dfs -h sifting -i 10000 -P b_t $dot_file $ord_file \
         >> $output_file 2>&1
     echo "" >> $output_file
 
-    echo "### $executable -p dfs -h mse -i 10000 -P s_t -z $dot_file $ord_file"
-    echo "### $executable -p dfs -h mse -i 10000 -P s_t -z $dot_file $ord_file, $date" >> $output_file
-    $executable -p dfs -h mse -i 10000 -P s_t -z $dot_file $ord_file \
+    echo "### $executable -p dfs -h mse -i 10000 -P t_s $dot_file $ord_file"
+    echo "### $executable -p dfs -h mse -i 10000 -P t_s $dot_file $ord_file, $date" >> $output_file
+    $executable -p dfs -h mse -i 10000 -P t_s $dot_file $ord_file \
         >> $output_file 2>&1
     echo "" >> $output_file
 
-    echo "### $executable -p dfs -h mce -i 10000 -P b_t -z -R 81453 $dot_file $ord_file"
-    echo "### $executable -p dfs -h mce -i 10000 -P b_t -z -R 81453 $dot_file $ord_file, $date" >> $output_file
-    $executable -p dfs -h mce -i 10000 -P b_t -z -R 81453 $dot_file $ord_file \
+    echo "### $executable -p dfs -h mce -i 10000 -P b_t -R 81453 $dot_file $ord_file"
+    echo "### $executable -p dfs -h mce -i 10000 -P b_t -R 81453 $dot_file $ord_file, $date" >> $output_file
+    $executable -p dfs -h mce -i 10000 -P b_t -R 81453 $dot_file $ord_file \
         >> $output_file 2>&1
     echo "" >> $output_file
 
-    echo "### $executable -p dfs -h mse -i 10000 -P s_t -z -R 81453 $dot_file $ord_file"
-    echo "### $executable -p dfs -h mse -i 10000 -P s_t -z -R 81453 $dot_file $ord_file, $date" >> $output_file
-    $executable -p dfs -h mse -i 10000 -P s_t -z -R 81453 $dot_file $ord_file \
+    echo "### $executable -p dfs -h mse -i 10000 -P t_s -R 81453 $dot_file $ord_file"
+    echo "### $executable -p dfs -h mse -i 10000 -P t_s -R 81453 $dot_file $ord_file, $date" >> $output_file
+    $executable -p dfs -h mse -i 10000 -P t_s -R 81453 $dot_file $ord_file \
         >> $output_file 2>&1
     echo "" >> $output_file
 
@@ -93,15 +90,14 @@ echo "-------- doing the diffs -----------"
 diff -bBw $tmp_last_nd $tmp_next_nd
 if [ $? -eq 0 ]; then
     echo "No changes other than dates, keeping last output the same"
+    rm $tmp_last $tmp_next $tmp_last_nd $tmp_next_nd
     exit 0
 fi
 
-echo "-------- doing the diff -----------"
 diff $tmp_last $tmp_next
 
-echo -n "Continue (y/n)? "
+echo -n "Outputs do not match; continue anyway (y/n)? "
 read answer
 if [ $answer = "y" ]; then
     cp $output_file $last_output
-    rm $tmp_last $tmp_next
 fi

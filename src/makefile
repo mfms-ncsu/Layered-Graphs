@@ -7,13 +7,16 @@ CFLAGS = -c -Wall -g -std=c99 $(OFLAGS) $(DFLAGS)
 #CLIBS  = -lm -lgomp
 CLIBS = -lm
 
-# all programs that can be created
-PROGRAMS = minimization create_random_dag add_edges dot_and_ord_to_sgf
+# all functional programs
+PROGRAMS = minimization verticality_adjustment_test create_random_dag add_edges dot_and_ord_to_sgf sgf_to_dot_and_ord
+
+# various test programs
+TESTS = graph_input_test crossings_test verticality_adjustment_test
 
 # object files common to all heuristics
-OBJECTS = sifting.o dfs.o sorting.o heuristics.o barycenter.o crossings.o\
+OBJECTS = sifting.o dfs.o gbfs.o sorting.o heuristics.o barycenter.o crossings.o\
 	crossing_utilities.o graph_io.o dot.o ord.o sgf.o hash.o Statistics.o stats.o\
-	order.o swap.o median.o channel.o stretch.o timing.o random.o
+	positions.o swap.o median.o channel.o stretch.o timing.o random.o verticality.o dynamic_programming.o
 
 # object files used by programs that generate random instances
 CREATION_OBJECTS = check_edge_duplication.o random.o random_dag.o random_tree.o graph_io.o Statistics.o dot.o ord.o sgf.o hash.o
@@ -21,9 +24,9 @@ CREATION_OBJECTS = check_edge_duplication.o random.o random_dag.o random_tree.o 
 # header files common to all heuristics; also make sure recompilation takes
 # place if there are changes to the makefile
 HEADERS = makefile defs.h constants.h crossings.h graph.h graph_io.h dot.h ord.h\
-	crossing_utilities.h heuristics.h barycenter.h sorting.h dfs.h sifting.h\
-	Statistics.h stats.h order.h swap.h median.h timing.h\
-	random.h channel.h stretch.h makefile
+	crossing_utilities.h heuristics.h barycenter.h sorting.h dfs.h gbfs.h sifting.h\
+	Statistics.h stats.h positions.h swap.h median.h timing.h\
+	random.h channel.h stretch.h verticality.h dynamic_programming.h makefile
 
 # headers used by programs that generate random instances
 CREATION_HEADERS = check_edge_duplication.h graph.h graph_io.h random_tree.h random_dag.h hash.h defs.h constants.h dot.h ord.h Statistics.h
@@ -32,6 +35,8 @@ CREATION_HEADERS = check_edge_duplication.h graph.h graph_io.h random_tree.h ran
 .c.o: ; $(CC) $(CFLAGS) $*.c
 
 all: $(PROGRAMS)
+
+tests: $(TESTS)
 
 minimization: main.o $(OBJECTS)\
 ; $(CC) $(DFLAGS) main.o $(OBJECTS) $(CLIBS) -o minimization
@@ -42,16 +47,22 @@ create_random_dag: create_random_dag.o $(CREATION_OBJECTS)\
 add_edges: add_edges.o $(CREATION_OBJECTS)\
 ; $(CC) $(OFLAGS) add_edges.o $(CREATION_OBJECTS) -lm -o add_edges
 
-dot_and_ord_to_sgf: dot_and_ord_to_sgf.o graph_io.o dot.o ord.o hash.o\
+dot_and_ord_to_sgf: dot_and_ord_to_sgf.o graph_io.o dot.o ord.o hash.o sgf.o \
 ; $(CC) $(OFLAGS) dot_and_ord_to_sgf.o dot.o graph_io.o ord.o sgf.o hash.o -o dot_and_ord_to_sgf 
 
-graph_input_test: graph_input_test.o dot.o ord.o hash.o\
-; $(CC) $(DFLAGS) graph_input_test.o dot.o ord.o hash.o -o graph_input_test
+sgf_to_dot_and_ord: sgf_to_dot_and_ord.o graph_io.o dot.o ord.o hash.o sgf.o \
+; $(CC) $(OFLAGS) sgf_to_dot_and_ord.o dot.o graph_io.o ord.o sgf.o hash.o -o sgf_to_dot_and_ord 
+
+graph_input_test: graph_input_test.o dot.o ord.o hash.o sgf.o\
+; $(CC) graph_input_test.o dot.o ord.o hash.o sgf.o -o graph_input_test
 
 crossings_test: crossings_test.o sorting.o heuristics_test.o\
 	 graph_io.o dot.o ord.o hash.o crossing_utilities.o\
-; $(CC) $(DFLAGS) crossings_test.o sorting.o heuristics_test.o\
+; $(CC) crossings_test.o sorting.o heuristics_test.o\
 	 graph_io.o dot.o ord.o hash.o crossing_utilities.o -o crossings_test
+
+verticality_adjustment_test: verticality_adjustment_test.o $(OBJECTS)\
+; $(CC) verticality_adjustment_test.o $(OBJECTS) -lm -o verticality_adjustment_test
 
 # source dependencies
 
@@ -64,15 +75,25 @@ crossings_test.o: crossings.c $(HEADERS)\
 heuristics_test.o: heuristics.c $(HEADERS)\
 ; $(CC) $(CFLAGS) -DTEST heuristics.c -o heuristics_test.o
 
+verticality_adjustment_test.o: verticality_adjustment_test.c $(HEADERS)
+
+verticality.o: verticality.c $(HEADERS)
+
+dynamic_programming.o: dynamic_programming.c $(HEADERS)
+
 main.o: main.c $(HEADERS)
 
 dot_and_ord_to_sgf.o: dot_and_ord_to_sgf.c $(HEADERS)
+
+sgf_to_dot_and_ord.o: sgf_to_dot_and_ord.c $(HEADERS)
 
 heuristics.o: heuristics.c $(HEADERS)
 
 barycenter.o: barycenter.c $(HEADERS)
 
 dfs.o: dfs.c $(HEADERS)
+
+gbfs.o: gbfs.c $(HEADERS)
 
 sorting.o: sorting.c $(HEADERS)
 
@@ -90,7 +111,7 @@ sifting.o: sifting.c $(HEADERS)
 
 graph_io.o: graph_io.c $(HEADERS)
 
-order.o: order.c $(HEADERS)
+positions.o: positions.c $(HEADERS)
 
 channel.o: channel.c $(HEADERS)
 

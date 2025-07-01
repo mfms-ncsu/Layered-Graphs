@@ -1,0 +1,44 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.alg": "java",
+			"__node_handle": "c",
+			"string": "c",
+			"unordered_map": "c",
+			"vector": "c",
+			"__string": "c",
+			"__threading_support": "c",
+			"__availability": "c",
+			"__bit_reference": "c",
+			"__hash_table": "c",
+			"__split_buffer": "c",
+			"array": "c",
+			"concepts": "c",
+			"deque": "c",
+			"memory": "c",
+			"filesystem": "c",
+			"forward_list": "c",
+			"fstream": "c",
+			"functional": "c",
+			"ios": "c",
+			"istream": "c",
+			"iterator": "c",
+			"mutex": "c",
+			"optional": "c",
+			"ostream": "c",
+			"queue": "c",
+			"sstream": "c",
+			"stack": "c",
+			"streambuf": "c",
+			"string_view": "c",
+			"tuple": "c",
+			"utility": "c",
+			"variant": "c"
+		}
+	}
+}

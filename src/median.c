@@ -29,7 +29,7 @@ static double upper_median( Nodeptr node )
   sortByUpNodePosition( node->up_edges, node->up_degree );
   int median_position = (node->up_degree - 1) / 2;
   Edgeptr median_edge = node->up_edges[ median_position ];
-  return median_edge->up_node->position; 
+  return median_edge->up_node->layer_index; 
 }
 
 /**
@@ -43,7 +43,7 @@ static double lower_median( Nodeptr node )
   sortByDownNodePosition( node->down_edges, node->down_degree );
   int median_position = (node->down_degree - 1) / 2;
   Edgeptr median_edge = node->down_edges[ median_position ];
-  return median_edge->down_node->position; 
+  return median_edge->down_node->layer_index; 
 }
 
 /**
@@ -176,38 +176,32 @@ void medianWeights( int layer, Orientation orientation )
 #endif  
 }
 
-bool medianUpSweep( int starting_layer )
-{
+void medianUpSweep( int starting_layer ) {
   int layer = starting_layer;
-  for( ; layer < number_of_layers; layer++ )
-    {
+  for ( ; layer < number_of_layers; layer++ ) {
+      iteration++;
       medianWeights( layer, DOWNWARD );
       layerSort( layer );
       updateCrossingsForLayer( layer );
       tracePrint( layer, "median upsweep" );
-      if ( end_of_iteration() )
-        return true;
-    }
-  return false;
+      end_of_iteration();
+      if ( termination_criterion_met ) return;
+  }
 }
 
 /**
  * Repeats median heuristic moving downward from the starting layer to the
  * bottom layer, layer 0. Orientation of each heuristic application is upward.
  */
-bool medianDownSweep( int starting_layer )
-{
+void medianDownSweep( int starting_layer ) {
   int layer = starting_layer;
-  for( ; layer >= 0; layer-- )
-    {
+  for( ; layer >= 0; layer-- ) {
+      iteration++;
       medianWeights( layer, UPWARD );
       layerSort( layer );
       updateCrossingsForLayer( layer );
       tracePrint( layer, "median downsweep" );
-      if ( end_of_iteration() )
-        return true;
-    }
-  return false;
+      end_of_iteration();
+      if ( termination_criterion_met ) return;
+  }
 }
-
-/*  [Last modified: 2019 09 27 at 18:02:41 GMT] */

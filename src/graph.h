@@ -17,6 +17,7 @@
  */
 
 #include<stdbool.h>
+#include<stdio.h>
 
 #ifndef GRAPH_H
 #define GRAPH_H
@@ -33,29 +34,35 @@ struct node_struct
   int id;                       /* unique identifier */
   int layer;
   /**
-   * position of the node within its layer; this is essential for correct
-   * computation of crossings; it is automatically updated by the update
-   * functions for crossings in the crossings module and should be updated
-   * locally by any heuristic that relies on dynamic information about
-   * crossings.
+   * the index of the node in the array of nodes on the layer
+   * @invariant this must be kept consistent when the layer is sorted or rearranged
    */
-  int position;
+  int layer_index;
+  /**
+   * the actual position used to compute verticality
+   * @invariant nodes on a layer are sorted by increasing horizontal_position
+   */
+  int horizontal_position;
   int up_degree;
   int down_degree;
 
   Edgeptr * up_edges;
   Edgeptr * down_edges;
 
-  // for heuristics based on sorting (in most cases this will be an int, but
+  // for heuristics that require sorting -- in most cases this will be an int, but
   // barycenter involves fractions
   double weight;
+
+  // for gbfs -- see 2001 JEA paper by Stallmann et al.
+  int distance;
+  int depth;
 
   // Added on 09-11-08 for max. crossings node heuristic
   bool fixed;
   int up_crossings;
   int down_crossings;
   
-  // for DFS
+  // for DFS and GBFS
   bool marked;
   int preorder_number;
 };
@@ -67,24 +74,20 @@ struct edge_struct {
   Nodeptr up_node;
   Nodeptr down_node;
   int crossings;
+  int nonverticality;
 
   // for heuristics
   /**
    * true if edge has been processed in current iteration
    */
   bool fixed;
-  /**
-   * true if minimizing crossings for this edge should be given priority (not
-   * used - instead, a list of priority edges is maintained)
-   */
-  //  bool prioritize;
 };
 
 struct layer_struct {
   int number_of_nodes;
   Nodeptr * nodes;
 
-  // for algorithms that fix layers during an iteration
+  // for heuristics that fix layers during an iteration
   bool fixed;
 };
 
@@ -108,10 +111,21 @@ extern int number_of_layers;
 extern int number_of_nodes;
 extern int number_of_edges;
 extern int number_of_isolated_nodes;
+extern int max_layer_width;
+extern int max_width_layer;
 extern Layerptr * layers;
 extern char graph_name[MAX_NAME_LENGTH];
 extern char * comments;
 
-#endif
+/** print utilities for debugging, definitions in graph_io.c */
+void printNode(FILE * stream, Nodeptr node);
+void printEdge(FILE * stream, Edgeptr edge);
 
-/*  [Last modified: 2021 02 15 at 18:15:29 GMT] */
+/**
+ * @brief prints all nodes on a layer along with their adjacencies in a simple format
+ * @param stream the stream on which to do the printing - usually stderr for debugging
+ *                     otherwise only downward neighbors will be
+ */
+void printNodesOnLayer(FILE * stream, int layer_number);
+
+#endif

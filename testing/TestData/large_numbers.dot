@@ -1,0 +1,8 @@
+/* created by sgf_to_dot_and_ord: 5 nodes, 4 edges, 2 layers
+ */
+digraph large_numbers {
+ 1 -> 12;
+ 2 -> 12;
+ 2 -> 23;
+ 3 -> 23;
+}

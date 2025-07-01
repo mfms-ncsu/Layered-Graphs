@@ -1,0 +1,318 @@
+# Ordering for graph north95.0_UPR
+# 
+
+# Order for layer 0: 
+0 {
+ 0
+} # end of layer 0
+
+# Order for layer 1: 
+1 {
+ 1
+} # end of layer 1
+
+# Order for layer 2: 
+2 {
+ 2
+} # end of layer 2
+
+# Order for layer 3: 
+3 {
+ 3
+} # end of layer 3
+
+# Order for layer 4: 
+4 {
+ 4 5
+} # end of layer 4
+
+# Order for layer 5: 
+5 {
+ 6
+} # end of layer 5
+
+# Order for layer 6: 
+6 {
+ 7 8
+} # end of layer 6
+
+# Order for layer 7: 
+7 {
+ 9
+} # end of layer 7
+
+# Order for layer 8: 
+8 {
+ 10 11
+} # end of layer 8
+
+# Order for layer 9: 
+9 {
+ 12
+} # end of layer 9
+
+# Order for layer 10: 
+10 {
+ 13 14
+} # end of layer 10
+
+# Order for layer 11: 
+11 {
+ 15
+} # end of layer 11
+
+# Order for layer 12: 
+12 {
+ 16 17
+} # end of layer 12
+
+# Order for layer 13: 
+13 {
+ 18
+} # end of layer 13
+
+# Order for layer 14: 
+14 {
+ 19 20
+} # end of layer 14
+
+# Order for layer 15: 
+15 {
+ 21
+} # end of layer 15
+
+# Order for layer 16: 
+16 {
+ 22 23
+} # end of layer 16
+
+# Order for layer 17: 
+17 {
+ 24
+} # end of layer 17
+
+# Order for layer 18: 
+18 {
+ 25 26
+} # end of layer 18
+
+# Order for layer 19: 
+19 {
+ 27
+} # end of layer 19
+
+# Order for layer 20: 
+20 {
+ 28 29
+} # end of layer 20
+
+# Order for layer 21: 
+21 {
+ 30
+} # end of layer 21
+
+# Order for layer 22: 
+22 {
+ 31 32
+} # end of layer 22
+
+# Order for layer 23: 
+23 {
+ 33
+} # end of layer 23
+
+# Order for layer 24: 
+24 {
+ 34 35
+} # end of layer 24
+
+# Order for layer 25: 
+25 {
+ 36
+} # end of layer 25
+
+# Order for layer 26: 
+26 {
+ 37 38
+} # end of layer 26
+
+# Order for layer 27: 
+27 {
+ 39 40
+} # end of layer 27
+
+# Order for layer 28: 
+28 {
+ 41 42
+} # end of layer 28
+
+# Order for layer 29: 
+29 {
+ 43 44
+} # end of layer 29
+
+# Order for layer 30: 
+30 {
+ 45 46 47
+} # end of layer 30
+
+# Order for layer 31: 
+31 {
+ 48 49
+} # end of layer 31
+
+# Order for layer 32: 
+32 {
+ 50 51 52 53
+} # end of layer 32
+
+# Order for layer 33: 
+33 {
+ 54 55 56 57 58 59 60 61
+} # end of layer 33
+
+# Order for layer 34: 
+34 {
+ 62 63 64 65 66 67 68 69
+} # end of layer 34
+
+# Order for layer 35: 
+35 {
+ 70 71 72 73 74 75 76 77 78 79 80
+} # end of layer 35
+
+# Order for layer 36: 
+36 {
+ 81 82 83 84 85
+} # end of layer 36
+
+# Order for layer 37: 
+37 {
+ 86 87 88 89 90
+} # end of layer 37
+
+# Order for layer 38: 
+38 {
+ 91 92 93 94 95
+} # end of layer 38
+
+# Order for layer 39: 
+39 {
+ 96 97 98 99
+} # end of layer 39
+
+# Order for layer 40: 
+40 {
+ 100 101 102 103 104
+} # end of layer 40
+
+# Order for layer 41: 
+41 {
+ 105 106 107 108
+} # end of layer 41
+
+# Order for layer 42: 
+42 {
+ 109 110 111 112 113
+} # end of layer 42
+
+# Order for layer 43: 
+43 {
+ 114 115 116 117 118 119
+} # end of layer 43
+
+# Order for layer 44: 
+44 {
+ 120 121 122 123 124 125
+} # end of layer 44
+
+# Order for layer 45: 
+45 {
+ 126 127
+} # end of layer 45
+
+# Order for layer 46: 
+46 {
+ 128 129 130 131
+} # end of layer 46
+
+# Order for layer 47: 
+47 {
+ 132 133 134 135 136
+} # end of layer 47
+
+# Order for layer 48: 
+48 {
+ 137 138 139 140 141
+} # end of layer 48
+
+# Order for layer 49: 
+49 {
+ 142 143 144 145 146
+} # end of layer 49
+
+# Order for layer 50: 
+50 {
+ 147 148 149 150 151 152
+} # end of layer 50
+
+# Order for layer 51: 
+51 {
+ 153 154
+} # end of layer 51
+
+# Order for layer 52: 
+52 {
+ 155 156 157
+} # end of layer 52
+
+# Order for layer 53: 
+53 {
+ 158 159 160 161
+} # end of layer 53
+
+# Order for layer 54: 
+54 {
+ 162 163
+} # end of layer 54
+
+# Order for layer 55: 
+55 {
+ 164 165
+} # end of layer 55
+
+# Order for layer 56: 
+56 {
+ 166 167 168
+} # end of layer 56
+
+# Order for layer 57: 
+57 {
+ 169 170 171 172
+} # end of layer 57
+
+# Order for layer 58: 
+58 {
+ 173 174 175
+} # end of layer 58
+
+# Order for layer 59: 
+59 {
+ 176 177 178 179
+} # end of layer 59
+
+# Order for layer 60: 
+60 {
+ 180 181 182
+} # end of layer 60
+
+# Order for layer 61: 
+61 {
+ 183 184
+} # end of layer 61
+
+# Order for layer 62: 
+62 {
+ 185
+} # end of layer 62
+

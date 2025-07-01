@@ -12,7 +12,7 @@
      dag.
 
 
-    Copyright (C) 2009, 2011 Matthias Stallmann, Saurabh Gupta.
+    Copyright (C) 2009, 2011, 2023 Matthias Stallmann, Saurabh Gupta, Mason Hicks.
     Contact: matt_stallmann AT ncsu DOT edu
 
     This program is free software; you can redistribute it and/or modify
@@ -39,6 +39,12 @@ Descriptions of the heuristics implemented as part of this project.
    Each heuristic consists of a preprocessing phase (specified using the -p
    option) and an iterative phase (specified using -h).
 
+   Heuristics maintain, for each layer
+    - the sequence (order) of nodes on that layer
+    - the <em>position</em> of each node on the layer
+   The position of a node is relevant only when computing verticality of edges:
+    if xy is an edge, its (non)verticality is (position(x) - position(y))^2
+
    Possible <strong>preprocessors</strong> are
 
     - <strong><em>dfs</em></strong>: Do a depth-first search of the graph and sort each layer by
@@ -53,32 +59,64 @@ Descriptions of the heuristics implemented as part of this project.
       larger degree vertices are closer to the middle. Then do an upward and
       a downward sweep of barycenter (see below).
 
-    Possible <strong>main (iterative)</strong> heuristics are as follows. In
-    each case the actions that take place during a single <em>pass</em> are
-    described. Passes are repeated until there is no improvement in number of
-    crossings (default) or a fixed number has occurred (specified by a
-    command-line option).
- 
-    - <strong><em>bary</em></strong>: The barycenter heuristic defined in the literature -- each layer
-     is sorted using the average position of the adjacent vertices on the
-     layer above/below it (<em>average position</em> sorting). In a single pass, barycenter does an
-     <em>upsweep</em>, sorting layers 1 to <var>k</var>-1 based on the layer
-     above each, and a <em>downsweep</em>, sorting layers <var>k</var> down
-     to 2 based on the layer below each.
+    The <strong>main (iterative)</strong> heuristics are detailed below.
+    Each heuristic has two concepts
+    - an <em>iteration</em> during which the sequence of nodes
+         and their positions on a single layer are altered
+    - a <em>pass</em>, whose definition depends on the heuristic
+    There are two types of heuristics
+    - <strong>Sorting.</strong> Each iteration computes a weight for each node on a layer,
+       based on positions/sequence numbers of adjacent nodes;
+       then the nodes are sorted by weight
+    - <strong>Node-insertion.</strong> Each iteration moves a single node
+       into a position and place in the sequence that optimizes some objective
+    
+    A pass for a sorting heuristic ends when all layers have been sorted at least once.
+    
+    A pass for a node-insertion heuristic ends when all nodes have been moved
 
-    - <strong><em>mod_bary</em></strong>: Choose the layer <em>L</em> whose edges
-      contribute the most crossings. Use an average position sort with
-      respect to the layer above and the layer below <var>L</var>
-      (simulatiously). Then sort layers <var>L</var>-1 and <var>L</var>+1
-      with respect to <var>L</var>. Mark <var>L</var> and repeat until all
-      layers have been marked. The order in which layers are considered is
-      <em>dynamic</em>, i.e., may change as the result of the sorting of a
-      previous layer.
+    An iterative heuristic terminates at (whichever comes first)
+    - a specified runtime, using the <code>-r</code> option
+    - a specified number of iterations, using the <code>-i</code> option
+    - a specified number of passes, using the <code>-a</code> option
+ 
+    The heuristics are
+
+    <h2>Sorting heuristics</h2>
+
+    - <strong><em>bary</em></strong>: The barycenter heuristic defined in the literature
+       -- each layer
+     is sorted using the average sequence number of the adjacent vertices on the
+     layer above/below it. In a single pass, barycenter does an
+     <em>upsweep</em>, sorting layers 0 to <var>k</var>-2 based on the layer
+     above each, and a <em>downsweep</em>, sorting layers <var>k</var>-1 down
+     to 1 based on the layer below each.
+
+    - <strong><em>median</em></strong>: The median heuristic defined in the literature;
+      this is identical to barycenter except that the median instead of the average (mean)
+      is used to compute weights.
+
+    - <strong><em>mod_bary</em></strong>:
+      Choose the layer <em>L</em> whose edges
+      contribute the most crossings. Use an average sequence number sort with
+      respect to the layer above <em>and</em> the layer below <var>L</var>
+      (simulatiously).
+      Then do a downsweep from layer <var>L</var>-1 to 0
+      and an upsweep from layer <var>L</var>+1 to <var>k</var>-2.
+      The current pass ends after these sweeps.
+      Layers are marked when identified as having the most crossings and
+      not considered again until all layers have been marked
+
+    - <strong><em>vertical_bary</em></strong>: like mod_bary except that positions
+      rather than sequence numbers are used for sorting;
+      at the end of each iteration, a dynamic programming algorithm is used
+      to minimize nonverticality given a fixed sorted order
 
     - <strong><em>sifting:</em></strong> Use the sifting heuristic described
         in Matuszewski et al., <em>Using Sifting for k-layer Straightline
         Crossing Minimization.</em>
-        To <em>sift</em> a node <var>w</var>, find its optimal position, i.e., keeping all other
+        To <em>sift</em> a node <var>w</var>, find its optimal position,
+        i.e., keeping all other
         nodes on <var>w</var>'s layer the same determine the position among
         them that minimizes crossings.
         Nodes are sorted by decreasing degree and sifted accordingly (other
@@ -91,27 +129,27 @@ Descriptions of the heuristics implemented as part of this project.
         
     - <strong><em>mce:</em></strong> (maximum crossings edge)
       Another variation on sifting -- here, the heuristic picks an edge
-      <var>e = vw</var> that has the maximum number of crossings.
-      Both <var>v</var> and <var>w</var> are sifted, but the objective is to
-      minimize the number of crossings for <var>e</var>. The chosen position
-      in each case is a local rather than global minimum. There are three
-      options for ending a pass.
-      -# <em>nodes:</em> (default) mark a node when it's an endpoint of a
-      chosen edge; stop when all nodes are marked
-      -# <em>early:</em> mark a node when it's the endpoint of a chosen edge;
-      stop as soon as the next edge under consideration has both endpoints
-      marked. 
-      -# <em>edges:</em> mark an edge when it is chosen; stop when all edges
-      are marked
+      <var>e = vw</var> that has the maximum number of crossings and
+      at least one of <var>v,w</var> has not been <em>marked</em> in this pass.
 
-    - <strong><em>mce_s:</em></strong> (maximum crossings edge with sifting)
-    The same as mce except that each iteration does ordinary sifting
-    (minimize total crossings) instead of minimizing the crossings for a
-    specific edge.
+      Each unmarked node among <var>v</var> and <var>w</var> is positioned so as to
+      minimize the maximum number of crossings for any edge incident
+      on it. Then it is marked.
+
+    - <strong><em>mce_t:</em></strong> (maximum crossings edge for
+    total crossings)
+    The same as mce except that each iteration minimizes total
+    crossings instead of minimizing the maximum number of crossings
+    for edges incident on the target node.
 
     - <strong><em>mse:</em></strong> (maximum stretch edge) Similar to
     mce. In this case the edge with maximum stretch
-    (see <a
-    href="ftp://ftp.ncsu.edu/pub/unity/lockers/ftp/csc_anon/tech/2016/TR-2016-6.pdf">technical
-    report</a>) is chosen at each iteration and the nodes on layers of the
+    (see NSCU-CSC technical report TR-2016-6) is chosen at each iteration and the nodes <var>v</var> and <var>w</var>
+    on layers of the
     endpoints are sorted so as to minimize total stretch.
+
+    - <strong><em>mnve:</em></strong> (maximum nonverticality edge) Similar to
+    mce. In this case the edge with maximum nonverticality
+    (see ...) is chosen at each iteration and the nodes <var>v</var> and <var>w</var>
+    on layers of the
+    endpoints are repositioned so as to minimize total stretch.

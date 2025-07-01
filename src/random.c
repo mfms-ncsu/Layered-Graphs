@@ -224,4 +224,17 @@ int * genrand_permutation( void * A, int length, int element_size ) {
   return retval;
 }
 
-/*  [Last modified: 2017 04 14 at 13:17:21 GMT] */
+#ifdef TEST
+#include<stdio.h>
+
+int main(int argc, char * argv[]) {
+  if ( argc == 2 ) {
+    int seed = atoi(argv[1]);
+    init_genrand(seed);
+  }
+  for ( int i = 0; i < 10; i++ ) {
+    int r = genrand_int31() % 1000;
+    printf("%4d\n", r);
+  }
+}
+#endif

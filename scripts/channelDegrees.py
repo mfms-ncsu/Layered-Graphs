@@ -121,7 +121,7 @@ def print_statistics():
         ("Ch", "upper", "lower", "edges", "dens", "ratio", "*dis", "*max"))
     print("finalStats,%s,%s,%s,%s,%s,%s,%s" % \
         ("min", "median", "mean", "max", "stdev", "#ch", "disc"))
-    print("---------------------------------")
+#    print("---------------------------------")
     number_of_layers = len(_nodes_on_layer)
     volume_list = []
     for channel in range(1, number_of_layers):
@@ -194,7 +194,7 @@ def print_basic_statistics(label, list):
         median = float(sorted_list[int(length / 2) - 1] + sorted_list[int(length / 2)]) \
             / 2.0
     stdev = math.sqrt( float(sum_of_squares) / length - mean * mean )
-    print("%s,%3.1f,%3.1f,%4.2f,%4.2f,%4.2f,%d,%4.2f" % \
+    print("%s,%d,%3.1f,%4.2f,%d,%4.2f,%d,%4.2f" % \
         (label, min(list), median, mean, max(list), stdev,
          length, discrepancy(list)))
 

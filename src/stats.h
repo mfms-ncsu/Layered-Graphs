@@ -13,7 +13,7 @@
 #include<stdio.h>
 #include<stdbool.h>
 
-#include"order.h"
+#include"positions.h"
 
 typedef struct crossing_stats_int {
   int at_beginning;
@@ -26,6 +26,18 @@ typedef struct crossing_stats_int {
   int post_processing_iteration;
   const char * name; 
 } CROSSING_STATS_INT;
+
+typedef struct crossing_stats_long {
+  long at_beginning;
+  long after_preprocessing;
+  long after_heuristic;
+  long after_post_processing;
+  long best;
+  long previous_best;
+  int best_heuristic_iteration;
+  int post_processing_iteration;
+  const char * name; 
+} CROSSING_STATS_LONG;
 
 typedef struct crossing_stats_double {
   double at_beginning;
@@ -40,8 +52,9 @@ typedef struct crossing_stats_double {
 } CROSSING_STATS_DOUBLE;
 
 extern CROSSING_STATS_INT total_crossings;
-extern CROSSING_STATS_INT max_edge_crossings;
+extern CROSSING_STATS_INT bottleneck_crossings;
 extern CROSSING_STATS_INT favored_edge_crossings;
+extern CROSSING_STATS_LONG total_nonverticality;
 extern CROSSING_STATS_DOUBLE total_stretch;
 extern CROSSING_STATS_DOUBLE bottleneck_stretch;
 
@@ -80,7 +93,17 @@ void capture_post_processing_stats( void );
  * @param crossing_retrieval_function function that returns the current
  * value -- to be compared to the best value
  */
-void update_best_int( CROSSING_STATS_INT * stats, Orderptr order,
+void update_best_long( CROSSING_STATS_LONG * stats, Positionptr pos_info,
+                      long (* crossing_retrieval_function) (void) );
+
+/**
+ * Updates the best value if needed, usually at the end of an iteration
+ * @param stats the stats struct to be updated
+ * @param order the order that needs to be captured when the best is updated
+ * @param crossing_retrieval_function function that returns the current
+ * value -- to be compared to the best value
+ */
+void update_best_int( CROSSING_STATS_INT * stats, Positionptr pos_info,
                       int (* crossing_retrieval_function) (void) );
 
 /**
@@ -90,7 +113,7 @@ void update_best_int( CROSSING_STATS_INT * stats, Orderptr order,
  * @param crossing_retrieval_function function that returns the current
  * value -- to be compared to the best value
  */
-void update_best_double( CROSSING_STATS_DOUBLE * stats, Orderptr order,
+void update_best_double( CROSSING_STATS_DOUBLE * stats, Positionptr pos_info,
                          double (* crossing_retrieval_function) (void) );
 
 /**
@@ -106,6 +129,14 @@ void update_best_all( void );
  * <em>Side effect</e> stats.previous_best is updated
  */
 bool has_improved_int( CROSSING_STATS_INT * stats );
+
+/**
+ * @return true if stats.best has improved since the last time this function
+ * was called
+ *
+ * <em>Side effect</e> stats.previous_best is updated
+ */
+bool has_improved_long( CROSSING_STATS_LONG * stats );
 
 /**
  * @return true if stats.best has improved since the last time this function

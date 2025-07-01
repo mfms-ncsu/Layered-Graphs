@@ -23,7 +23,9 @@ def parse_arguments():
                             + ' INPUT is a sequence of lines of the form x_1^y_1;x_2^y_2;...\n'
                             + '       each x_i^y_i pair is a Pareto optimum for some pair of objectives\n'
                             + '       matching the output format of the minimization program\n'
-                            + ' computes Pareto optima based on the Pareto points in the input'
+                            + ' computes Pareto optima based on the Pareto points in the input\n'
+                            + 'Recommended usage with pareto outputs from multiple minimization runs with output in x.out:\n'
+                            + '  grep "^Pareto" x.out | cut -f 2 -d, | collectParetoPoints.py'
                             )
     parser.add_argument("-i", "--input",
                         help="input file, so don't use stdin"
@@ -44,19 +46,23 @@ def parse_arguments():
                            + " argument is of the form 'objective_1,objective_2', used directly with csv\n"
                            + " converted to tab separated for lines"
                         )
+    parser.add_argument("-fl", "--float", 
+                        help="treat the values as floating point numbers",
+                        action="store_true")
     args = parser.parse_args()
     return args
 
-
-
 """
 @return a list of Pareto points in the form [(x1,y1), ...]
+        the x's and y's are either integers or floating point,
+        depending on the command-line argument
+@param use_floats - true if floating point values are desired
 """
-def read_points(input):
+def read_points(input, use_floats):
     pareto_list = []
     line = input.readline().strip()
     while line:
-        pareto_list.extend(process_line(line))
+        pareto_list.extend(process_line(line, use_floats))
         line = input.readline().strip()
     return pareto_list
 
@@ -64,14 +70,16 @@ def read_points(input):
 @param pareto_input a string of the form 'x1^y1;x2^y2;...'
 @return a list of the form [(x1,y1), (x2,y2), ...]
 """
-def process_line(pareto_input):
+def process_line(pareto_input, use_floats):
     pareto_list = []
     points = pareto_input.split(';')
     for point in points:
         x, y = point.split(PARETO_SEPARATOR)
-        pareto_list.append((x, y))
+        if use_floats:
+            pareto_list.append((float(x), float(y)))
+        else:
+            pareto_list.append((int(x), int(y)))
     return pareto_list
-
 
 """
 @return point_list with points that are dominated by others removed; a
@@ -93,14 +101,11 @@ def gather_pareto_points(point_list):
         if not dominated:
             undominated_list.append(point)
     return undominated_list
-                
 
 # @return true if first_point dominates second_point
 def dominates(first_point, second_point):
-    # convert points to numbers here only
-
-    if float(first_point[0]) <= float(second_point[0]) \
-            and float(first_point[1]) <= float(second_point[1]):
+    if first_point[0] <= second_point[0] \
+            and first_point[1] <= second_point[1]:
         return True
     return False
 
@@ -125,13 +130,16 @@ def print_points(output_stream, pareto_list, delimiter):
         output_stream.write("{}{}{}\n".format(point[0], delimiter, point[1]))
 
 if __name__ == '__main__':
-    print("starting")
     args = parse_arguments()
     input_stream = sys.stdin
     if args.input:
         input_stream = open(args.input, 'r')
-    pareto_list = read_points(input_stream)
+    pareto_list = read_points(input_stream, args.float)
+    if len(pareto_list) == 0:
+        sys.stderr.write("No Pareto points found\n")
+        sys.exit(1)
     pareto_list = gather_pareto_points(pareto_list)
+    pareto_list = sorted(pareto_list)
     output_stream = sys.stdout
     if args.output:
         output_stream = open(args.output, 'w')

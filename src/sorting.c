@@ -14,34 +14,34 @@
 
 #include"sorting.h"
 #include"graph.h"
+#include"graph_io.h"
 
 /**
  * Performs an insertion sort using the same argument types as qsort
  * @return true if the original order has changed
  */
-static bool insertion_sort(void *base, size_t nmemb, size_t size,
+bool insertionSort(void *base, size_t nmemb, size_t size,
                            int (*compar)(const void *, const void *)) {
   bool changed = false;
   // used to store the item to be inserted
   void * tmp = malloc(size);
-  int i = 1;
-  for( ; i < nmemb; i++ ) {
+  for( int i = 1; i < nmemb; i++ ) {
     // 1. insert the A[i] among A[0],...,A[i-1]
     //    (a) copy A[i] into tmp
-    memcpy( tmp, base + i * size, size );
+    memcpy(tmp, base + i * size, size);
     //    (b) find largest j for which A[j] <= tmp (or -1 if none exists),
     //    shifting elements to the right as you go
     int j = i - 1;
-    while( j >= 0 && compar( tmp, base + j * size) < 0 ) {
+    while( j >= 0 && compar(tmp, base + j * size) < 0 ) {
       changed = true;
-      memcpy( base + (j + 1) * size, base + j * size, size );
+      memcpy(base + (j + 1) * size, base + j * size, size);
       j--;
     }
 
     //    (c) copy tmp into A[i+1]
-    memcpy( base + (j + 1) * size, tmp, size ); 
+    memcpy(base + (j + 1) * size, tmp, size); 
   }
-  free( tmp );
+  free(tmp);
   return changed;
 }
 
@@ -51,7 +51,7 @@ static bool insertion_sort(void *base, size_t nmemb, size_t size,
  * of their original order
  * @return true if the original order has changed
  */
-static bool unstable_insertion_sort(void *base, size_t nmemb, size_t size,
+static bool unstable_insertionSort(void *base, size_t nmemb, size_t size,
                                     int (*compar)(const void *, const void *)) {
   bool changed = false;
   // used to store the item to be inserted
@@ -78,7 +78,7 @@ static bool unstable_insertion_sort(void *base, size_t nmemb, size_t size,
 }
 
 /**
- * Comparison function to be used by qsort or insertion_sort to compare the
+ * Comparison function to be used by qsort or insertionSort to compare the
  * weights of two nodes. Assumes that each array element is a pointer to a
  * node. Insertion sort is preferred in most cases because it is stable (and
  * usually does not increase the asymptotic time).
@@ -117,10 +117,14 @@ static int compare_down_edges( const void * ptr_i, const void * ptr_j ) {
   Edgeptr * entry_ptr_j = (Edgeptr *) ptr_j;
   Edgeptr edge_i = * entry_ptr_i;
   Edgeptr edge_j = * entry_ptr_j;
-  if( edge_i->down_node->position > edge_j->down_node->position ) return 1;
-  else if( edge_i->down_node->position < edge_j->down_node->position )
-    return -1;
-  else return 0;
+#ifdef DEBUG
+  fprintf(stderr, "-> compare_down_edges: ");
+  printNode(stderr, edge_i->down_node); printNode(stderr, edge_j->down_node);
+  fprintf(stderr, "\n");
+  fprintf(stderr, "<- compare_down_edges: %d\n",
+    edge_i->down_node->layer_index - edge_j->down_node->layer_index);
+#endif
+  return edge_i->down_node->layer_index - edge_j->down_node->layer_index; 
 }
 
 /**
@@ -132,10 +136,7 @@ static int compare_up_edges( const void * ptr_i, const void * ptr_j ) {
   Edgeptr * entry_ptr_j = (Edgeptr *) ptr_j;
   Edgeptr edge_i = * entry_ptr_i;
   Edgeptr edge_j = * entry_ptr_j;
-  if( edge_i->up_node->position > edge_j->up_node->position ) return 1;
-  else if( edge_i->up_node->position < edge_j->up_node->position )
-    return -1;
-  else return 0;
+  return edge_i->up_node->layer_index - edge_j->up_node->layer_index; 
 }
 
 void updateAllPositions( void )
@@ -152,7 +153,7 @@ void updateNodePositions( int layer )
   int i = 0;
   for( ; i < layerptr->number_of_nodes; i++ )
     {
-      layerptr->nodes[i]->position = i;
+      layerptr->nodes[i]->layer_index = i;
     }
 }
 
@@ -166,7 +167,7 @@ void layerSort( int layer )
   }
   printf( "\n" );
 #endif
-  insertion_sort( layer_ptr->nodes, layer_ptr->number_of_nodes,
+  insertionSort( layer_ptr->nodes, layer_ptr->number_of_nodes,
                   sizeof( Nodeptr ), compare_weights );
 #ifdef DEBUG
   printf( "after layerSort:  ");
@@ -181,7 +182,7 @@ void layerSort( int layer )
 void layerUnstableSort( int layer )
 {
   Layerptr layer_ptr = layers[ layer ];
-  unstable_insertion_sort( layer_ptr->nodes, layer_ptr->number_of_nodes,
+  unstable_insertionSort( layer_ptr->nodes, layer_ptr->number_of_nodes,
                            sizeof( Nodeptr ), compare_weights );
   updateNodePositions( layer );
 }
@@ -189,24 +190,52 @@ void layerUnstableSort( int layer )
 /**
  * Sort the array of edges by the positions of the nodes on the lower layer
  */
-void sortByDownNodePosition( Edgeptr * edge_array, int num_edges )
-{
-  insertion_sort( edge_array, num_edges, sizeof(Edgeptr),
+void sortByDownNodePosition( Edgeptr * edge_array, int num_edges ) {
+#ifdef DEBUG
+  fprintf(stderr, "-> sortByDownNodePosition: ");
+  for ( int i = 0; i < num_edges; i++ ) {
+    fprintf(stderr, " ");
+    printEdge(stderr, edge_array[i]);
+  }
+  fprintf(stderr, "\n");
+#endif
+  insertionSort( edge_array, num_edges, sizeof(Edgeptr),
                   compare_down_edges );
+#ifdef DEBUG
+  fprintf(stderr, "<- sortByDownNodePosition: ");
+  for ( int i = 0; i < num_edges; i++ ) {
+    fprintf(stderr, " ");
+    printEdge(stderr, edge_array[i]);
+  }
+  fprintf(stderr, "\n");
+#endif
 }
 
 /**
  * Sort the array of edges by the positions of the nodes on the upper layer
  */
-void sortByUpNodePosition( Edgeptr * edge_array, int num_edges )
-{
-  insertion_sort( edge_array, num_edges, sizeof(Edgeptr),
+void sortByUpNodePosition( Edgeptr * edge_array, int num_edges ) {
+  #ifdef DEBUG
+  fprintf(stderr, "-> sortByUpNodePosition: ");
+  for ( int i = 0; i < num_edges; i++ ) {
+    fprintf(stderr, " ");
+    printEdge(stderr, edge_array[i]);
+  }
+  fprintf(stderr, "\n");
+#endif
+  insertionSort( edge_array, num_edges, sizeof(Edgeptr),
                   compare_up_edges );
+#ifdef DEBUG
+  fprintf(stderr, "<- sortByUpNodePosition: ");
+  for ( int i = 0; i < num_edges; i++ ) {
+    fprintf(stderr, " ");
+    printEdge(stderr, edge_array[i]);
+  }
+  fprintf(stderr, "\n");
+#endif
 }
 
 void sortByDegree( Nodeptr * node_array, int num_nodes )
 {
-  insertion_sort( node_array, num_nodes, sizeof(Nodeptr), compare_degrees );
+  insertionSort( node_array, num_nodes, sizeof(Nodeptr), compare_degrees );
 }
-
-/*  [Last modified: 2014 07 21 at 18:21:49 GMT] */

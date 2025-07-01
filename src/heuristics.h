@@ -14,12 +14,25 @@
 
 #include<stdbool.h>
 #include"graph.h"
-#include"order.h"
+#include"positions.h"
 
 /**
  * The current iteration, or, the number of iterations up to this point.
+ * Needs to be extern for barycenter variants and median only
  */
 extern int iteration;
+
+/**
+ * The current pass, or, the number of pass up to this point.
+ * Needs to be extern for debugging convenience
+ */
+extern int pass;
+
+/**
+ * @brief true if max_iterations, max_passes, or max_runtime is reached
+ * Needs to be extern for barycenter variants and median only
+ */
+extern bool termination_criterion_met;
 
 /**
  * The minimum total number of crossings during post processing
@@ -40,21 +53,20 @@ extern int post_processing_iteration;
 void createDotFileName( char * output_file_name, const char * appendix );
 
 /**
+ * Does things that are appropriate at the end of an iteration, such as
+ * checking whether minimum values and configurations for various objectives need updating
+ * Also sets termination_criterion_met
+ * if the specified max_iterations or max_runtime have been reached  
+ * Needs to be extern for barycenter variants and median only
+ */
+void end_of_iteration(void);
+
+/**
  * Prints information about current number of iterations, crossings, etc.,
  * @param message a message identifying the context of the printout.
  * @param layer the layer that was just sorted
  */
 void tracePrint( int layer, const char * message );
-
-/**
- * Does things that are appropriate at the end of an iteration, such as
- * checking whether the ordering needs to be captured and the min
- * crossings/edge crossings need to be updated. Also increments the
- * iteration counter
- *
- * @return true if max_iterations has been reached
- */
-bool end_of_iteration( void );
 
 // ******** maintenance of fixed nodes and layers (for many of the
 // ******** heuristics)
@@ -70,6 +82,11 @@ void clearFixedEdges( void );
 void clearFixedLayers( void );
 
 // ******** Miscellaneous
+
+/**
+ * @return a random edge that has not been fixed or NULL if none exists
+ */
+Edgeptr randomEdge(void);
 
 /**
  * @return the total degree of nodes on the given layer
@@ -96,62 +113,39 @@ void barycenter( void );
 /**
  * @brief Implements the modified barycenter heuristic, which goes as follows.
  * Repeat the following until all layers have been marked.
- *  - find a layer k for which incident edges have the most crossings and mark it
- *    layer k is sorted based on barycenter weights of both the upper and lower neighbors
+ *  - find an unmarked layer k for which incident edges have the most crossings and mark it
+ *  - sort layer k based on barycenter weights of both the upper and lower neighbors
  *  - subsequent iterations sort
- *    + layers k-1 to 0 based on upper neighbor
- *    + layers k+1 to L-1 based on lower neighbor (L = # of layers)
+ *    + layers k-1 to 0 based on upper neighbors
+ *    + layers k+1 to L-1 based on lower neighbors (L = # of layers)
  * Do this repeatedly, each repetition is a pass
  */
 void modifiedBarycenter( void );
 
-// !!! The following heuristics, designed for parallel implementation,
-// !!! are deprecated; they are ineffective
-
 /**
- * !!! Computes weights on each layer independently and alternates sweep directions
- * <em>(parallel)</em>
- */
-void staticBarycenter( void );
-
-/**
- * !!! Alternates barycenter iterations between even and odd layers, computing
- * weights for both adjoining layers each time.
- * <em>(parallel)</em>
- */
-void evenOddBarycenter( void );
-
-/**
- * !!! Alternates between odd and even numbered layers, but instead of
- * alternating at every iteration and using both neighboring layers to assign
- * weights, this version uses the downward layer (starting with odd layers)
- * for a number of iterations corresponding to the number of layers, and then
- * the upward layer for an equal number of iterations.
- * <em>(parallel)</em>
+ * @todo
+ * Create another verticality barycenter option based on classic barycenter sweeps
+ * and rename the current on to something like modifiedVerticalityBarycenter.
+ * Not high priority
  */
 
 /**
- * !!! Alternates between even numbered and odd numbered layers. Unlike alt_bary,
- * which bases sorting on both neighboring layers simultaneously, this
- * version rotates between doing upward, downward, and both.
- * <em>(parallel)</em>
+ * @brief 
+ * A variation on modified barycenter that works as follows:
+ * - find an unmarked layer k whose incident edges have maximum total nonverticality and mark it
+ * - sort layer k based on average *position*, as opposed to index, of neighbors above and below
+ * - run a dynamic programming algorithm that minimizes nonverticality
+ *   given a fixed sequence of nodes
+ * - analogous to modifiedBarycenter sort and apply the DP algorithm to
+ *   + layers k-1 to 0 based on upper neighbors
+ *   + layers k+1 to L-1 based on lower neighbors
  */
-void rotatingBarycenter( void );
-
-void upDownBarycenter( void );
+void verticalityBarycenter( void );
 
 /**
- * !!! Each processor does a full-blown barycenter algorithm. Starts are
- * staggered at distance max(layers/processors,2) and each sweep wraps around  
- * to make the best use of of each processor. Startting layer shifts by 1 at
- * each iteration.
- *
- * @todo rename this as shiftBarycenter, which would be more in keeping with
- * its behavior.
+ * @brief A variation of mce focused on minimizing nonverticality.
  */
-void slabBarycenter( void );
-
-// !!! END OF DEPRECATED HEURISTICS !!!
+void maximumNonVerticalityEdge( void );
 
 /**
  * mce as described in M. Stallmann, JEA 2012.
@@ -196,14 +190,43 @@ void maximumCrossingsEdgeWithSifting( void );
  *
  * @todo one could also base the movement on minimizing the maximum stretch
  * of any edge, similar to mce
+ * 
+ * @warning this currently does not work;
+ *           crashes on u_50_40_105_1-rnd-009-scr
  */
 void maximumStretchEdge( void );
 
+/* the sifting algorithm from the Matuszewski et al. paper, except that a
+* fixed number of iterations or passes or a specific runtime limit
+* is used instead of the standard stopping criterion
+*/
 void sifting( void );
+
+/**
+ * @todo Not yet implemented; initially the two objectives will be crossings and nonverticality,
+ *       but can be adapted to any pair of objectives.
+ *       Not clear whether it makes more sense to have well-defined passess
+ *        with each node chosen once per pass or to make the choice completely random
+ *       The former fits better into the overall scheme, and, if no random seed is provided,
+ *        can select nodes by decreasing degree.
+ * @brief Each iteration of this algorithm works as follows
+ * - record current number of crossings cx and the total nonverticality nv
+ * - choose a random node x
+ * - sift x with respect to crossings and record diff_cx_cx and diff_cx_nv,
+ *     the differences in number of crossings and noverticality; also save the config as CX
+ * - sift x with respect to nonverticality and record diff_nv_cx and diff_nv_nv,
+ *     the differences in number of crossings and nonverticality; also save the config as NV
+ * Now there are four diffs, each of which can be negative (better) or positive (worse);
+ * assign -1 for better and +1 for worse and compare the sum of the two for each type of sifting.
+ * If diff_cx_sum < diff_nv_sum, the next config is CX
+ * If diff_nv_sum < diff_cx_sum, the next config is NV
+ * Otherwise choose the config at random. 
+ */
+void randomWalk(void);
 
 // preprocessors
 
-void breadthFirstSearch( void );
+void guidedBreadthFirstSearch( void );
 
 void depthFirstSearch( void );
 
@@ -212,14 +235,9 @@ void middleDegreeSort( void );
 // post processing
 
 /**
- * Swaps neighboring nodes when this improves the total number of crossings
- * until no improvement is possible.
- * <em>(embarrasingly parallel)</em>
- * 
- * @todo could do swapping based on any other objective
+ * Swaps neighboring nodes on each layer when this improves the total number of crossings
+ * until no improvement has occurred during a pass.
  */
-void swapping( void );
+void swapping(void);
 
 #endif
-
-/*  [Last modified: 2021 01 06 at 16:04:34 GMT] */

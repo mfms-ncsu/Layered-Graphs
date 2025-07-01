@@ -1,18 +1,29 @@
 #! /bin/bash
 
-# sgf2opt - starts with an sgf file and finds orderings that minimize two
-# distinct objectives; three different optimizations are done: first
-# objective alone, second objective alone, and second given the optimum value
-# of first as a constraint.
+# starts with an sgf file and finds orderings that minimize two distinct objectives;
+# four different optimizations are done:
+#     - first objective alone
+#     - second objective alone
+#     - first given the optimum value of second as a constraint
+#     - second given the optimum value of first as a constraint
+#   The run for 'second given the optimum value of first as a constraint' is omitted
+#   if 'first given the optimum value of second as a constraint' has the same outcome
+#   as solving for first alone.
+# (assumes sgf2ilp.py is in this directory and cplex_ilp is in PATH)
 
-# assumes sgf2ilp.py and sol2sgf.py are in this directory
+CPLEX_OPTIONS=""
+CPLEX_TIME=3600
 
-CPLEX_OPTIONS="-time=3600 -feasible=4 -vsel=n"
+# echo to stderr
+errcho() { >&2 echo $@; }
 
-if [ $# -ne 3 ]; then
-    echo "Usage: $0 OBJECTIVE_1 OBJECTIVE_2 SGF_FILE"
-    echo " where OBJECTIVE_1 and OBJECTIVE_2 are two layered graph objectives"
+if [ $# -ne 3 ] && [ $# -ne 4 ]; then
+    echo "Usage: $0 SGF_FILE OBJECTIVE_1 OBJECTIVE_2 [CPLEX_TIME]"
+    echo "  where SGF_FILE is a file in .sgf format"
+    echo "    and OBJECTIVE_1 and OBJECTIVE_2 are two layered graph objectives"
+    echo "  CPLEX_TIME is the time limit for CPLEX, in seconds, default = 3600"
     echo "Finds, for the graph in SGF_FILE, minimum values for OBJECTIVE_1, OBJECTIVE_2,"
+    echo " OBJECTIVE_1 with OBJECTIVE_2 restricted to its minimum value,"
     echo " and OBJECTIVE_2 with OBJECTIVE_1 restricted to its minimum value"
     echo "Possible objectives are to minimize ..."
     echo "  total/bottleneck (total/bottleneck crossings)"
@@ -21,24 +32,25 @@ if [ $# -ne 3 ]; then
     echo "Produces files of the form, in the same directory as the input"
     echo "  FILE-TAG.lp (ILP for the appropriate problem)"
     echo "  FILE-TAG.out (the cplex output when the ILP is solved)"
-    echo "  FILE-TAG.sgf (the sgf file with the optimum order)"
+    echo "FILE is the basename of the SGF_FILE"
     echo "TAG is either one of the objectives or, in case of the restricted run,"
     echo " x_v_y, where x is OBJECTIVE_1, v its optimal value, and y is OBJECTIVE_2"
     echo "Output gives an account of the cplex runs and the following information:"
-    echo " [OBJECTIVE1 | Objective2]    	[the two objectives]"
-    echo " [Value1 | Value2 | Value2E1] 	[the relevant values of CPLEX runs]"
-    echo " [Status1 | Status2 | Status2E1	[status codes from the CPLEX runs]"
+    echo " [Objective-1 | Objective-2]                      	[the two objectives]"
+    echo " [Value-1 | Value-2 | Value-1_2 | Value-2_1]      	[the relevant values of CPLEX runs]"
+    echo "  here, 1_2 and 2_1 refer to objective 1 given objective 2 is minimum and vice versa"
+    echo " [Status-1 | Status-2 | Status-1_2 Status-2_1]    	[status codes from the CPLEX runs]"
+    echo " [Runtime-1 | Runtime-2 | Runtime-1_2 Runtime-2_1]	[runtimes of the CPLEX runs]"
     echo " Different                    	YES/no"
-    echo "      YES if the unresticted and restricted minima for OBJECTIVE_2 differ"
-    echo " When Difference is YES, there are two additional lines for creating a summary"
-    echo "--> SGF_FILE <--"
-    echo "~~~ OBJECTIVE_2 value_2 OBJECTIVE_2/OBJECTIVE_1=value_1 conditional_value ~~~"
+    echo "    YES if unresticted and restricted minima for objective 1 (and objective 2) differ"
+    echo "    no if they are the same"
     exit 1
 fi
 
 # returns a (string representing a) floating point number that is slightly
 # rounded up from the input (also a string); used for stretch objectives
 # a 'p' is used instead of a decimal point to avoid having it look like an extension
+# currently needed only for the stretch objective; all others are integers
 round_up() {
     local number=$1
     local after_point=${number##*\.}  # digits after decimal point
@@ -66,6 +78,7 @@ string_version() {
 #  possibly conditioned on the value of a second objective
 # sets the variable min_objective to the [optimal] value if CPLEX run does not crash
 # sets the variable status to "Optimal" if CPLEX found the optimal solution
+# sets the variable runtime to the runtime of the CPLEX run (uses CPLEX internal clock)
 # Usage: run_cplex SGF_FILE OBJECTIVE [CONDITIONAL_OBJECTIVE CONDITIONAL_VALUE]
 run_cplex() {
     local sgf_file=$1
@@ -80,103 +93,108 @@ run_cplex() {
         local suffix=${conditional_objective}_$(string_version $conditional_value)_$objective
         local cplex_input_file=${base}-$suffix.lp
         local cplex_output_file=${base}-$suffix.out
-        local sgf_output_file=${base}-$suffix.sgf
         local cplex_creation_flags="--objective=$objective --$conditional_objective=$conditional_value"
     else
         local cplex_input_file=${base}-$objective.lp
         local cplex_output_file=${base}-$objective.out
-        local sgf_output_file=${base}-$objective.sgf
         local cplex_creation_flags="--objective=$objective"
     fi
 
-    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    errcho "_____________"
     if [ -e $cplex_input_file ]; then
-        echo "__ $cplex_input_file already exists, not creating"
+        errcho " __ $cplex_input_file already exists, not creating"
     else
-        echo "creating ILP, objective is $objective, input file is $input_sgf_file"
+        errcho " __ creating ILP, objective is $objective, input file is $input_sgf_file"
         if [ "$conditional_objective" != "" ]; then
-            echo " conditional_objective is $conditional_objective, value = $conditional_value"
+            errcho " __ conditional_objective is $conditional_objective, value = $conditional_value"
         fi
         $script_dir/sgf2ilp.py $cplex_creation_flags < $sgf_file > $cplex_input_file
     fi
     if [ -e $cplex_output_file ]; then
-        echo "__ already run CPLEX on $cplex_input_file, not repeating"
+        errcho " __ already run CPLEX on $cplex_input_file, not repeating"
     else
-        echo -n "solving $cplex_input_file,      "
-        date -u
+        errcho -n " __ solving $cplex_input_file,      "
+        date -u 1>&2
         cplex_ilp $CPLEX_OPTIONS -solution $cplex_input_file > $cplex_output_file
-        echo -n "done solving $cplex_input_file, "
-        date -u
+        errcho -n " __ done solving $cplex_input_file, "
+        date -u 1>&2
     fi
     min_objective=`grep '^value' $cplex_output_file | cut -f 2`
     status=`grep '^StatusCode' $cplex_output_file | cut -f 2`
-    echo "minimum value for $objective is $min_objective, status is $status"
-    if [ -n "$min_objective" ]; then
-        echo "converting solution to sgf for optimal order"
-        $script_dir/sol2sgf.py < $cplex_output_file > $sgf_output_file
-        if [[ $min_objective != ${min_objective%.[0-9]*} ]]; then
-            # floating point number - need to round up just in case
-            min_objective=$(round_up $min_objective)
-        fi
-        if [ $status != "Optimal" ]; then
-            echo "!!! solution not proved optimal !!!"
-        fi
-    else
-        echo "!!! no solution found for $cplex_input_file !!!"
-    fi
+    runtime=`grep '^CPXtime' $cplex_output_file | cut -f 2`
+    errcho " __ minimum value for $objective is $min_objective, status is $status"
 }
 
 # python scripts are in same directory as this one
 script_dir=${0%/*}
+input_sgf_file=$1
+shift
 objective_1=$1
 shift
 objective_2=$1
 shift
-input_sgf_file=$1
+cplex_time=$CPLEX_TIME
+if [ $# -eq 1 ]; then
+    cplex_time=$1
+fi
+CPLEX_OPTIONS="$CPLEX_OPTIONS -time=$cplex_time"
 
-echo "objective_1 = $objective_1, objective_2 = $objective_2"
+errcho "__ objective_1 = $objective_1, objective_2 = $objective_2"
 
 # minimize the first objective
 run_cplex $input_sgf_file $objective_1
-min_first_objective=$min_objective
-first_status=$status
-echo "minimum value for $objective_1 is $min_first_objective, status is $first_status"
-
-# minimize second objective given minimum first objective as a constraint
-run_cplex $input_sgf_file $objective_2 $objective_1 $min_objective
-min_conditional_objective=$min_objective
-conditional_status=$status
-echo "minimum value for $objective_2 given $objective_1=$min_first_objective is $min_conditional_objective, status is $conditional_status"
+value_1=$min_objective
+status_1=$status
+runtime_1=$runtime
 
 # minimize the second objective
 run_cplex $input_sgf_file $objective_2
-min_second_objective=$min_objective
-second_status=$status
-echo "minimum value for $objective_2 is $min_second_objective, status is $second_status"
+value_2=$min_objective
+status_2=$status
+runtime_2=$runtime
+
+# minimize first objective given minimum second objective as a constraint
+run_cplex $input_sgf_file $objective_1 $objective_2 $value_2
+value_1_2=$min_objective
+status_1_2=$status
+runtime_1_2=$runtime
+errcho "__ minimum value for $objective_1 given $objective_2=$value_2 is $value_1_2, status is $status_1_2"
 
 different="no"
-if [ "$min_second_objective" != "$min_conditional_objective" ]; then
+if [ "$value_1" != "$value_1_2" ]; then
     different="YES"
+    # minimize second objective given minimum first objective as a constraint
+    run_cplex $input_sgf_file $objective_2 $objective_1 $value_1
+    value_2_1=$min_objective
+    status_2_1=$status
+    runtime_2_1=$runtime
+    errcho "__ minimum value for $objective_2 given $objective_1=$value_1 is $value_2_1, status is $status_2_1"
+    errcho "__ *** the constrained minima differ from the unconstrained ones ***"
+else
+    # no need to do another run if objectives are the same
+    value_2_1=$value_2
+    status_2_1=$status_2
+    runtime_2_1=0.0
 fi
+
 
 # tagged values for this run
-echo "Input     	`basename $input_sgf_file .sgf`"
-echo "Objective1	$objective_1"
-echo "Objective2	$objective_2"
-echo "Value1    	$min_first_objective"
-echo "Value2    	$min_second_objective"
-echo "Value2E$min_first_objective	$min_conditional_objective"
-echo "Status1   	$first_status"
-echo "Status2   	$second_status"
-echo "Status2E$min_first_objective	$conditional_status"
+echo "00-Instance	`basename $input_sgf_file .sgf`"
+echo "Objective-1	$objective_1"
+echo "Objective-2	$objective_2"
+echo "Value-1    	$value_1"
+echo "Value-1_2	$value_1_2"
+echo "Value-2    	$value_2"
+echo "Value-2_1	$value_2_1"
 echo "Different 	$different"
+echo "Status-1  	$status_1"
+echo "Status-1_2	$status_1_2"
+echo "Status-2  	$status_2"
+echo "Status-2_1	$status_2_1"
+echo "Runtime-1 	$runtime_1"
+echo "Runtime-1_2	$runtime_1_2"
+echo "Runtime-2 	$runtime_2"
+echo "Runtime-2_1	$runtime_2_1"
 
-# compare these as strings because bash does not handle floats
-if [ "$min_second_objective" != "$min_conditional_objective" ]; then
-    echo "*-*-* $input_sgf_file objectives differ *-*-*"
-    echo "~~~ $objective_2 $min_second_objective $objective_2/$objective_1=$min_first_objective $min_conditional_objective ~~~"
-fi
-echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+echo "------------------------------------------"
 echo
-
-#  [Last modified: 2020 05 20 at 19:45:07 GMT]

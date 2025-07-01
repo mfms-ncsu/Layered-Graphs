@@ -34,29 +34,15 @@ char * nameFromId(int id);
 int countIsolatedNodes();
 
 /**
- * Creates an ord file name from the graph name, preprocessor and heuristic.
- * @param output_file_name a buffer for the file name to be created, assumed
- * to be big enough
- * @param preprocessor_arg the preprocessor as an arg so no reliance on global
- * @param heuristic_arg the heuristic as an arg so no reliance on global
- * @param appendix a string that is attached just before the
- * extension, usually the objective
- * @param extension either ".ord" or ".sgf" depending on format of output
- */
-void createOutputFileName( char * output_file_name,
-                           const char * preprocessor_arg,
-                           const char * heuristic_arg,
-                           const char * appendix,
-                           const char * extension );
-
-/**
  * writes an output file recording the current ordering of layers;
  * the file extension and format are based on global variables
- * write_ord and write_sgf; the tag parameters are used to create the
- * file name
+ * write_ord and write_sgf; the tag parameter is used to create a
+ * file name with the objective function appended
+ * @param output_base_name the base name used for output,
+ *                         usually matches the base name of the input file
  * @param objective_tag a string representing the objective
  */
-void writeFile(const char * objective_tag);
+void writeFile(const char * output_base_name, const char * objective_tag);
 
 /**
  * Adds an edge to the graph; (currently) used by both sgf and dot
@@ -102,12 +88,6 @@ void readDotAndOrd( const char * dot_file, const char * ord_file );
 void deallocateGraph(void);
 
 /**
- * Prints the graph in a verbose format on standard output for debugging
- * purposes. May also be used for piping to a graphical trace later.
- */
-void printGraph();
-
-/**
  * Writes the current layer orderings in ord format to the out stream
  * @todo move this to ord.[ch]
  */
@@ -121,6 +101,7 @@ void writeOrd(FILE * out);
  * starts the list of edges (including the graph name)
  * @param edge_list array of (indices of) the edges to be written
  * @param edge_list_length length of the edge list
+ * @todo the first argument should really be FILE *
  */
 void writeDot(const char * dot_file_name,
                const char * graph_name,
@@ -130,12 +111,11 @@ void writeDot(const char * dot_file_name,
                );
 
 /**
- * Creates a new node with the given id number
- *   and performs 2. (a)-(e) above
  * @param id the id number of the node
  * @param layer the layer of the node
- * @param position the position of the node on its layer
+ * @param position the position of the node on its layer given by the sgf file
  * @return (a pointer to) the newly created node
+ * @attention used when reading an sgf graph
  */
 Nodeptr makeNumberedNode(int id, int layer, int position);
 
@@ -165,6 +145,18 @@ void startGettingComments(void);
  */
 char * getNextComment(char * comment_buffer);
 
-#endif
+/**
+ * @brief writes important information about a node, for debugging
+ * 
+ * @param outstream the output stream, usually stderr
+ * @param node pointer to the node
+ */
+void writeNode(FILE * outstream, const Nodeptr node);
 
-/*  [Last modified: 2021 02 15 at 17:00:05 GMT] */
+void writeEdge(FILE * outstream, const Edgeptr edge);
+
+void writeLayer(FILE * outstream, int layer);
+
+void writeGraph(FILE * outstream);
+
+#endif

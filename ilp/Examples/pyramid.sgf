@@ -1,5 +1,5 @@
 c a four-layer pyramid, designed to test stretching
-t pyramid 9 17
+t pyramid 10 17 4
 n 0 0 0
 n 1 0 1
 n 2 0 2
@@ -9,7 +9,7 @@ n 5 1 1
 n 6 1 2
 n 7 2 0
 n 8 2 1
-n 9 3 0
+n 9 3 3
 e 0 4
 e 0 5
 e 1 4

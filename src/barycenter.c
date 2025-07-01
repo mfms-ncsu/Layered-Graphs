@@ -17,37 +17,37 @@
 #include"crossings.h"
 #include"graph_io.h"
 #include"heuristics.h"
+#include"verticality.h"
+#include"dynamic_programming.h"
 
 /**
- * Computes the weight of a node based on the average position of its
+ * Computes the weight of a node based on the average position/index of its
  * neighbors according to the given orientation.
  * If the node has no neighbors in the direction specified by the
  * orientation, its neighbors in the other direction are taken into
  * account. Isolated nodes have 0 weight.
  */
-static void node_weight( Nodeptr node, Orientation orientation )
-{
+static void node_weight(Nodeptr node, Orientation orientation) {
   int total_degree = 0;
   int total_of_positions = 0;
-  int adj_index;
-  if( orientation != UPWARD )
-    {
-      total_degree += node->down_degree;
-      for( adj_index = 0; adj_index < node->down_degree; adj_index++ )
-        {
-          total_of_positions
-            += node->down_edges[adj_index]->down_node->position;
-        }
+  if ( orientation != UPWARD ) {
+    total_degree += node->down_degree;
+    for( int adj_index = 0; adj_index < node->down_degree; adj_index++ ) {
+      int position_to_use = node->down_edges[adj_index]->down_node->layer_index;
+      if ( verticality_heuristic )
+        position_to_use = node->down_edges[adj_index]->down_node->horizontal_position;
+      total_of_positions += position_to_use;
     }
-  if( orientation != DOWNWARD )
-    {
-      total_degree += node->up_degree;
-      for( adj_index = 0; adj_index < node->up_degree; adj_index++ )
-        {
-          total_of_positions
-            += node->up_edges[adj_index]->up_node->position;
-        }
+  }
+  if ( orientation != DOWNWARD ) {
+    total_degree += node->up_degree;
+    for( int adj_index = 0; adj_index < node->up_degree; adj_index++ ) {
+      int position_to_use = node->up_edges[adj_index]->up_node->layer_index;
+      if ( verticality_heuristic )
+        position_to_use = node->up_edges[adj_index]->up_node->horizontal_position;
+      total_of_positions += position_to_use;
     }
+  }
   if( total_degree > 0 )
     node->weight = (double) total_of_positions / total_degree;
   else if( adjust_weights == NONE
@@ -67,6 +67,7 @@ static void node_weight( Nodeptr node, Orientation orientation )
  *   1/2 * (upper_average + lower_average)
  * instead of
  *   sum_of_positions / total_degree
+ * Does not make sense in the case of verticality.
  */
 static void balanced_node_weight( Nodeptr node ) {
 #ifdef DEBUG
@@ -81,7 +82,7 @@ static void balanced_node_weight( Nodeptr node ) {
   degree = node->down_degree;
   for( adj_index = 0; adj_index < degree; adj_index++ ) {
       total_of_positions
-        += node->down_edges[adj_index]->down_node->position;
+        += node->down_edges[adj_index]->down_node->layer_index;
   }
   double downward_average;
   if ( degree > 0 ) downward_average = (double) total_of_positions / degree;
@@ -92,7 +93,7 @@ static void balanced_node_weight( Nodeptr node ) {
   degree = node->up_degree;
   for( adj_index = 0; adj_index < degree; adj_index++ ) {
       total_of_positions
-        += node->up_edges[adj_index]->up_node->position;
+        += node->up_edges[adj_index]->up_node->layer_index;
   }
   double upward_average;
   if ( degree > 0 ) upward_average = (double) total_of_positions / degree;
@@ -185,71 +186,57 @@ static void adjust_weights_avg( int layer ) {
 } // end, adjust_weights_avg
 
 /**
- * Assigns weights to nodes on the given layer based on positions of their
- * edges above, below, or both, as specified by the orientation.
+ * Assigns weights to nodes on the given layer based on indexes/positions
+ * of their neighboring nodes on the layer above, below, or both,
+ * as specified by the orientation.
+ * The verticality_heuristic flag determines whether based on layer_index or horizontal_position
  */
-void barycenterWeights( int layer, Orientation orientation )
+void barycenterWeights(int layer, Orientation orientation)
 {
 #ifdef DEBUG
   printf("-> barycenterWeights, layer = %d, orientation = %d"
          ", balanced_weight = %d\n",
-         layer, orientation, balanced_weight );
+         layer, orientation, balanced_weight);
 #endif  
-  Layerptr layerptr = layers[ layer ];
-  int i = 0;
+  Layerptr layerptr = layers[layer];
   int num_nodes = layerptr->number_of_nodes;
-  for(i = 0 ; i < num_nodes; i++ )
-    {
-      if ( orientation == BOTH && balanced_weight )
-        balanced_node_weight( layerptr->nodes[i] );
-      else
-        node_weight( layerptr->nodes[i], orientation );
-    }
+  for ( int i = 0 ; i < num_nodes; i++ ) {
+    if ( orientation == BOTH && balanced_weight && ! verticality_heuristic )
+      balanced_node_weight(layerptr->nodes[i]);
+    else
+      node_weight(layerptr->nodes[i], orientation);
+  }
   if( adjust_weights == LEFT )
-    adjust_weights_left( layer );
+    adjust_weights_left(layer);
   else if( adjust_weights == AVG )
-    adjust_weights_avg( layer );
+    adjust_weights_avg(layer);
 #ifdef DEBUG
   printf( "<- barycenterWeights\n" );
 #endif  
 }      
 
-bool barycenterUpSweep( int starting_layer )
-{
-  int layer = starting_layer;
-  for( ; layer < number_of_layers; layer++ )
-    {
-      barycenterWeights( layer, DOWNWARD );
-      layerSort( layer );
-      //      layerQuicksort( layer );
-      //      layerUnstableSort( layer );
-      updateCrossingsForLayer( layer );
-      tracePrint( layer, "barycenter upsweep" );
-      if ( end_of_iteration() )
-        return true;
-    }
-  return false;
+void barycenterUpSweep(int starting_layer) {
+  for( int layer = starting_layer; layer < number_of_layers; layer++ ) {
+    iteration++;
+    barycenterWeights(layer, DOWNWARD);
+    layerSort(layer);
+    optimizeLayerVerticality(layer, DOWNWARD);
+    updateCrossingsForLayer(layer);
+    tracePrint(layer, "barycenter upsweep");
+    end_of_iteration();
+    if ( termination_criterion_met ) return;
+  }
 }
 
-/**
- * Repeats barycenter heuristic moving downward from the starting layer to the
- * bottom layer, layer 0. Orientation of each heuristic application is upward.
- */
-bool barycenterDownSweep( int starting_layer )
-{
-  int layer = starting_layer;
-  for( ; layer >= 0; layer-- )
-    {
-      barycenterWeights( layer, UPWARD );
-      layerSort( layer );
-      //      layerQuicksort( layer );
-      //      layerUnstableSort( layer );
-      updateCrossingsForLayer( layer );
-      tracePrint( layer, "barycenter downsweep" );
-      if ( end_of_iteration() )
-        return true;
-    }
-  return false;
+void barycenterDownSweep(int starting_layer) {
+  for( int layer = starting_layer; layer >= 0; layer-- ) {
+    iteration++;
+    barycenterWeights(layer, UPWARD);
+    layerSort(layer);
+    optimizeLayerVerticality(layer, UPWARD);
+    updateCrossingsForLayer(layer);
+    tracePrint(layer, "barycenter upsweep");
+    end_of_iteration();
+    if ( termination_criterion_met ) return;
+  }
 }
-
-/*  [Last modified: 2019 09 27 at 17:59:03 GMT] */

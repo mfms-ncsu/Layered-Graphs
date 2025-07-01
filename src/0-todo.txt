@@ -48,23 +48,14 @@ Consider runtime options that assume three stages: preprocessing (e.g., dfs), so
 
 - ability to have positions that are not consecutive on a layer, in order to be able to minimize non-verticality, both directly and as a Pareto option
 
-- a variant of barycenter that takes non-consecutive positions into account; here the new positions would be "as close as possible" to the computed averages (Terri may have started something like this)
+(* done *) - a variant of barycenter that takes non-consecutive positions into account; here the new positions would be "as close as possible" to the computed averages (Terri may have started something like this)
 
 - the new barycenter variant might coincidentally be a good heuristic for minimizing total crossings, at least in some situations
 
-- a mnv heuristic, similar to mce, that chooses an edge with maximum non-verticality and minimizes the non-verticality of edges incident on its endpoints
+(* done *) - a mnv heuristic, similar to mce, that chooses an edge with maximum non-verticality and minimizes the non-verticality of edges incident on its endpoints
 
 *** Implementation notes ***
 
-For heuristics it would be good to have an array of structs, each entry has a heuristic name, pointer to the corresponding function, iterations, and time limit; the latter two are left unspecified. Suppose that the user specifies options
-       -h bary,mce -i 1000,_ -r _,10
-Then the program would
-    - search the array to find the "bary" entry
-    - copy the struct, filling in the iteration field with 1000
-    - run barycenter consulting the current struct for runtime and iterations
-    - repeat the process for "mce" using the same global variable for the copy
-
-----------------------------------------
 Code to examine/modify
 
 anywhere the position attribute of a node is initialized or updated
@@ -84,4 +75,3 @@ Issues that need to be addressed
 Best strategy may be to have a flag alerting the software that verticality is to be optimized, and either disable position-based heuristics or invoke variants.
 
 The current software is clunky in that it tracks several objectives throughout, instead of just one (two in case of Pareto optimization). Better to specify one or two objectives up front and completely ignore the rest.
-

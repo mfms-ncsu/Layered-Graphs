@@ -1,0 +1,16 @@
+c a cycle with six nodes, two layers, plus a diagonal across
+c ../../src/minimization -p dfs -h bary -i 10000 -z -w _ ../TestData/c6+1.sgf
+t c6_plus_one-dfs+bary-b 6 7 2
+n 0 0 0
+n 1 0 2
+n 2 0 1
+n 3 1 1
+n 4 1 2
+n 5 1 0
+e 0 3
+e 0 5
+e 1 3
+e 1 4
+e 2 4
+e 2 5
+e 2 3

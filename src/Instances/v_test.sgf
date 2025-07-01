@@ -1,0 +1,19 @@
+c simple test for verticality adjustment
+c do ./verticality_adjustment_test -L 1 -h opt
+t v_test 8 8 2
+n 0 0 0
+n 1 0 1
+n 2 0 2
+n 3 0 3
+n 4 0 4
+n 5 1 0
+n 6 1 1
+n 7 1 2
+e 0 5
+e 0 6
+e 1 5
+e 1 6
+e 2 6
+e 2 7
+e 3 7
+e 4 7

@@ -5,7 +5,6 @@
  * @date 2009/05/19
  *
  * @todo To keep things simple, total stretch is rounded to an integer value
- * $Id: stats.c 131 2016-01-12 01:07:39Z mfms $
  */
 
 
@@ -24,6 +23,7 @@
 #include"channel.h"
 #include"Statistics.h"
 #include"timing.h"
+#include"verticality.h"
 
 typedef struct pareto_item {
   double objective_one;
@@ -50,15 +50,25 @@ static void putParetoList(char * buffer) {
                     (int) local_list->objective_one,
                     (int) local_list->objective_two);
         }
-        else if ( pareto_objective == STRETCH_TOTAL ) {
-            sprintf(local_buffer, "%f^%d",
-                    local_list->objective_one,
-                    (int) local_list->objective_two);
-        }
-        else { //  pareto_objective == BOTTLENECK_STRETCH
+        else if ( pareto_objective == TOTAL_STRETCH ) {
             sprintf(local_buffer, "%d^%f",
                     (int) local_list->objective_one,
                     local_list->objective_two);
+        }
+        else if ( pareto_objective == BOTTLENECK_STRETCH ) {
+            sprintf(local_buffer, "%d^%f",
+                    (int) local_list->objective_one,
+                    local_list->objective_two);
+        }
+        else if ( pareto_objective == TOTAL_VERTICAL ) {
+            sprintf(local_buffer, "%d^%ld",
+                    (int) local_list->objective_one,
+                    (long) local_list->objective_two);
+        }
+        else if ( pareto_objective == BOTTLENECK_VERTICAL ) {
+            sprintf(local_buffer, "%d^%ld",
+                    (int) local_list->objective_one,
+                    (long) local_list->objective_two);
         }
         strcat(buffer, local_buffer);
         local_list = local_list->rest;
@@ -165,8 +175,10 @@ void deallocateParetoList(void) {
 }
 
 CROSSING_STATS_INT total_crossings;
-CROSSING_STATS_INT max_edge_crossings;
+CROSSING_STATS_INT bottleneck_crossings;
 CROSSING_STATS_INT favored_edge_crossings;
+CROSSING_STATS_LONG total_nonverticality;
+CROSSING_STATS_INT bottleneck_verticality;
 CROSSING_STATS_DOUBLE total_stretch;
 CROSSING_STATS_DOUBLE bottleneck_stretch;
 Statistics overall_degree;
@@ -181,6 +193,19 @@ static void init_specific_crossing_stats_int( CROSSING_STATS_INT * stats,
   stats->after_post_processing = INT_MAX;
   stats->best = INT_MAX;
   stats->previous_best = INT_MAX;
+  stats->best_heuristic_iteration = -1;
+  stats->post_processing_iteration = -1;
+}
+static void init_specific_crossing_stats_long( CROSSING_STATS_LONG * stats,
+                                              const char * name )
+{
+  stats->name = name;
+  stats->at_beginning = LONG_MAX;
+  stats->after_preprocessing = LONG_MAX;
+  stats->after_heuristic = LONG_MAX;
+  stats->after_post_processing = LONG_MAX;
+  stats->best = LONG_MAX;
+  stats->previous_best = LONG_MAX;
   stats->best_heuristic_iteration = -1;
   stats->post_processing_iteration = -1;
 }
@@ -202,7 +227,9 @@ static void init_specific_crossing_stats_double( CROSSING_STATS_DOUBLE * stats,
 void init_crossing_stats( void )
 {
   init_specific_crossing_stats_int( & total_crossings, "Crossings" );
-  init_specific_crossing_stats_int( & max_edge_crossings, "BottleneckCrossings" );
+  init_specific_crossing_stats_int( & bottleneck_crossings, "BottleneckCrossings" );
+  init_specific_crossing_stats_long( & total_nonverticality, "NonVerticality" );
+  init_specific_crossing_stats_int( & bottleneck_verticality, "BottleneckVerticality" );
   init_specific_crossing_stats_double( & total_stretch, "Stretch" );
   init_specific_crossing_stats_double( & bottleneck_stretch, "BottleneckStretch" );
   if ( pareto_objective != NO_PARETO )
@@ -212,7 +239,9 @@ void init_crossing_stats( void )
 void capture_beginning_stats( void )
 {
   total_crossings.at_beginning = numberOfCrossings();
-  max_edge_crossings.at_beginning = maxEdgeCrossings();
+  bottleneck_crossings.at_beginning = maxEdgeCrossings();
+  total_nonverticality.at_beginning = updateAllVerticality();
+  bottleneck_verticality.at_beginning = getBottleneckNonverticality();
   total_stretch.at_beginning = totalStretch();
   bottleneck_stretch.at_beginning = maxEdgeStretch();
 }
@@ -220,7 +249,9 @@ void capture_beginning_stats( void )
 void capture_preprocessing_stats( void )
 {
   total_crossings.after_preprocessing = numberOfCrossings();
-  max_edge_crossings.after_preprocessing = maxEdgeCrossings();
+  bottleneck_crossings.after_preprocessing = maxEdgeCrossings();
+  total_nonverticality.after_preprocessing = updateAllVerticality();
+  bottleneck_verticality.after_preprocessing = getBottleneckNonverticality();
   total_stretch.after_preprocessing = totalStretch();
   bottleneck_stretch.after_preprocessing = maxEdgeStretch();
 }
@@ -228,7 +259,9 @@ void capture_preprocessing_stats( void )
 void capture_heuristic_stats( void )
 {
   total_crossings.after_heuristic = total_crossings.best;
-  max_edge_crossings.after_heuristic = max_edge_crossings.best;
+  bottleneck_crossings.after_heuristic = bottleneck_crossings.best;
+  total_nonverticality.after_heuristic = total_nonverticality.best;
+  bottleneck_verticality.after_heuristic = bottleneck_verticality.best;
   total_stretch.after_heuristic = total_stretch.best;
   bottleneck_stretch.after_heuristic = bottleneck_stretch.best;
 }
@@ -239,31 +272,60 @@ void capture_post_processing_stats( void )
   // of crossings improves after each one by definition; not so with
   // bottleneck crossings or stretch
   total_crossings.after_post_processing = total_crossings.best;
-  total_crossings.post_processing_iteration = post_processing_iteration;
-  max_edge_crossings.after_post_processing = max_edge_crossings.best;
+  bottleneck_crossings.after_post_processing = bottleneck_crossings.best;
+  total_nonverticality.after_post_processing = total_nonverticality.best;
+  bottleneck_verticality.after_post_processing = bottleneck_verticality.best;
   total_stretch.after_post_processing = total_stretch.best;
   bottleneck_stretch.after_post_processing = bottleneck_stretch.best;
 }
 
-void update_best_int( CROSSING_STATS_INT * stats, Orderptr order,
+void update_best_int( CROSSING_STATS_INT * stats, Positionptr pos_info,
                       int (* crossing_retrieval_function) (void) )
 {
 #ifdef DEBUG
   printf("-> update_best_int, %s, %d\n", stats->name, stats->best);
 #endif
   int current_value = crossing_retrieval_function();
+  fprintf(stderr, "  $ update best int, current_value = %d\n", current_value);
+  if ( stats->best == 34 ) abort();
   if( current_value < stats->best )
     {
       stats->best = current_value;
-      stats->best_heuristic_iteration = iteration;
-      save_order( order );
+      if ( post_processing_iteration < 0 )
+        stats->best_heuristic_iteration = iteration;
+      else
+        stats->post_processing_iteration = post_processing_iteration;
+      savePositions( pos_info );
     }
 #ifdef DEBUG
-  printf("<- update_best_int, %s, %d\n", stats->name, stats->best);
+  printf("<- update_best_int, %s, %d iter = %d pp_iter = %d\n", stats->name, stats->best,
+  stats->best_heuristic_iteration, stats->post_processing_iteration);
 #endif  
 }
 
-void update_best_double( CROSSING_STATS_DOUBLE * stats, Orderptr order,
+void update_best_long( CROSSING_STATS_LONG * stats, Positionptr pos_info,
+                      long (* crossing_retrieval_function) (void) )
+{
+#ifdef DEBUG
+  printf("-> update_best_long, %s, %ld\n", stats->name, stats->best);
+#endif
+  long current_value = crossing_retrieval_function();
+  if( current_value < stats->best )
+    {
+      stats->best = current_value;
+      if ( post_processing_iteration < 0 )
+        stats->best_heuristic_iteration = iteration;
+      else
+        stats->post_processing_iteration = post_processing_iteration;
+      savePositions( pos_info );
+    }
+#ifdef DEBUG
+  printf("<- update_best_long, %s, %ld iter = %d pp_iter = %d\n", stats->name, stats->best,
+  stats->best_heuristic_iteration, stats->post_processing_iteration);
+#endif  
+}
+
+void update_best_double( CROSSING_STATS_DOUBLE * stats, Positionptr pos_info,
                          double (* crossing_retrieval_function) (void) )
 {
 #ifdef DEBUG
@@ -273,8 +335,11 @@ void update_best_double( CROSSING_STATS_DOUBLE * stats, Orderptr order,
   if( current_value < stats->best )
     {
       stats->best = current_value;
-      stats->best_heuristic_iteration = iteration;
-      save_order( order );
+      if ( post_processing_iteration < 0 )
+        stats->best_heuristic_iteration = iteration;
+      else
+        stats->post_processing_iteration = post_processing_iteration;
+      savePositions( pos_info );
     }
 #ifdef DEBUG
   printf("<- update_best_double, %s, %f\n", stats->name, stats->best);
@@ -296,29 +361,72 @@ void update_best_double( CROSSING_STATS_DOUBLE * stats, Orderptr order,
  * been properly maintained; change_crossings() is used to update
  * crossings for a single node or edge when an algorithm does a swap
  */
-void update_best_all( void )
-{
+void update_best_all(void) {
+#ifdef DEBUG
+  fprintf(stderr, "-> update_best_all, crossings = %d\n", numberOfCrossings());
+#endif
   update_best_int( & total_crossings, best_crossings_order, numberOfCrossings );
-  update_best_int( & max_edge_crossings,
+  update_best_int( & bottleneck_crossings,
                    best_edge_crossings_order, maxEdgeCrossings );
+  update_best_long( & total_nonverticality, best_nonverticality_order,
+		  	  	   updateAllVerticality );
+  update_best_int(& bottleneck_verticality, best_bottleneck_verticality_order, getBottleneckNonverticality);
   update_best_double( & total_stretch, best_total_stretch_order, totalStretch );
   update_best_double( & bottleneck_stretch,
                       best_bottleneck_stretch_order, maxEdgeStretch );
-  if ( pareto_objective == BOTTLENECK_TOTAL )
+  if ( pareto_objective == BOTTLENECK_TOTAL ) {
     pareto_list = pareto_insert( maxEdgeCrossings(),
                                  numberOfCrossings(),
                                  iteration,
                                  pareto_list );
-  else if ( pareto_objective == STRETCH_TOTAL )
-    pareto_list = pareto_insert( totalStretch(),
-                                 numberOfCrossings(),
+  }
+  else if ( pareto_objective == TOTAL_STRETCH && post_processing_iteration < 1 ) {
+    // don't do this if in post processing - leads to way too many Pareto points
+    // and causes stack overflow for larger instances
+    pareto_list = pareto_insert( numberOfCrossings(),
+                                 totalStretch(),
                                  iteration,
                                  pareto_list );
-  else if ( pareto_objective == BOTTLENECK_STRETCH )
+  }
+  else if ( pareto_objective == BOTTLENECK_STRETCH ) {
     pareto_list = pareto_insert( maxEdgeCrossings(),
                                  totalStretch(),
                                  iteration,
                                  pareto_list );
+  }
+  else if ( pareto_objective == TOTAL_VERTICAL ) {
+    pareto_list = pareto_insert( numberOfCrossings(),
+                                 updateAllVerticality(),
+                                 iteration,
+                                 pareto_list );
+  }
+  else if ( pareto_objective == BOTTLENECK_VERTICAL ) {
+    pareto_list = pareto_insert( maxEdgeCrossings(),
+                                 updateAllVerticality(),
+                                 iteration,
+                                 pareto_list );
+  }
+#ifdef DEBUG
+  fprintf(stderr, "<- update_best_all, crossings = %d\n", numberOfCrossings());
+#endif
+}
+
+bool has_improved_long( CROSSING_STATS_LONG * stats )
+{
+#ifdef DEBUG
+  printf( "-> has_improved_long, stats = %s, best = %ld, previous = %ld\n",
+          stats->name, stats->best, stats->previous_best );
+#endif
+  bool improved = false;
+  if ( stats->best < stats->previous_best ) {
+    improved = true;
+    stats->previous_best = stats->best;
+  }
+#ifdef DEBUG
+  printf( "<- has_improved, return %d, best = %ld, previous = %ld, iteration = %d\n",
+          improved, stats->best, stats->previous_best, iteration );
+#endif
+  return improved;
 }
 
 bool has_improved_int( CROSSING_STATS_INT * stats )
@@ -392,10 +500,10 @@ static void print_layer_degree_statistics( int layer, FILE * output_stream )
       if ( DEGREE( node ) > 0 )
         add_data( layer_degree, DEGREE( node ) );
     }
-  fprintf( output_stream, "NDegree,%3d,", layer );
-  print_statistics( layer_degree, output_stream, "%7.2lf" );
-  fprintf( output_stream, "\n" );
-  free_statistics( layer_degree );
+  fprintf(output_stream, "Stat,NDegree,%s,%d,", graph_name, layer);
+  print_statistics(layer_degree, output_stream, "%0.2lf");
+  fprintf(output_stream, "\n");
+  deallocateStatistics(layer_degree);
 }
 
 static void print_channel_degree_statistics( FILE * output_stream )
@@ -422,20 +530,21 @@ static void print_channel_degree_statistics( FILE * output_stream )
           if ( node->up_degree > 0 )
             add_data( channel_degree, node->up_degree );
         }
-      fprintf( output_stream, "CDegree,%3d,", layer );
-      print_statistics( channel_degree, output_stream, "%7.2lf" );
-      fprintf( output_stream, "\n" );
+      fprintf(output_stream, "Stat,CDegree,%s,%d,", graph_name, layer);
+      print_statistics(channel_degree, output_stream, "%0.2lf");
+      fprintf(output_stream, "\n");
       add_data( channel_degree_discrepancy,
                 get_max( channel_degree ) / get_median( channel_degree ) );
-      free_statistics( channel_degree );
+      deallocateStatistics( channel_degree );
     }
-  fprintf( output_stream, "AvgCDegreeDisc," );
-  print_statistics( channel_degree_discrepancy, output_stream, "%7.2f" );
-      fprintf( output_stream, "\n" );
-  free_statistics( channel_degree_discrepancy );
+  fprintf(output_stream, "Stat,AvgCDegreeDisc,%s,%d,", graph_name,-1);
+  print_statistics(channel_degree_discrepancy, output_stream, "%0.2f");
+      fprintf(output_stream, "\n");
+  deallocateStatistics( channel_degree_discrepancy );
 }
 
 static void print_channel_edge_counts( FILE * output_stream ) {
+  Statistics edge_count = init_statistics(number_of_layers - 1);
   for ( int layer = 1; layer < number_of_layers; layer++ ) {
     Layerptr upper_layer = layers[layer];
     int upper_layer_size = upper_layer->number_of_nodes;
@@ -446,10 +555,15 @@ static void print_channel_edge_counts( FILE * output_stream ) {
       Nodeptr node = upper_layer->nodes[i];
       edges_from_upper_layer += node->down_degree;
     }
-    fprintf( output_stream, "EdgesInChannel\t%d\t%d\n",
-             layer,
-             edges_from_upper_layer );
+    fprintf(output_stream, "Stat,EdgesInChannel,%s,%d,%d\n",
+            graph_name, layer,
+            edges_from_upper_layer);
+    add_data(edge_count, edges_from_upper_layer);
   }
+  fprintf(output_stream, "Stat,SEdgesInChannel,%s,%d,", graph_name,-1);
+  print_statistics(edge_count, output_stream, "%0.2f");
+      fprintf(output_stream, "\n");
+  deallocateStatistics(edge_count);
 }
 
 static void compute_degree_statistics( void )
@@ -475,17 +589,17 @@ static void print_degree_statistics( FILE * output_stream )
       add_data( layer_degrees, total_layer_degree( i ) );
       print_layer_degree_statistics( i, output_stream );
     }
-  fprintf( output_stream, "LDegree,%3d,", -1 );
-  print_statistics( layer_degrees, output_stream, "%7.2lf" );
-  fprintf( output_stream, "\n" );
-  fprintf( output_stream, "TDegree,%3d,", -1 );
-  print_statistics( overall_degree, output_stream, "%7.2lf" );
-  fprintf( output_stream, "\n" );
-  fprintf( output_stream, "PerLayerNodes,%3d,", -1 );
-  print_statistics( nodes_per_layer, output_stream, "%7.2lf" );
-  fprintf( output_stream, "\n" );
-  free_statistics( layer_degrees );
-  free_statistics( nodes_per_layer );
+  fprintf(output_stream, "Stat,LDegree,%s,%d,", graph_name, -1);
+  print_statistics(layer_degrees, output_stream, "%0.2lf");
+  fprintf(output_stream, "\n");
+  fprintf(output_stream, "Stat,TDegree,%s,%d,", graph_name, -1);
+  print_statistics(overall_degree, output_stream, "%0.2lf");
+  fprintf(output_stream, "\n");
+  fprintf(output_stream, "Stat,PerLayerNodes,%s,%d,", graph_name, -1);
+  print_statistics(nodes_per_layer, output_stream, "%0.2lf");
+  fprintf(output_stream, "\n");
+  deallocateStatistics(layer_degrees);
+  deallocateStatistics(nodes_per_layer);
 }
 
 // The following has not been used or tested
@@ -518,19 +632,25 @@ void print_graph_statistics( FILE * output_stream )
   fprintf( output_stream, "EdgeDensity,%2.2f\n",
           (double) number_of_edges / effective_number_of_nodes );
   overall_degree = init_statistics( number_of_nodes );
-  if ( verbose )
-    {
+  if ( verbose ) {
+      fprintf(output_stream, "Tag,Type,graph_name,layer,min,median,mean,max,stdev,N\n"
+      "   Tag = Stat to make it easy to grep\n"
+      "   NDegree is for nodes on a layer, CDegree for edges in a channel, defined by its upper layer\n"
+      "   LDegree is total degree per layer, TDegree is total degree per node\n"
+      "   perLayerNodes is self-explanatory\n"
+      "   AvgCDegreeDisc is average over channels of *degree discrepancy*\n"
+      "     defined as max_degree / median_degree\n");
       print_degree_statistics( output_stream );
       print_channel_degree_statistics( output_stream );
       print_channel_edge_counts( output_stream );
-    }
+  }
   else
     compute_degree_statistics();
   fprintf( output_stream, "MinDegree,%d\n", (int) get_min( overall_degree ) );
   fprintf( output_stream, "MaxDegree,%d\n", (int) get_max( overall_degree ) );
   fprintf( output_stream, "MeanDegree,%2.2f\n", get_mean( overall_degree ) );
   fprintf( output_stream, "MedianDegree,%2.1f\n", get_median( overall_degree ) );
-  free_statistics( overall_degree );
+  deallocateStatistics( overall_degree );
 }
 
 static void print_crossing_stats_int(FILE * output_stream,
@@ -539,7 +659,17 @@ static void print_crossing_stats_int(FILE * output_stream,
   fprintf( output_stream, "Pre%s,%d\n", stats.name, stats.after_preprocessing );
   fprintf( output_stream, "Heuristic%s,%d,iteration,%d\n",
            stats.name, stats.after_heuristic, stats.best_heuristic_iteration );
-  fprintf( output_stream, "Final%s,%d,iteration,%d\n",
+  fprintf( output_stream, "Post%s,%d,iteration,%d\n",
+           stats.name, stats.after_post_processing, stats.post_processing_iteration );
+}
+
+static void print_crossing_stats_long(FILE * output_stream,
+                                     CROSSING_STATS_LONG stats) {
+  fprintf( output_stream, "Start%s,%ld\n", stats.name, stats.at_beginning );
+  fprintf( output_stream, "Pre%s,%ld\n", stats.name, stats.after_preprocessing );
+  fprintf( output_stream, "Heuristic%s,%ld,iteration,%d\n",
+           stats.name, stats.after_heuristic, stats.best_heuristic_iteration );
+  fprintf( output_stream, "Post%s,%ld,iteration,%d\n",
            stats.name, stats.after_post_processing, stats.post_processing_iteration );
 }
 
@@ -549,7 +679,7 @@ static void print_crossing_stats_double(FILE * output_stream,
   fprintf( output_stream, "Pre%s,%f\n", stats.name, stats.after_preprocessing );
   fprintf( output_stream, "Heuristic%s,%f,iteration,%d\n",
            stats.name, stats.after_heuristic, stats.best_heuristic_iteration );
-  fprintf( output_stream, "Final%s,%f,iteration,%d\n",
+  fprintf( output_stream, "Post%s,%f,iteration,%d\n",
            stats.name, stats.after_post_processing, stats.post_processing_iteration );
 }
 
@@ -567,7 +697,9 @@ void print_run_statistics( FILE * output_stream )
     fprintf( output_stream, "Runtime,%2.3f\n", RUNTIME );
     
     print_crossing_stats_int( output_stream, total_crossings );
-    print_crossing_stats_int( output_stream, max_edge_crossings );
+    print_crossing_stats_int( output_stream, bottleneck_crossings );
+    print_crossing_stats_long( output_stream, total_nonverticality );
+    print_crossing_stats_int( output_stream, bottleneck_verticality );
     print_crossing_stats_double( output_stream, total_stretch );
     print_crossing_stats_double( output_stream, bottleneck_stretch );
 
@@ -577,5 +709,3 @@ void print_run_statistics( FILE * output_stream )
         fprintf(output_stream, "%s\n", buffer);
     }
 }
-
-/*  [Last modified: 2021 03 03 at 00:01:06 GMT] */

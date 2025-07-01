@@ -1,0 +1,1016 @@
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/c6+1.sgf
+*** Warning: filename base ../T does not match graph name c6_plus_one
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 6
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = c6_plus_one
+done writing file
+___ Running post-processor
+# comments
+a cycle with six nodes, two layers, plus a diagonal across
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/c6+1.sgf
+# end_comments
+GraphName,c6_plus_one
+NumberOfLayers,2
+NumberOfNodes,6
+IsolatedNodes,0
+EffectiveNodes,6
+NumberOfEdges,7
+EdgeDensity,1.17
+MinDegree,2
+MaxDegree,3
+MeanDegree,2.33
+MedianDegree,2.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.007
+StartCrossings,5
+PreCrossings,2
+HeuristicCrossings,2,iteration,0
+PostCrossings,2,iteration,-1
+StartBottleneckCrossings,4
+PreBottleneckCrossings,1
+HeuristicBottleneckCrossings,1,iteration,0
+PostBottleneckCrossings,1,iteration,-1
+StartNonVerticality,10
+PreNonVerticality,4
+HeuristicNonVerticality,4,iteration,0
+PostNonVerticality,4,iteration,-1
+StartBottleneckVerticality,4
+PreBottleneckVerticality,1
+HeuristicBottleneckVerticality,1,iteration,0
+PostBottleneckVerticality,1,iteration,-1
+StartStretch,3.000000
+PreStretch,2.000000
+HeuristicStretch,2.000000,iteration,0
+PostStretch,2.000000,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,0.500000
+HeuristicBottleneckStretch,0.500000,iteration,0
+PostBottleneckStretch,0.500000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/c_2000_2100_50_8-rnd-019.sgf
+*** Warning: filename base ../TestData/c_2000_2100_ does not match graph name c_2000_2100_50_8-rnd-019
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 2000
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = c_2000_2100_50_8-rnd-019
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/c_2000_2100_50_8-rnd-019.sgf
+# end_comments
+GraphName,c_2000_2100_50_8-rnd-019
+NumberOfLayers,50
+NumberOfNodes,2000
+IsolatedNodes,0
+EffectiveNodes,2000
+NumberOfEdges,2100
+EdgeDensity,1.05
+MinDegree,1
+MaxDegree,10
+MeanDegree,2.10
+MedianDegree,1.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,5.250
+StartCrossings,36615
+PreCrossings,8545
+HeuristicCrossings,1794,iteration,2567
+PostCrossings,1597,iteration,1417
+StartBottleneckCrossings,153
+PreBottleneckCrossings,123
+HeuristicBottleneckCrossings,38,iteration,6864
+PostBottleneckCrossings,38,iteration,-1
+StartNonVerticality,7092211
+PreNonVerticality,858411
+HeuristicNonVerticality,753793,iteration,3036
+PostNonVerticality,753793,iteration,-1
+StartBottleneckVerticality,40804
+PreBottleneckVerticality,20449
+HeuristicBottleneckVerticality,7569,iteration,2951
+PostBottleneckVerticality,7569,iteration,-1
+StartStretch,745.313603
+PreStretch,401.405238
+HeuristicStretch,218.996313,iteration,6763
+PostStretch,218.996313,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,0.880000,iteration,2155
+PostBottleneckStretch,0.880000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/ex_10.sgf
+*** Warning: filename base ../Te does not match graph name ex_10
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 10
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = ex_10
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/ex_10.sgf
+# end_comments
+GraphName,ex_10
+NumberOfLayers,2
+NumberOfNodes,10
+IsolatedNodes,0
+EffectiveNodes,10
+NumberOfEdges,12
+EdgeDensity,1.20
+MinDegree,1
+MaxDegree,4
+MeanDegree,2.40
+MedianDegree,2.5
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.004
+StartCrossings,18
+PreCrossings,17
+HeuristicCrossings,13,iteration,1
+PostCrossings,13,iteration,-1
+StartBottleneckCrossings,8
+PreBottleneckCrossings,7
+HeuristicBottleneckCrossings,5,iteration,1
+PostBottleneckCrossings,5,iteration,-1
+StartNonVerticality,38
+PreNonVerticality,37
+HeuristicNonVerticality,23,iteration,1
+PostNonVerticality,23,iteration,-1
+StartBottleneckVerticality,16
+PreBottleneckVerticality,16
+HeuristicBottleneckVerticality,9,iteration,1
+PostBottleneckVerticality,9,iteration,-1
+StartStretch,4.000000
+PreStretch,3.750000
+HeuristicStretch,3.250000,iteration,1
+PostStretch,3.250000,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,0.750000,iteration,1
+PostBottleneckStretch,0.750000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/ex_20.sgf
+*** Warning: filename base ../Te does not match graph name ex_20
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 20
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = ex_20
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/ex_20.sgf
+# end_comments
+GraphName,ex_20
+NumberOfLayers,4
+NumberOfNodes,20
+IsolatedNodes,0
+EffectiveNodes,20
+NumberOfEdges,36
+EdgeDensity,1.80
+MinDegree,1
+MaxDegree,6
+MeanDegree,3.60
+MedianDegree,3.5
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.007
+StartCrossings,71
+PreCrossings,44
+HeuristicCrossings,28,iteration,52
+PostCrossings,24,iteration,4
+StartBottleneckCrossings,8
+PreBottleneckCrossings,7
+HeuristicBottleneckCrossings,4,iteration,52
+PostBottleneckCrossings,4,iteration,-1
+StartNonVerticality,156
+PreNonVerticality,99
+HeuristicNonVerticality,61,iteration,36
+PostNonVerticality,54,iteration,4
+StartBottleneckVerticality,16
+PreBottleneckVerticality,16
+HeuristicBottleneckVerticality,4,iteration,30
+PostBottleneckVerticality,4,iteration,-1
+StartStretch,15.500000
+PreStretch,11.250000
+HeuristicStretch,9.000000,iteration,55
+PostStretch,8.500000,iteration,4
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,0.500000,iteration,30
+PostBottleneckStretch,0.500000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/increase.sgf
+*** Warning: filename base ../TestD does not match graph name increase
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 3, size_of_largest_component = 7
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = increase
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/increase.sgf
+# end_comments
+GraphName,increase
+NumberOfLayers,2
+NumberOfNodes,13
+IsolatedNodes,0
+EffectiveNodes,13
+NumberOfEdges,10
+EdgeDensity,0.77
+MinDegree,1
+MaxDegree,3
+MeanDegree,1.54
+MedianDegree,1.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.004
+StartCrossings,13
+PreCrossings,3
+HeuristicCrossings,1,iteration,1
+PostCrossings,1,iteration,-1
+StartBottleneckCrossings,5
+PreBottleneckCrossings,2
+HeuristicBottleneckCrossings,1,iteration,1
+PostBottleneckCrossings,1,iteration,-1
+StartNonVerticality,75
+PreNonVerticality,10
+HeuristicNonVerticality,6,iteration,1
+PostNonVerticality,6,iteration,-1
+StartBottleneckVerticality,16
+PreBottleneckVerticality,4
+HeuristicBottleneckVerticality,1,iteration,1
+PostBottleneckVerticality,1,iteration,-1
+StartStretch,4.035714
+PreStretch,1.321429
+HeuristicStretch,1.035714,iteration,1
+PostStretch,1.035714,iteration,-1
+StartBottleneckStretch,0.607143
+PreBottleneckStretch,0.500000
+HeuristicBottleneckStretch,0.357143,iteration,1
+PostBottleneckStretch,0.357143,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/large_numbers.sgf
+*** Warning: filename base ../TestData/l does not match graph name large_numbers
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 5
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = large_numbers
+done writing file
+___ Running post-processor
+# comments
+testing the use of large node numbers
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/large_numbers.sgf
+# end_comments
+GraphName,large_numbers
+NumberOfLayers,2
+NumberOfNodes,5
+IsolatedNodes,0
+EffectiveNodes,5
+NumberOfEdges,4
+EdgeDensity,0.80
+MinDegree,1
+MaxDegree,2
+MeanDegree,1.60
+MedianDegree,2.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.003
+StartCrossings,1
+PreCrossings,0
+HeuristicCrossings,0,iteration,0
+PostCrossings,0,iteration,-1
+StartBottleneckCrossings,1
+PreBottleneckCrossings,0
+HeuristicBottleneckCrossings,0,iteration,0
+PostBottleneckCrossings,0,iteration,-1
+StartNonVerticality,5
+PreNonVerticality,2
+HeuristicNonVerticality,2,iteration,0
+PostNonVerticality,2,iteration,-1
+StartBottleneckVerticality,4
+PreBottleneckVerticality,1
+HeuristicBottleneckVerticality,1,iteration,0
+PostBottleneckVerticality,1,iteration,-1
+StartStretch,1.500000
+PreStretch,1.000000
+HeuristicStretch,1.000000,iteration,0
+PostStretch,1.000000,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,0.500000
+HeuristicBottleneckStretch,0.500000,iteration,0
+PostBottleneckStretch,0.500000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north12.145-total_7_vertical.sgf
+*** Warning: filename base ../TestData/north12.145-tota does not match graph name north12.145_GKNV-total_7_vertical
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 28
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = north12.145_GKNV-total_7_vertical
+done writing file
+___ Running post-processor
+# comments
+ created from a cplex_ilp solution
+ CurrentTime	Mon 2023/03/06 19:26:02 GMT
+ runtime      	1.03533
+ TimedOut	0
+ ProvedOptimal	1
+ value      	79
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north12.145-total_7_vertical.sgf
+# end_comments
+GraphName,north12.145_GKNV-total_7_vertical
+NumberOfLayers,7
+NumberOfNodes,28
+IsolatedNodes,0
+EffectiveNodes,28
+NumberOfEdges,41
+EdgeDensity,1.46
+MinDegree,2
+MaxDegree,7
+MeanDegree,2.93
+MedianDegree,2.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.008
+StartCrossings,7
+PreCrossings,28
+HeuristicCrossings,7,iteration,0
+PostCrossings,7,iteration,-1
+StartBottleneckCrossings,2
+PreBottleneckCrossings,5
+HeuristicBottleneckCrossings,2,iteration,0
+PostBottleneckCrossings,2,iteration,-1
+StartNonVerticality,79
+PreNonVerticality,164
+HeuristicNonVerticality,79,iteration,0
+PostNonVerticality,79,iteration,-1
+StartBottleneckVerticality,16
+PreBottleneckVerticality,16
+HeuristicBottleneckVerticality,9,iteration,65
+PostBottleneckVerticality,9,iteration,-1
+StartStretch,10.535714
+PreStretch,12.928571
+HeuristicStretch,10.535714,iteration,0
+PostStretch,10.285714,iteration,6
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,1.000000,iteration,0
+PostBottleneckStretch,1.000000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north20.50.sgf
+*** Warning: filename base ../TestDat does not match graph name north20.50_GKNV
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 100
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = north20.50_GKNV
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north20.50.sgf
+# end_comments
+GraphName,north20.50_GKNV
+NumberOfLayers,9
+NumberOfNodes,100
+IsolatedNodes,0
+EffectiveNodes,100
+NumberOfEdges,125
+EdgeDensity,1.25
+MinDegree,1
+MaxDegree,11
+MeanDegree,2.50
+MedianDegree,2.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.021
+StartCrossings,519
+PreCrossings,136
+HeuristicCrossings,41,iteration,278
+PostCrossings,41,iteration,-1
+StartBottleneckCrossings,24
+PreBottleneckCrossings,16
+HeuristicBottleneckCrossings,7,iteration,32
+PostBottleneckCrossings,7,iteration,-1
+StartNonVerticality,6395
+PreNonVerticality,1090
+HeuristicNonVerticality,580,iteration,46
+PostNonVerticality,580,iteration,-1
+StartBottleneckVerticality,289
+PreBottleneckVerticality,121
+HeuristicBottleneckVerticality,36,iteration,46
+PostBottleneckVerticality,36,iteration,-1
+StartStretch,49.647388
+PreStretch,20.778134
+HeuristicStretch,12.704630,iteration,466
+PostStretch,12.704630,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,0.800000,iteration,145
+PostBottleneckStretch,0.800000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north42.32-bottleneck_3_vertical.sgf
+*** Warning: filename base ../TestData/north42.32-bottlenec does not match graph name north42.32-bottleneck_3_vertical
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 42
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = north42.32-bottleneck_3_vertical
+done writing file
+___ Running post-processor
+# comments
+ created from a cplex_ilp solution
+ CurrentTime	Fri 2023/03/31 13:41:16 GMT
+ runtime      	72001.5
+ TimedOut	1
+ ProvedOptimal	0
+ value      	160
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north42.32-bottleneck_3_vertical.sgf
+# end_comments
+GraphName,north42.32-bottleneck_3_vertical
+NumberOfLayers,6
+NumberOfNodes,42
+IsolatedNodes,0
+EffectiveNodes,42
+NumberOfEdges,64
+EdgeDensity,1.52
+MinDegree,2
+MaxDegree,4
+MeanDegree,3.05
+MedianDegree,3.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.012
+StartCrossings,45
+PreCrossings,109
+HeuristicCrossings,45,iteration,0
+PostCrossings,45,iteration,-1
+StartBottleneckCrossings,7
+PreBottleneckCrossings,11
+HeuristicBottleneckCrossings,5,iteration,37
+PostBottleneckCrossings,5,iteration,-1
+StartNonVerticality,160
+PreNonVerticality,504
+HeuristicNonVerticality,160,iteration,0
+PostNonVerticality,160,iteration,-1
+StartBottleneckVerticality,16
+PreBottleneckVerticality,81
+HeuristicBottleneckVerticality,16,iteration,0
+PostBottleneckVerticality,16,iteration,-1
+StartStretch,10.683983
+PreStretch,17.069264
+HeuristicStretch,10.255411,iteration,21
+PostStretch,10.255411,iteration,-1
+StartBottleneckStretch,0.547619
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,0.454545,iteration,37
+PostBottleneckStretch,0.454545,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north42.32-total_46_vertical.sgf
+*** Warning: filename base ../TestData/north42.32-total does not match graph name north42.32-total_46_vertical
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 42
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = north42.32-total_46_vertical
+done writing file
+___ Running post-processor
+# comments
+ created from a cplex_ilp solution
+ CurrentTime	Sat 2023/03/18 20:38:17 GMT
+ runtime      	1361.75
+ TimedOut	0
+ ProvedOptimal	1
+ value      	152
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north42.32-total_46_vertical.sgf
+# end_comments
+GraphName,north42.32-total_46_vertical
+NumberOfLayers,6
+NumberOfNodes,42
+IsolatedNodes,0
+EffectiveNodes,42
+NumberOfEdges,64
+EdgeDensity,1.52
+MinDegree,2
+MaxDegree,4
+MeanDegree,3.05
+MedianDegree,3.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.012
+StartCrossings,46
+PreCrossings,104
+HeuristicCrossings,46,iteration,0
+PostCrossings,46,iteration,-1
+StartBottleneckCrossings,7
+PreBottleneckCrossings,11
+HeuristicBottleneckCrossings,7,iteration,0
+PostBottleneckCrossings,7,iteration,-1
+StartNonVerticality,152
+PreNonVerticality,450
+HeuristicNonVerticality,152,iteration,0
+PostNonVerticality,152,iteration,-1
+StartBottleneckVerticality,16
+PreBottleneckVerticality,81
+HeuristicBottleneckVerticality,16,iteration,0
+PostBottleneckVerticality,16,iteration,-1
+StartStretch,10.593074
+PreStretch,16.108225
+HeuristicStretch,9.683983,iteration,21
+PostStretch,9.683983,iteration,-1
+StartBottleneckStretch,0.547619
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,0.547619,iteration,0
+PostBottleneckStretch,0.547619,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north42.32-z.sgf
+*** Warning: filename base ../TestData/ does not match graph name north42.32_GKNV
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 42
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = north42.32_GKNV
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north42.32-z.sgf
+# end_comments
+GraphName,north42.32_GKNV
+NumberOfLayers,6
+NumberOfNodes,42
+IsolatedNodes,0
+EffectiveNodes,42
+NumberOfEdges,64
+EdgeDensity,1.52
+MinDegree,2
+MaxDegree,4
+MeanDegree,3.05
+MedianDegree,3.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.011
+StartCrossings,137
+PreCrossings,100
+HeuristicCrossings,46,iteration,21
+PostCrossings,43,iteration,1
+StartBottleneckCrossings,13
+PreBottleneckCrossings,10
+HeuristicBottleneckCrossings,5,iteration,37
+PostBottleneckCrossings,5,iteration,-1
+StartNonVerticality,950
+PreNonVerticality,458
+HeuristicNonVerticality,182,iteration,20
+PostNonVerticality,182,iteration,-1
+StartBottleneckVerticality,100
+PreBottleneckVerticality,81
+HeuristicBottleneckVerticality,16,iteration,6
+PostBottleneckVerticality,16,iteration,-1
+StartStretch,21.255411
+PreStretch,17.311688
+HeuristicStretch,10.255411,iteration,21
+PostStretch,10.255411,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,0.454545,iteration,37
+PostBottleneckStretch,0.454545,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north95.0_UPR.sgf
+*** Warning: filename base ../TestData/n does not match graph name north95.0_UPR
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 186
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = north95.0_UPR
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/north95.0_UPR.sgf
+# end_comments
+GraphName,north95.0_UPR
+NumberOfLayers,63
+NumberOfNodes,186
+IsolatedNodes,0
+EffectiveNodes,186
+NumberOfEdges,213
+EdgeDensity,1.15
+MinDegree,1
+MaxDegree,7
+MeanDegree,2.29
+MedianDegree,2.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.021
+StartCrossings,158
+PreCrossings,11
+HeuristicCrossings,3,iteration,156
+PostCrossings,3,iteration,-1
+StartBottleneckCrossings,9
+PreBottleneckCrossings,3
+HeuristicBottleneckCrossings,1,iteration,128
+PostBottleneckCrossings,1,iteration,-1
+StartNonVerticality,1058
+PreNonVerticality,159
+HeuristicNonVerticality,144,iteration,17
+PostNonVerticality,144,iteration,-1
+StartBottleneckVerticality,81
+PreBottleneckVerticality,16
+HeuristicBottleneckVerticality,9,iteration,543
+PostBottleneckVerticality,9,iteration,-1
+StartStretch,96.150000
+PreStretch,46.045238
+HeuristicStretch,43.107143,iteration,540
+PostStretch,43.107143,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,1.000000,iteration,0
+PostBottleneckStretch,1.000000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/r_100_120_10_0_0-019.sgf
+*** Warning: filename base ../TestData/r_100_12 does not match graph name r_100_120_10_0p0_0p0_19
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 100
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = r_100_120_10_0p0_0p0_19
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/r_100_120_10_0_0-019.sgf
+# end_comments
+GraphName,r_100_120_10_0p0_0p0_19
+NumberOfLayers,10
+NumberOfNodes,100
+IsolatedNodes,0
+EffectiveNodes,100
+NumberOfEdges,120
+EdgeDensity,1.20
+MinDegree,1
+MaxDegree,4
+MeanDegree,2.40
+MedianDegree,2.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.018
+StartCrossings,335
+PreCrossings,139
+HeuristicCrossings,51,iteration,722
+PostCrossings,48,iteration,18
+StartBottleneckCrossings,14
+PreBottleneckCrossings,14
+HeuristicBottleneckCrossings,3,iteration,613
+PostBottleneckCrossings,3,iteration,-1
+StartNonVerticality,1924
+PreNonVerticality,922
+HeuristicNonVerticality,256,iteration,1123
+PostNonVerticality,256,iteration,-1
+StartBottleneckVerticality,81
+PreBottleneckVerticality,81
+HeuristicBottleneckVerticality,9,iteration,252
+PostBottleneckVerticality,9,iteration,-1
+StartStretch,43.333333
+PreStretch,24.888889
+HeuristicStretch,14.222222,iteration,1122
+PostStretch,14.222222,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,0.333333,iteration,252
+PostBottleneckStretch,0.333333,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/r_100_120_10_0_1p5-017.sgf
+*** Warning: filename base ../TestData/r_100_120_ does not match graph name r_100_120_10_0p0_1p5_17
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 100
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = r_100_120_10_0p0_1p5_17
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/r_100_120_10_0_1p5-017.sgf
+# end_comments
+GraphName,r_100_120_10_0p0_1p5_17
+NumberOfLayers,10
+NumberOfNodes,100
+IsolatedNodes,0
+EffectiveNodes,100
+NumberOfEdges,120
+EdgeDensity,1.20
+MinDegree,1
+MaxDegree,20
+MeanDegree,2.40
+MedianDegree,1.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.017
+StartCrossings,268
+PreCrossings,233
+HeuristicCrossings,58,iteration,158
+PostCrossings,58,iteration,-1
+StartBottleneckCrossings,17
+PreBottleneckCrossings,16
+HeuristicBottleneckCrossings,9,iteration,12
+PostBottleneckCrossings,9,iteration,-1
+StartNonVerticality,1952
+PreNonVerticality,2151
+HeuristicNonVerticality,1388,iteration,121
+PostNonVerticality,1388,iteration,-1
+StartBottleneckVerticality,81
+PreBottleneckVerticality,81
+HeuristicBottleneckVerticality,81,iteration,0
+PostBottleneckVerticality,81,iteration,-1
+StartStretch,44.222222
+PreStretch,44.555556
+HeuristicStretch,34.111111,iteration,252
+PostStretch,34.111111,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,1.000000,iteration,0
+PostBottleneckStretch,1.000000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/r_100_120_10_1p5_0-010.sgf
+*** Warning: filename base ../TestData/r_100_120_ does not match graph name r_100_120_10_1p5_0p0_10
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 100
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = r_100_120_10_1p5_0p0_10
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/r_100_120_10_1p5_0-010.sgf
+# end_comments
+GraphName,r_100_120_10_1p5_0p0_10
+NumberOfLayers,10
+NumberOfNodes,100
+IsolatedNodes,0
+EffectiveNodes,100
+NumberOfEdges,120
+EdgeDensity,1.20
+MinDegree,1
+MaxDegree,8
+MeanDegree,2.40
+MedianDegree,2.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.021
+StartCrossings,473
+PreCrossings,169
+HeuristicCrossings,33,iteration,1502
+PostCrossings,33,iteration,-1
+StartBottleneckCrossings,24
+PreBottleneckCrossings,23
+HeuristicBottleneckCrossings,4,iteration,326
+PostBottleneckCrossings,4,iteration,-1
+StartNonVerticality,6285
+PreNonVerticality,1586
+HeuristicNonVerticality,443,iteration,2809
+PostNonVerticality,443,iteration,-1
+StartBottleneckVerticality,361
+PreBottleneckVerticality,361
+HeuristicBottleneckVerticality,25,iteration,463
+PostBottleneckVerticality,25,iteration,-1
+StartStretch,52.471531
+PreStretch,28.031207
+HeuristicStretch,14.309755,iteration,1476
+PostStretch,14.309755,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,0.500000,iteration,10
+PostBottleneckStretch,0.500000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/r_100_120_10_1p5_1p5-016.sgf
+*** Warning: filename base ../TestData/r_100_120_10 does not match graph name r_100_120_10_1p5_1p5_16
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 100
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = r_100_120_10_1p5_1p5_16
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/r_100_120_10_1p5_1p5-016.sgf
+# end_comments
+GraphName,r_100_120_10_1p5_1p5_16
+NumberOfLayers,10
+NumberOfNodes,100
+IsolatedNodes,0
+EffectiveNodes,100
+NumberOfEdges,120
+EdgeDensity,1.20
+MinDegree,1
+MaxDegree,36
+MeanDegree,2.40
+MedianDegree,1.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.019
+StartCrossings,164
+PreCrossings,196
+HeuristicCrossings,15,iteration,232
+PostCrossings,15,iteration,-1
+StartBottleneckCrossings,14
+PreBottleneckCrossings,18
+HeuristicBottleneckCrossings,3,iteration,232
+PostBottleneckCrossings,3,iteration,-1
+StartNonVerticality,6067
+PreNonVerticality,2668
+HeuristicNonVerticality,1646,iteration,204
+PostNonVerticality,1646,iteration,-1
+StartBottleneckVerticality,256
+PreBottleneckVerticality,121
+HeuristicBottleneckVerticality,81,iteration,11
+PostBottleneckVerticality,81,iteration,-1
+StartStretch,48.667659
+PreStretch,52.108730
+HeuristicStretch,43.587500,iteration,419
+PostStretch,43.587500,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,1.000000,iteration,0
+PostBottleneckStretch,1.000000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/rome1398.24-vertical_33_total.sgf
+*** Warning: filename base ../TestData/rome1398.24-verti does not match graph name rome1398.24_GKNV-vertical_33_total
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 26
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = rome1398.24_GKNV-vertical_33_total
+done writing file
+___ Running post-processor
+# comments
+ created from a cplex_ilp solution
+ CurrentTime	Mon 2023/03/13 19:58:33 GMT
+ runtime      	2.23884
+ TimedOut	0
+ ProvedOptimal	1
+ value      	2
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/rome1398.24-vertical_33_total.sgf
+# end_comments
+GraphName,rome1398.24_GKNV-vertical_33_total
+NumberOfLayers,4
+NumberOfNodes,26
+IsolatedNodes,0
+EffectiveNodes,26
+NumberOfEdges,27
+EdgeDensity,1.04
+MinDegree,1
+MaxDegree,6
+MeanDegree,2.08
+MedianDegree,2.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.008
+StartCrossings,2
+PreCrossings,6
+HeuristicCrossings,2,iteration,0
+PostCrossings,2,iteration,-1
+StartBottleneckCrossings,1
+PreBottleneckCrossings,3
+HeuristicBottleneckCrossings,1,iteration,0
+PostBottleneckCrossings,1,iteration,-1
+StartNonVerticality,33
+PreNonVerticality,68
+HeuristicNonVerticality,33,iteration,0
+PostNonVerticality,33,iteration,-1
+StartBottleneckVerticality,4
+PreBottleneckVerticality,16
+HeuristicBottleneckVerticality,4,iteration,0
+PostBottleneckVerticality,4,iteration,-1
+StartStretch,5.391667
+PreStretch,4.991667
+HeuristicStretch,4.358333,iteration,43
+PostStretch,4.358333,iteration,-1
+StartBottleneckStretch,0.625000
+PreBottleneckStretch,0.625000
+HeuristicBottleneckStretch,0.500000,iteration,55
+PostBottleneckStretch,0.500000,iteration,-1
+
+----------- minimization, release 1.1, 2020/12/22 ----------
++++ Starting ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/t_0500_22_01.sgf
+*** Warning: filename base ../TestData/ does not match graph name t_0500_22_01
+***          output base defaults to graph name
+--- Running preprocessor dfs
+dfs done, number_of_components = 1, size_of_largest_component = 500
+=== Running heuristic mod_bary
+about to restore best crossings order
+done restoring best crossings order
+output base = t_0500_22_01
+done writing file
+___ Running post-processor
+# comments
+../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/t_0500_22_01.sgf
+# end_comments
+GraphName,t_0500_22_01
+NumberOfLayers,22
+NumberOfNodes,500
+IsolatedNodes,0
+EffectiveNodes,500
+NumberOfEdges,499
+EdgeDensity,1.00
+MinDegree,1
+MaxDegree,4
+MeanDegree,2.00
+MedianDegree,2.0
+Preprocessor,dfs
+Heuristic,mod_bary
+Iterations,10000
+Runtime,0.104
+StartCrossings,3396
+PreCrossings,179
+HeuristicCrossings,25,iteration,5957
+PostCrossings,25,iteration,-1
+StartBottleneckCrossings,38
+PreBottleneckCrossings,26
+HeuristicBottleneckCrossings,3,iteration,6295
+PostBottleneckCrossings,3,iteration,-1
+StartNonVerticality,76326
+PreNonVerticality,3613
+HeuristicNonVerticality,614,iteration,5451
+PostNonVerticality,614,iteration,-1
+StartBottleneckVerticality,1444
+PreBottleneckVerticality,625
+HeuristicBottleneckVerticality,25,iteration,5959
+PostBottleneckVerticality,25,iteration,-1
+StartStretch,176.006351
+PreStretch,31.308928
+HeuristicStretch,25.640256,iteration,668
+PostStretch,25.640256,iteration,-1
+StartBottleneckStretch,1.000000
+PreBottleneckStretch,1.000000
+HeuristicBottleneckStretch,0.261538,iteration,6090
+PostBottleneckStretch,0.261538,iteration,-1
+

@@ -1,0 +1,48 @@
+# Ordering for graph north20.50_GKNV
+# 
+
+# Order for layer 0: 
+0 {
+ 0
+} # end of layer 0
+
+# Order for layer 1: 
+1 {
+ 1 2 3 4 5 6
+} # end of layer 1
+
+# Order for layer 2: 
+2 {
+ 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+} # end of layer 2
+
+# Order for layer 3: 
+3 {
+ 21 22 23 24 25 26 27 28 29 30 31 32 33
+} # end of layer 3
+
+# Order for layer 4: 
+4 {
+ 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+} # end of layer 4
+
+# Order for layer 5: 
+5 {
+ 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72
+} # end of layer 5
+
+# Order for layer 6: 
+6 {
+ 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88
+} # end of layer 6
+
+# Order for layer 7: 
+7 {
+ 89 90 91 92 93 94 95 96
+} # end of layer 7
+
+# Order for layer 8: 
+8 {
+ 97 98 99
+} # end of layer 8
+

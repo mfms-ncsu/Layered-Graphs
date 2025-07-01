@@ -1,0 +1,12 @@
+c testing the use of large node numbers
+c ../../src/minimization -p dfs -h mod_bary -i 10000 -z -w _ ../TestData/large_numbers.sgf
+t large_numbers-dfs+mod_bary-v 5 4 2
+n 1 0 0
+n 2 0 1
+n 3 0 2
+n 12 1 0
+n 23 1 1
+e 1 12
+e 2 12
+e 2 23
+e 3 23

@@ -9,7 +9,6 @@
  *
  * @author Matt Stallmann
  * @date 2008/12/23
- * $Id: crossings.c 101 2014-10-22 16:32:05Z mfms $
  */
 
 #include"graph.h"
@@ -60,8 +59,7 @@ static int count_down_edges( int layer_number )
   return count;
 }
 
-static InterLayerptr makeInterLayer( int upper_layer )
-{
+static InterLayerptr allocateInterLayer(int upper_layer) {
   InterLayerptr new_interlayer
       = (InterLayerptr) calloc(1, sizeof(struct inter_layer_struct));
   new_interlayer->number_of_edges = count_down_edges( upper_layer );
@@ -82,16 +80,16 @@ static void deallocateInterLayer(int upper_layer) {
  * counting crossings. Assumes that the graph has been read from the two
  * input files and all basic data properly initialized - @see readgraph()
  */
-void initCrossings( void )
+void allocateCrossingStructs( void )
 {
   between_layers
     = (InterLayerptr *) calloc( number_of_layers, sizeof(InterLayerptr) );
   for( int i = 1; i < number_of_layers; i++ ) {
-      between_layers[i] = makeInterLayer( i );
+      between_layers[i] = allocateInterLayer( i );
   }
 }
 
-void deallocateCrossings(void) {
+void deallocateCrossingStructs(void) {
     for ( int i = 1; i < number_of_layers; i++ ) {
         deallocateInterLayer(i);
     }
@@ -195,25 +193,39 @@ static void initialize_crossings( int upper_layer )
  * @param upper_layer the higher of the two layers; crossings between layers
  * upper_layer - 1 and upper_layer are counted
  */
-void updateCrossingsBetweenLayers( int upper_layer )
+void updateCrossingsBetweenLayers(int upper_layer)
 {
+#ifdef DEBUG
+  fprintf(stderr, "-> updateCrossingsBetweenLayers upper_layer = %d\n", upper_layer);
+  printNodesOnLayer(stderr, upper_layer);
+  printNodesOnLayer(stderr, upper_layer - 1);
+#endif
   // sort edges lexicographically based primarily on upper layer endpoints
-  Layerptr layer = layers[ upper_layer ];
+  Layerptr layer = layers[upper_layer];
   int edge_index = 0;                /* current index into edge array */
-  int node_index_in_upper_layer = 0;
-  for( ; node_index_in_upper_layer < layer->number_of_nodes; node_index_in_upper_layer++ )
-    {
-      Nodeptr node = layer->nodes[node_index_in_upper_layer];
-      sortByDownNodePosition( node->down_edges, node->down_degree );
-      add_edges_to_array( between_layers[ upper_layer ]->edges,
-                          node->down_edges, node->down_degree, edge_index );
-      edge_index += node->down_degree;
-    }
-  initialize_crossings( upper_layer );
-  between_layers[ upper_layer ]->number_of_crossings
-    = count_inversions_down( between_layers[ upper_layer ]->edges,
-                             between_layers[ upper_layer ]->number_of_edges,
-                             1 );
+  for( int node_index_in_upper_layer = 0;
+       node_index_in_upper_layer < layer->number_of_nodes;
+       node_index_in_upper_layer++ ) {
+    Nodeptr node = layer->nodes[node_index_in_upper_layer];
+    sortByDownNodePosition(node->down_edges, node->down_degree);
+    add_edges_to_array(between_layers[upper_layer]->edges,
+                      node->down_edges, node->down_degree, edge_index);
+    edge_index += node->down_degree;
+  }
+  initialize_crossings(upper_layer);
+  between_layers[upper_layer]->number_of_crossings
+    = count_inversions_down(between_layers[upper_layer]->edges,
+                            between_layers[upper_layer]->number_of_edges,
+                            1);
+#ifdef DEBUG
+  fprintf(stderr, "<- updateCrossingsBetweenLayers, crossings = %d\n",
+  between_layers[upper_layer]->number_of_crossings);
+  printNodesOnLayer(stderr, upper_layer);
+  printNodesOnLayer(stderr, upper_layer - 1);
+  if ( ( upper_layer == 4 )
+         && ( between_layers[upper_layer]->number_of_crossings == 12 ) )
+      abort();
+#endif
 }
 
 int maxCrossingsLayer( void ) {
@@ -247,7 +259,7 @@ Nodeptr maxCrossingsNode( void ) {
   for ( int i = 0; i < number_of_nodes; i++ ) {
     Nodeptr node = master_node_list[i];
 #ifdef DEBUG
-    printf( " loop: maxCrossingsNode, i =%d, node = %s\n", i, node->name );
+    fprintf(stderr, " loop: maxCrossingsNode, i =%d, node = %s\n", i, node->name );
 #endif
     if( numberOfCrossingsNode( node ) > max_crossings 
         && ! isFixedNode( node) ) {
@@ -307,7 +319,7 @@ static void print_down_crossings_nodes( int i )
     {
       Nodeptr node = layer->nodes[j];
       printf( "    %-10s layer = %3d, position = %3d, down_x = %3d\n",
-              node->name, node->layer, node->position, node->down_crossings );
+              node->name, node->layer, node->layer_index, node->down_crossings );
     }
 }
 
@@ -342,7 +354,7 @@ void print_up_crossings_nodes( int i )
     {
       Nodeptr node = layer->nodes[j];
       printf( "    %-10s layer = %3d, position = %3d,   up_x = %3d\n",
-              node->name, node->layer, node->position, node->up_crossings );
+              node->name, node->layer, node->layer_index, node->up_crossings );
     }
 }
 
@@ -431,5 +443,3 @@ int main( int argc, char * argv[] )
 }
 
 #endif
-
-/*  [Last modified: 2021 02 15 at 17:18:40 GMT] */

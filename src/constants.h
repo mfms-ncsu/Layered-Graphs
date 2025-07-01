@@ -30,5 +30,3 @@
 typedef enum { UPWARD, DOWNWARD, BOTH } Orientation;
 
 #endif
-
-/*  [Last modified: 2020 12 18 at 16:12:01 GMT] */

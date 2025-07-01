@@ -14,6 +14,7 @@
 #include "graph.h"
 #include "graph_io.h"
 #include "hash.h"
+#include "verticality.h"
 
 /**
  * stores a long string of comments separated by '\n's
@@ -104,9 +105,12 @@ void initSgf(FILE * in) {
     int num_read = sscanf(local_buffer, "t %s %d %d %d",
                           graph_name, &num_nodes, &num_edges, &num_layers);
     if ( num_read != 4 ) {
-        fprintf(stderr, "*** FATAL, line %d: bad header information '%s'\n",
+        fprintf(stderr, "*** Warning, line %d: bad header information '%s'\n",
                line_number, local_buffer);
-        abort();
+        fprintf(stderr, "   setting number of nodes, edges, layers to 1\n");
+        num_nodes = 1;
+        num_edges = 1;
+        num_layers = 1;
     }
 }
 
@@ -252,8 +256,7 @@ static void insert_nodes_in_hash_table(void) {
  *  4. Allocate the node list for each layer; number of nodes is known
  *  5. Traverse the master node list; for each node
  *      - allocate arrays for up and down edges
- *      - add the node to its layer
- *  5'. Sort each layer by position and check for duplicates
+ *      - insert the node in its layer based on position, checking for duplicate positions
  *  6. Traverse the master edge list; for each edge
  *      - add it to the arrays for up and down edges of endpoints
  *  7. Deallocate hash table
@@ -275,7 +278,6 @@ void readSgf(FILE * sgf_stream) {
     readSgfEdges(sgf_stream);
     allocateLayers();
     addNodesToLayers();
-//    sort_all_layers_by_position();
     number_of_isolated_nodes = countIsolatedNodes();
     removeHashTable();
 }
@@ -289,16 +291,16 @@ static void writeSgfComments(FILE * output_stream) {
     }
 }
 
-static void writeSgfTagLine(FILE * output_stream) {
+static void writeSgfTagLine(FILE * output_stream, const char * file_base_name) {
     fprintf(output_stream, "t %s %d %d %d\n",
-            graph_name, number_of_nodes, number_of_edges, number_of_layers);
+            file_base_name, number_of_nodes, number_of_edges, number_of_layers);
 }
 
 static void writeSgfNodes(FILE * output_stream) {
     for ( int i = 0; i < number_of_nodes; i++ ) {
         Nodeptr node = master_node_list[i];
         fprintf(output_stream, "n %d %d %d\n",
-                node->id, node->layer, node->position);
+                node->id, node->layer, node->horizontal_position);
     }
 }
 
@@ -310,9 +312,9 @@ static void writeSgfEdges(FILE * output_stream) {
     }
 }
 
-void writeSgf(FILE * output_stream) {
+void writeSgf(FILE * output_stream, const char * graph_output_name) {
     writeSgfComments(output_stream);
-    writeSgfTagLine(output_stream);
+    writeSgfTagLine(output_stream, graph_output_name);
     writeSgfNodes(output_stream);
     writeSgfEdges(output_stream);
 }

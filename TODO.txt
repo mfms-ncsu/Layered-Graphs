@@ -1,7 +1,0 @@
-This repository is incomplete. The following items need to be copied from ~/MySoftware/Crossing-Minimization-private and cleaned up.
-
-- python directory, selective; maybe put these all into scripts
-
-- scripts directory (add .sh extensions where appropriate)
-
-- testing directory (maybe expand number of tests)

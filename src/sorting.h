@@ -10,7 +10,16 @@
 #ifndef SORTING_H
 #define SORTING_H
 
+#include<stddef.h>
+
 #include"graph.h"
+
+/**
+ * Performs an insertion sort using the same argument types as qsort
+ * @return true if the original order has changed
+ */
+bool insertionSort(void *base, size_t nmemb, size_t size,
+                           int (*compar)(const void *, const void *));
 
 /**
  * Sorts the nodes of the given layer by increasing weight and updates the
@@ -20,9 +29,9 @@ void layerSort( int layer );
 
 /**
  * Sorts the nodes of the given layer by increasing weight and updates the
- * position fields of the nodes accordingly. Uses Quicksort.
+ * position fields of the nodes accordingly. Uses merge sort.
  */
-void layerQuicksort( int layer );
+void layerMergesort( int layer );
 
 /**
  * Sorts the nodes of the given layer by increasing weight and updates the
@@ -64,5 +73,3 @@ void updateNodePositions( int layer );
 void updateAllPositions( void );
 
 #endif
-
-/*  [Last modified: 2011 07 18 at 19:20:59 GMT] */

@@ -23,7 +23,7 @@ void barycenterWeights( int layer, Orientation orientation );
  *
  * @return true if max iterations was reached in the process
  */
-bool barycenterUpSweep( int starting_layer );
+void barycenterUpSweep( int starting_layer );
 
 /**
  * Repeats barycenter heuristic moving downward from the starting layer to the
@@ -31,7 +31,7 @@ bool barycenterUpSweep( int starting_layer );
  *
  * @return true if max iterations was reached in the process
  */
-bool barycenterDownSweep( int starting_layer );
+void barycenterDownSweep( int starting_layer );
 
 #endif
 

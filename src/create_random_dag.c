@@ -20,6 +20,12 @@
 #include"random_tree.h"
 #include"random_dag.h"
 
+/**
+ * The following are needed because they appear in utilities used by create_random_dag
+ */
+char * heuristic = NULL;
+char * preprocessor = NULL;
+
 void usage_message( char * prog_name )
 {
   char * truncated_prog_name = basename( prog_name );
@@ -58,8 +64,8 @@ static void print_stats( void )
   printf( "LayerSize\t" );
   print_statistics( layer_info, stdout, "%2.1f" );
   printf( "\n" );
-  free_statistics( layer_info );
-  free_statistics( degree_info );
+  deallocateStatistics( layer_info );
+  deallocateStatistics( degree_info );
 }
 
 int main( int argc, char * argv[] )

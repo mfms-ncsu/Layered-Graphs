@@ -5,7 +5,7 @@
  * @author Matt Stallmann, based on Saurabh Gupta's crossing heuristics
  * implementation.
  * @date 2008/12/19
- * $Id: graph_io.c 97 2014-09-10 17:05:19Z mfms $
+ * @todo most of these routines are relevant to dot and ord files only
  */
 
 #include"graph.h"
@@ -28,11 +28,12 @@ Edgeptr * master_edge_list;
 int number_of_nodes = 0;
 int number_of_layers = 0;
 int max_layer_width = 0;
+int max_width_layer = -1; // unknown at this point
 int number_of_edges = 0;
 int number_of_isolated_nodes = 0;
 Layerptr * layers = NULL;
 char graph_name[MAX_NAME_LENGTH];
-char * output_base_name = NULL;
+
 /**
  * write_ord_output and write_sgf_output are based on the nature
  * of the input
@@ -40,26 +41,49 @@ char * output_base_name = NULL;
 bool write_ord_output = false;
 bool write_sgf_output = false;
 
-/**
- * @todo an odd place to put these, but necessary so that
- * create_random_dag can use utility functions in this module, even
- * though it does not use these; eventually should split out what's
- * needed by create_random_dag
- */
-char * heuristic = "";
-char * preprocessor = "";
-
-// for debugging
-
-void printNode(Nodeptr node);
-void printEdge(Edgeptr edge);
-void printLayer(int layer);
-void printGraph();
-
 // initial allocated size of layer array (will double as needed)
 static int layer_capacity = MIN_LAYER_CAPACITY;
 
+// used when creating a name from an integer id - only needed for ord files
 static char name_buffer[MAX_NAME_LENGTH];
+
+/******* simple utilities for printing parts of the graph, mostly for debugging *********/
+/********** more complex versions, with names writeX() at the end ************/
+
+void printNode(FILE * stream, Nodeptr node) {
+    fprintf(stream, " {#%d", node->id);
+    fprintf(stream, " (%d,%d)", node->layer_index, node->horizontal_position);
+    fprintf(stream, " v[");
+    Edgeptr * down_edges = node->down_edges;
+    for ( int j = 0; j < node->down_degree; j++ ) {
+      int down_neighbor_id = down_edges[j]->down_node->id;
+      fprintf(stream, " %d", down_neighbor_id);
+    }
+    fprintf(stream, " ]");
+    fprintf(stream, " ^[");
+    Edgeptr * up_edges = node->up_edges;
+    for ( int j = 0; j < node->up_degree; j++ ) {
+      int up_neighbor_id = up_edges[j]->up_node->id;
+      fprintf(stream, " %d", up_neighbor_id);
+    }
+    fprintf(stream, " ]");
+    fprintf(stream, " }"); 
+}
+
+void printEdge(FILE * stream, Edgeptr edge) {
+  fprintf(stream, "{(%d->%d)", edge->down_node->id, edge->up_node->id);
+  fprintf(stream, " x = %d, v = %d}", edge->crossings, edge->nonverticality);
+}
+
+void printNodesOnLayer(FILE * stream, int layer_number) {
+  Nodeptr * nodes = layers[layer_number]->nodes;
+  fprintf(stream, "layer: %d", layer_number);
+  for ( int i = 0; i < layers[layer_number]->number_of_nodes; i++) {
+    Nodeptr node = nodes[i];
+    fprintf(stream, " "); printNode(stream, node);
+  }
+  fprintf(stream, "\n");
+}
 
 /**
  * @brief Get the base name of the file and copy it into the buffer
@@ -71,12 +95,17 @@ void getBaseName(char * buffer, const char * file_name) {
     fprintf(stderr, "*** FATAL ERROR: file name %s has no extension\n", file_name);
     exit(EXIT_FAILURE);
   }
+  int basename_length = (last_slash != NULL)
+      ? strlen(last_slash) - strlen(last_dot) - 1
+      : strlen(file_name) - strlen(last_dot);
+  if ( basename_length > MAX_NAME_LENGTH - 1 ) {
+      fprintf(stderr, "*** Warning: Base name longer than unix line length, truncating to 511\n");
+      basename_length = 511;
+  }
   if ( last_slash != NULL ) {
-    int basename_length = strlen(last_slash) - strlen(last_dot) - 1;
-    strncpy(buffer, last_slash + 1, basename_length);
+    strncpy(buffer, file_name, basename_length);
   }
   else {
-    int basename_length = strlen(file_name) - strlen(last_dot);
     strncpy(buffer, file_name, basename_length);
   }
 }
@@ -91,52 +120,80 @@ char * nameFromId(int id) {
     return name_buffer;
 }
 
-void createOutputFileName(char * output_file_name,
-                          const char * preprocessor_arg,
-                          const char * heuristic_arg,
-                          const char * appendix,
-                          const char * extension) {
-  if ( output_base_name == NULL ) {
-      output_base_name = "temp";
-      printf( "WARNING: no output base name specified, using %s\n", "temp" );
-      printf( " Use -o to get something different\n" );
+/**
+ * @brief The (base) name of of the output file, which has tags for preprocessor and heuristic
+ * @todo make this interior to createOutputBase() and return a pointer to it
+ */
+static char complete_output_file_base_name[MAX_NAME_LENGTH];
+
+/**
+ * @brief creates a base name for an output file that includes information about
+ *        the preprocessor an heuristic used;
+ *      the output base is stored in a global array for use when needed
+ * 
+ * @param objective_tag a tag indicating the objective function optimized in the output
+ */
+static void createOutputBase(const char * output_base_name, const char * objective_tag) {
+#ifdef DEBUG
+  fprintf(stderr, "-> createOutputBase(%s, %s)\n",
+          output_base_name, objective_tag);
+#endif
+  strcpy( complete_output_file_base_name, output_base_name );
+  strcat( complete_output_file_base_name, "-" );
+  fprintf(stderr, "after adding -\n");
+  if ( preprocessor != NULL ) {
+    strcat( complete_output_file_base_name, preprocessor );
   }
-  strcpy( output_file_name, output_base_name );
-  strcat( output_file_name, "-" );
-  strcat( output_file_name, preprocessor );
-  if( strcmp( preprocessor, "" ) != 0 
-      && strcmp( heuristic, "" ) != 0 )
-    strcat( output_file_name, "+" );
-  strcat( output_file_name, heuristic );
-  strcat( output_file_name, "-" );
-  strcat( output_file_name, appendix );
-  strcat( output_file_name, extension );
+  if( preprocessor != NULL && heuristic != NULL != 0 )
+    strcat( complete_output_file_base_name, "+" );
+  strcat( complete_output_file_base_name, heuristic );
+  strcat( complete_output_file_base_name, "-" );
+  strcat( complete_output_file_base_name, objective_tag );
+#ifdef DEBUG
+  fprintf(stderr, "<- createOutputBase, base = %s\n", complete_output_file_base_name);
+#endif
 }
 
-void writeFile(const char * objective_tag) {
+/**
+ * @brief Creates a file name based on information about objectives and type of file
+ * 
+ * @param output_file_name stores the return value
+ * @param output_base_name the base name of the file, usually the input base name,
+ *                         unless the -w option specifies otherwise
+ * @param objective_tag a one or two letter tag for the objective function
+ * @param extension either sgf or ord - will eventually default to sgf
+ */
+static void createOutputFileName(char * output_file_name,
+                                 const char * output_base_name,
+                                 const char * objective_tag,
+                                 const char * extension) {
+#ifdef DEBUG
+  fprintf(stderr, "-> createOutputFileName(%s, %s, %s)\n",
+          output_base_name, objective_tag, extension);
+#endif
+  createOutputBase(output_base_name, objective_tag);
+  // Note: complete_output_file_base_name is global, created by createOutputBase()
+  strcpy(output_file_name, complete_output_file_base_name);
+  strcat(output_file_name, extension);
+#ifdef DEBUG
+  fprintf(stderr, "<- createOutputFileName, file name = %s\n", output_file_name);
+#endif
+}
+
+void writeFile(const char * output_base_name, const char * objective_tag) {
     char output_file_name[MAX_NAME_LENGTH];
     char * extension = NULL;
     if ( write_sgf_output ) extension = ".sgf";
     else if ( write_ord_output ) extension = ".ord";
-    createOutputFileName(output_file_name, preprocessor, heuristic,
-                         objective_tag, extension);
+    createOutputFileName(output_file_name, output_base_name, objective_tag, extension);
     FILE * out_stream = fopen(output_file_name, "w");
     if( out_stream == NULL ) {
         fprintf(stderr, "Unable to open file %s for output\n", output_file_name);
         exit( EXIT_FAILURE );
     }
-    if ( write_sgf_output ) writeSgf(out_stream);
+    if ( write_sgf_output ) writeSgf(out_stream, complete_output_file_base_name);
     else if ( write_ord_output ) writeOrd(out_stream);
     fclose(out_stream);
-}
-
-/**
- * assumes master_node_list has been allocated to accommodate number
- * of nodes in header (sgf)
- */
-void addToNodeList(Nodeptr node) {
-    static int index = 0;
-    master_node_list[index++] = node;
 }
 
 Nodeptr makeNumberedNode(int id, int layer, int position) {
@@ -144,18 +201,21 @@ Nodeptr makeNumberedNode(int id, int layer, int position) {
     printf("-> makeNumberedNode: id = %d, layer = %d, position = %d\n",
            id, layer, position);
 #endif
+    static int index = 0;
     Nodeptr new_node = (Nodeptr) calloc(1, sizeof(struct node_struct));
     new_node->name = calloc(strlen(nameFromId(id)) + 1, sizeof(char));
     strcpy(new_node->name, nameFromId(id));
     new_node->id = id;
     new_node->layer = layer;
-    new_node->position = position;
+    new_node->horizontal_position = position;
+    // layer_index is set when node is inserted into layer
+    new_node->layer_index = -1;
     new_node->up_edges = new_node->down_edges = NULL;
     new_node->up_degree = new_node->down_degree = 0;
     new_node->up_crossings = new_node->down_crossings = 0;
     new_node->marked = new_node->fixed = false;
     new_node->preorder_number = -1;
-    addToNodeList(new_node);
+    master_node_list[index++] = new_node;
 #ifdef DEBUG
     printf("<- makeNumberedNode, number_of_nodes = %d\n", number_of_nodes);
 #endif
@@ -174,24 +234,35 @@ void allocateNodeListsForLayers(void) {
  * checks for dupicate positions
  */
 void insertIntoLayer(Nodeptr node, int layer_num, int num_nodes_so_far) {
+#ifdef DEBUG
+  fprintf(stderr, "-> insertIntoLayer, nodes_so_far = %d\n", num_nodes_so_far);
+  writeNode(stderr, node);
+#endif
     Layerptr layer = layers[layer_num];
-    int current_position = num_nodes_so_far;
-    while ( current_position > 0
-            && layer->nodes[current_position - 1]->position >= node->position ) {
-      if ( layer->nodes[current_position - 1]->position
-            == node->position ) {
+    int current_index = num_nodes_so_far;
+    while ( current_index > 0
+            && layer->nodes[current_index - 1]->horizontal_position
+                  >= node->horizontal_position ) {
+      if ( layer->nodes[current_index - 1]->horizontal_position
+            == node->horizontal_position ) {
         fprintf(stderr, "*** FATAL: two nodes have the same position on their layer\n");
         fprintf(stderr, "    nodes are [id,layer,position]: [%d,%d,%d] and [%d,%d,%d]\n",
-                       layer->nodes[current_position-1]->id,
-                       layer->nodes[current_position-1]->layer,
-                       layer->nodes[current_position-1]->position,
-                       node->id, node->layer, node->position);
+                       layer->nodes[current_index-1]->id,
+                       layer->nodes[current_index-1]->layer,
+                       layer->nodes[current_index-1]->horizontal_position,
+                       node->id, node->layer, node->horizontal_position);
         abort();
       }
-      layer->nodes[current_position] = layer->nodes[current_position - 1];
-      current_position--;
+      layer->nodes[current_index] = layer->nodes[current_index - 1];
+      layer->nodes[current_index]->layer_index = current_index;
+      current_index--;
     }
-    layer->nodes[current_position] = node;   
+    layer->nodes[current_index] = node;
+    node->layer_index = current_index;  
+#ifdef DEBUG
+  fprintf(stderr, "<- insertIntoLayer\n");
+  writeNode(stderr, node);
+#endif
 }
 
 /**
@@ -209,6 +280,7 @@ void addNodesToLayers(void) {
         layers[layer_num]->number_of_nodes++;
         if ( layers[layer_num]->number_of_nodes > max_layer_width ) {
           max_layer_width = layers[layer_num]->number_of_nodes;
+          max_width_layer = layer_num;
         }
     }
     allocateNodeListsForLayers();
@@ -268,7 +340,7 @@ Nodeptr makeNode( const char * name );
 /**
  * Put a node in the next available position on a given layer
  */
-void addNodeToLayer( Nodeptr node, int layer );
+static void addNodeToLayer( Nodeptr node, int layer );
 
 /**
  * Creates a new layer with the next number; layers are created in
@@ -282,17 +354,17 @@ Nodeptr makeNode( const char * name )
 
   Nodeptr new_node = (Nodeptr) calloc(1, sizeof(struct node_struct));
   new_node->name = (char *) calloc(strlen(name) + 1, sizeof(char));
-  strcpy( new_node->name, name );
+  strcpy(new_node->name, name);
   // delay assignment of id's until edges are added so that the numbering
   // depends on .dot file only (easier to standardize)
   new_node->id = current_id++;
-  new_node->layer = new_node->position = -1; /* to indicate "uninitialized" */
+  new_node->layer = new_node->layer_index = -1; /* to indicate "uninitialized" */
   new_node->up_degree = new_node->down_degree = 0;
   new_node->up_edges = new_node->down_edges = NULL;
   new_node->up_crossings = new_node->down_crossings = 0;
   new_node->marked = new_node->fixed = false;
   new_node->preorder_number = -1;
-  insertInHashTable( name, new_node );
+  insertInHashTable(name, new_node);
   master_node_list[ new_node->id ] = new_node;
   return new_node;
 }
@@ -300,15 +372,16 @@ Nodeptr makeNode( const char * name )
 void addNodeToLayer( Nodeptr node, int layer )
 {
   static int current_layer = 0;
-  static int current_position = 0;
-  if( layer != current_layer )
-    {
+  static int current_index = 0;
+  if ( layer != current_layer ) {
       current_layer = layer;
-      current_position = 0;
-    }
+      current_index = 0;
+  }
   node->layer = current_layer;
-  node->position = current_position;
-  layers[ layer ]->nodes[ current_position++ ] = node;
+  node->layer_index = current_index;
+  // need this when reading an ord file
+  node->horizontal_position = current_index;
+  layers[ layer ]->nodes[ current_index++ ] = node;
 }
 
 void makeLayer() {
@@ -353,7 +426,7 @@ void addEdge(const char * source, const char * target)
   }
 #ifdef DEBUG
   fprintf(stderr, " node1.position = %d, node2.position = %d\n",
-          node1->position, node2->position);
+          node1->layer_index, node2->layer_index);
 #endif
   if ( node1->layer == node2->layer ) {
     fprintf( stderr, "*** FATAL: addEdge, nodes on same layer.\n" );
@@ -446,6 +519,7 @@ static void allocateLayersFromOrdFile( const char * ord_file )
           number_of_nodes++;    /* global node count */
         }
       setNumberOfNodes( layer, node_count );
+      if ( node_count > max_layer_width ) max_layer_width = node_count;
   }
   fclose( in );
 }
@@ -502,9 +576,25 @@ void incrementDegrees( const char * source, const char * target )
 }
 
 /**
+ * Gets any comments occuring right after the graph name from the dot
+ * file that was recently initialized using initDot() and stores them
+ * as comments of the graph
+ */
+void getCommentsFromDotFile(void) {
+    char buffer[MAX_NAME_LENGTH];
+    startGettingDotComments();
+    startAddingComments();
+    while ( getNextDotComment(buffer) ) {
+        addComment(buffer, true);
+    }
+}
+
+
+/**
  * Reads the dot file and makes room for nodes on all the adjacency lists;
  * resets up and down node degrees. This is the first pass of reading the dot
- * file.  Also saves the name of the graph.
+ * file.  Also saves the name of the graph and any comments occuring
+ * right after the name.
  */
 void allocateAdjacencyLists( const char * dot_file )
 {
@@ -514,8 +604,9 @@ void allocateAdjacencyLists( const char * dot_file )
       fprintf( stderr, "*** FATAL ERROR: Unable to open file %s for input\n", dot_file );
       exit( EXIT_FAILURE );
     }
-  initDot( in );
-  getNameFromDotFile( graph_name );
+  initDot(in);
+  getNameFromDotFile(graph_name);
+  getCommentsFromDotFile();
   // read the edges and use each edge to update the appropriate degree for
   // each endpoint
   char src_buf[MAX_NAME_LENGTH];
@@ -616,7 +707,7 @@ void readDotAndOrd( const char * dot_file, const char * ord_file )
   printf( "Master node list after reading ord file:\n" );
   for ( int i = 0; i < number_of_nodes; i++ ) {
     printf( "%s, layer = %d, position = %d\n", master_node_list[i]->name,
-            master_node_list[i]->layer, master_node_list[i]->position );
+            master_node_list[i]->layer, master_node_list[i]->layer_index );
   }
 #endif
   allocateAdjacencyLists( dot_file );
@@ -626,6 +717,8 @@ void readDotAndOrd( const char * dot_file, const char * ord_file )
   number_of_isolated_nodes = countIsolatedNodes();
   removeHashTable();
 }
+
+/********* End - dot and ord input *************/
 
 // --------------- Handling of comments
 
@@ -711,7 +804,7 @@ void writeOrd(FILE * out)
   int layer = 0;
   for( ; layer < number_of_layers; layer++ )
     {
-      beginLayer( out, layer, "heuristic-based" );
+      beginLayer( out, layer, "" );
       writeNodes( out, layers[ layer ] );
       endLayer( out );
     }
@@ -737,7 +830,7 @@ void writeDot( const char * dot_file_name,
       Edgeptr current = edge_list[i];
       Nodeptr up_node = current->up_node;
       Nodeptr down_node = current->down_node;
-      outputEdge( out, up_node->name, down_node->name );
+      outputEdge( out, down_node->name, up_node->name );
     }
   endDot( out );
   fclose( out );
@@ -745,70 +838,72 @@ void writeDot( const char * dot_file_name,
 
 // --------------- Debugging output --------------
 
-void printNode( Nodeptr node )
-{
-  printf("    [%3d ] %s layer=%d position=%d up=%d down=%d up_x=%d down_x=%d\n",
-         node->id, node->name, node->layer, node->position,
+void writeNode(FILE * outstream, Nodeptr node) {
+  if ( node == NULL ) {
+    fprintf(outstream, "(null)\n");
+    return;
+  }
+  fprintf(outstream, "  [%d] layer = %d index = %d position = %d"
+                     " up = %d down = %d up_x = %d down_x = %d\n",
+         node->id, node->layer, node->layer_index, node->horizontal_position,
          node->up_degree, node->down_degree,
-         node->up_crossings, node->down_crossings );
-  printf("      ^^^^up");
+         node->up_crossings, node->down_crossings);
+  fprintf(outstream, "      ^^^^ up");
   int i = 0;
-  for( ; i < node->up_degree; i++ )
-    {
+  for( ; i < node->up_degree; i++ ) {
       Edgeptr edge = node->up_edges[i];
-      printf(" %s", edge->up_node->name );
+      fprintf(outstream, " %s", edge->up_node->name );
     }
-  printf("\n");
-  printf("      __down");
+  fprintf(outstream, "\n");
+  fprintf(outstream, "      ___ down");
   i = 0;
-  for( ; i < node->down_degree; i++ )
-    {
+  for( ; i < node->down_degree; i++ ) {
       Edgeptr edge = node->down_edges[i];
-      printf(" %s", edge->down_node->name );
+      fprintf(outstream, " %s", edge->down_node->name );
     }
-  printf("\n");
+  fprintf(outstream, "\n");
 }
 
-void printEdge(Edgeptr edge) {
-    printf(" -- edge: %s, %s\n", edge->down_node->name, edge->up_node->name);
-    printf("   crossings = %d, fixed = %d\n", edge->crossings, edge->fixed);
+void writeEdge(FILE * outstream, Edgeptr edge) {
+  if ( edge == NULL ) {
+    fprintf(outstream, "(null)\n");
+    return;
+  }
+  fprintf(outstream, " -- edge: %s, %s\n", edge->down_node->name, edge->up_node->name);
+  fprintf(outstream, "   xings = %d, nv = %d, fixed = %d\n",
+          edge->crossings, edge->nonverticality, edge->fixed);
 }
 
-void printLayer( int layer )
-{
-  printf("  --- layer %d nodes=%d fixed=%d\n",
+void writeLayer(FILE * outstream, int layer) {
+  fprintf(outstream, "  --- layer %d nodes = %d fixed = %d\n",
          layer, layers[layer]->number_of_nodes, layers[layer]->fixed );
   int node = 0;
-  for( ; node < layers[layer]->number_of_nodes; node++ )
-    {
-      printNode( layers[layer]->nodes[node] );
-    }
+  for( ; node < layers[layer]->number_of_nodes; node++ ) {
+    writeNode(outstream, layers[layer]->nodes[node]);
+  }
 }
 
-void printGraph()
-{
-  printf("+++ begin-graph %s nodes=%d, edges = %d, layers=%d\n",
+void writeGraph(FILE * outstream) {
+  fprintf(outstream, "+++ begin-graph %s nodes = %d, edges = %d, layers = %d\n",
          graph_name, number_of_nodes, number_of_edges, number_of_layers);
   int layer = 0;
   for( ; layer < number_of_layers; layer++ ) {
-      printLayer( layer );
+      writeLayer(outstream, layer);
   }
-  printf(" ---- edges ----\n");
+  fprintf(outstream, " ---- edges ----\n");
   for ( int index = 0; index < number_of_edges; index++ ) {
-      printEdge(master_edge_list[index]);
+      writeEdge(outstream, master_edge_list[index]);
   }
-  printf("=== end-graph\n");
+  fprintf(outstream, "=== end-graph\n");
 }
 
 #ifdef TEST
 
-int main( int argc, char * argv[] )
-{
-  readDotAndOrd( argv[1], argv[2] );
-  printGraph();
-  fprintf( stderr, "Average number of probes = %5.2f\n",
-           getAverageNumberOfProbes() );
-  return 0;
+int main(int argc, char * argv[]) {
+  FILE * instream = fopen(argv[1], "r");
+  readSgf(instream);
+  writeGraph(stdout);
+  return EXIT_SUCCESS;
 }
 
 #endif

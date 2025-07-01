@@ -19,12 +19,12 @@
  * Initializes all crossing counts and allocates data structures used for
  * counting crossings.
  */
-void initCrossings( void );
+void allocateCrossingStructs( void );
 
 /**
  * dallocates data structures that keep track of crossings
  */
-void deallocateCrossings(void);
+void deallocateCrossingStructs(void);
 
 /**
  * @return the total number of crossings in the graph

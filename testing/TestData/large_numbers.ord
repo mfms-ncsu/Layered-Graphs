@@ -1,0 +1,13 @@
+# Ordering for graph large_numbers
+# 
+
+# Order for layer 0: 
+0 {
+ 1 3 2
+} # end of layer 0
+
+# Order for layer 1: 
+1 {
+ 12 23
+} # end of layer 1
+

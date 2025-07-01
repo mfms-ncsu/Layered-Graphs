@@ -3,7 +3,10 @@
 """
 Converts a graph in .sgf format to a linear integer program
 This program translates from standard input to standard output.
+Can be used to minimize a variety of objectives or two in combination.
+"""
 
+"""
 Variables are as follows:
     x_i_j        1 if node i precedes node j on their common layer
     c_i_j_k_el   1 if edge i,j crosses edge k,el; 0 otherwise
@@ -41,7 +44,7 @@ parser.add_argument('--objective', choices=['total','bottleneck',
                     help='minimize ...\n'
                     + ' total/bottleneck (total/bottleneck crossings)\n'
                     + ' vertical/bn_vertical (minimize total/bottleneck non-verticality)\n'
-                    + ' quad_vertical (use quadratic programming to minimize non-verticality\n'
+                    + ' quad_vertical (use quadratic programming to minimize non-verticality)\n'
                     + ' stretch/bn_stretch (total/bottleneck edge length with evenly spaced nodes)\n'
                     + ' quad_stretch (use quadratic programming to miminize total stretch)\n'
 )
@@ -64,6 +67,7 @@ parser.add_argument('--bipartite', type=int,
                     + '\n default: None, 0 means no limit'
                     + '\n *not fully implemented*: only prints potential constraints')
 
+global args
 args = parser.parse_args()
 
 """
@@ -402,6 +406,10 @@ def bottleneck_constraints():
 
 """
 adds a bottleneck constraint for edge ij, where i is among the layer_nodes to constraints
+@attention For total crossings we ensured that crossings were not counted twice,
+           i.e., for two edges ij and kl, we would not have both c_i_j_k_l and c_k_l_i_j;
+           but for bottleneck crossings, every edge involving ij needs to be counted,
+           whether of the form c_i_j_k_l or of the form c_k_l_i_j
 """
 def add_bottleneck_constraint(constraints, i, j, layer_nodes):
     relop = '>='
@@ -413,13 +421,18 @@ def add_bottleneck_constraint(constraints, i, j, layer_nodes):
                 crossing_variable = ("c_" + str(i) + "_" + str(j)
                                          + "_" + str(k) + "_" + str(l))
                 left.append("- " + crossing_variable)
+        elif i > k:
+            for l in _node_dictionary[k]['up']:
+                crossing_variable = ("c_" + str(k) + "_" + str(l)
+                                         + "_" + str(i) + "_" + str(j))
+                left.append("- " + crossing_variable)
     # add bottleneck constraint if it there's at least one potentially
     # crossing edge in the channel
     if len(left) > 1:
         constraints.append((left, relop, right))
 
 """
- @return a single constraint that captures the fact that the total >= the
+ @return a single constraint that captures the fact that the total >= half the
  sum of all crossing variables
 """
 def total_constraint():
@@ -453,6 +466,7 @@ def stretch_constraints():
         raw_variable = "z_" + str(source) + "_" + str(target)
         _continuous_variables.append(stretch_variable)
         _stretch_variables.append(stretch_variable)
+        # note: the z_i_j need not be added to any list of variables since they can be negative
         # standard tricks for absolute value
         # s_i_j >= z_i_j
         left = ["+ " + stretch_variable]
@@ -462,21 +476,21 @@ def stretch_constraints():
         left = ["+ " + stretch_variable]
         left.append("+ " + raw_variable)
         stretch_constraints.append((left, relop, right))
-        # introduce binary indicator variable: b_i_j = 0 if z_i_j is positive
-        # and 1 if z_i_j is negative
-        indicator_variable = "b_" + str(source) + "_" + str(target)
-        _binary_variables.append(indicator_variable)
-        # ensure s_i_j <= z_i_j if b_i_j = 0 (modulo tolerance)
-        left = ["+ " + raw_variable]
-        left.append("+ 2 " + indicator_variable)
-        left.append("- " + stretch_variable)
-        stretch_constraints.append((left, relop, right))
-        # ensure s_i_j <= -z_i_j if b_i_j = 1 (modulo tolerance)
-        left = ["- " + raw_variable]
-        left.append("- 2 " + indicator_variable)
-        left.append("- " + stretch_variable)
-        right = str(-2 - TOLERANCE)
-        stretch_constraints.append((left, relop, right))
+        # # introduce binary indicator variable: b_i_j = 0 if z_i_j is positive
+        # # and 1 if z_i_j is negative
+        # indicator_variable = "b_" + str(source) + "_" + str(target)
+        # _binary_variables.append(indicator_variable)
+        # # ensure s_i_j <= z_i_j if b_i_j = 0 (modulo tolerance)
+        # left = ["+ " + raw_variable]
+        # left.append("+ 2 " + indicator_variable)
+        # left.append("- " + stretch_variable)
+        # stretch_constraints.append((left, relop, right))
+        # # ensure s_i_j <= -z_i_j if b_i_j = 1 (modulo tolerance)
+        # left = ["- " + raw_variable]
+        # left.append("- 2 " + indicator_variable)
+        # left.append("- " + stretch_variable)
+        # right = str(-2 - TOLERANCE)
+        # stretch_constraints.append((left, relop, right))
 
     return stretch_constraints
 
@@ -515,9 +529,9 @@ def raw_stretch_constraints():
 """
  @return distance constraints for "linearized" versions of non-verticality
  variables d_u_v_i
- (see 2013 INFORMS Journal on Computing, Chimani and Hungerlaender, pp. 611-624);
+ (see 2013 Informs Journal on Computing, Chimani and Hungerlaender, pp. 611-624);
  add the variables to _integer_variables:
-   d_u_v_i >= d_u_v_0 - i or d_u_v_0 - d_u_v_i <= i
+   d_u_v_i >= d_u_v_0 - i, i.e., d_u_v_0 - d_u_v_i <= i
  the effect is the same as using (d_u_v)^2, where d_u_v is the offset for edge uv
 """
 def linearized_distances():
@@ -615,44 +629,74 @@ def total_nonverticality():
     right = '0'
     left = ['+ ' + x for x in _nonverticality_variables]
     left.append('- vertical')
-    _nonverticality_variables.append('vertical')
+    _integer_variables.append('vertical')
     return (left, relop, right)
 
 """
  @return a list of constraints that represent lower bounds on the
  nonverticality of individual nodes, based on indegree and outdegree
- Note: we need to consider each edge from both directions
 """
 def verticality_lower_bounds():
     lower_bounds = []
+    max_degree = 0
     for node in _node_dictionary:
         up_neighbors = _node_dictionary[node]['up']
+        if len(up_neighbors) > max_degree:
+            max_degree = len(up_neighbors)
         lower_bounds\
             .extend(verticality_bounds(node, up_neighbors))
         down_neighbors = _node_dictionary[node]['down']
+        if len(down_neighbors) > max_degree:
+            max_degree = len(down_neighbors)
         lower_bounds\
             .extend(verticality_bounds(node, down_neighbors))
+    # For the bottleneck case, note that at least one neighbor has diff floor(k/2)
+    # this works whether k is even or odd; we need only consider k for the node with max degree
+    if (args.objective == 'bn_vertical' or args.bn_vertical != None) and max_degree > 1:
+        half_max_degree = max_degree // 2
+        left = ["bn_vertical"]
+        relop = ">="
+        right = half_max_degree * half_max_degree
+        lower_bounds.append((left, relop, right))
     return lower_bounds
 
+"""
+@return a list of bounds that say the following:
+    if x has neighbors y_1 , ... , y_k in a given direction, then
+    - total verticality of x,y_i >= sum(i=1:(k-1)/2) i^2 + sum(i=1:k/2) i^2
+    - bn_verticality >= (k/2)^2 (if relevant)
+    here the division is integer division; works for both even and odd k
+"""
 def verticality_bounds(node, neighbors):
+    degree = len(neighbors)
+    # these extra bounds are ineffective for bottleneck if right hand side is <= 1
+    # and make no sense at all if degree <= 1
+    if args.objective == 'vertical' or args.vertical != None:
+        degree_bound = 1
+    else:      # bottleneck only
+        degree_bound = 3
+    if degree <= degree_bound:
+        return []
     relop = '>='
     bounds = []
-    degree = len(neighbors)
-    if degree > 1:
-        for i in range(0, int(degree / 2)):
-            right = str((int(degree / 2) - i)
-                        * (int(degree / 2 + 1/2) - i))
-            left = ["+ d_" + str(node) + "_" + str(neighbor) + "_" + str(i) 
-                    for neighbor in neighbors]
-            bounds.append((left, relop, right))
-            left = ["+ d_" + str(neighbor) + "_" + str(node) + "_" + str(i) 
-                    for neighbor in neighbors]
-            bounds.append((left, relop, right))
+    k_over_2 = degree // 2
+    k_minus_1_over_2 = (degree - 1) // 2
+    # First, bounds on the total verticality of edges between the node and its k neighbors:
+    #  in the best case, diff in positions ranges from 1 to (k-1)/2 on each side,
+    #  and, if k is even, there is an extra neighbor with diff k/2.
+    # The formula for the sum of the first n squares is n(n+1)(2n+1)/6, so
+    #  sum(i=1:(k-1)/2) i^2 appears twice; then add (k/2)^2 if k is even
+    right = k_minus_1_over_2 * (k_minus_1_over_2 + 1) * (2 * k_minus_1_over_2 + 1) / 3
+    if degree % 2 == 0:
+        right += k_over_2 * k_over_2
+    left = ["+ q_" + str(node) + "_" + str(neighbor) for neighbor in neighbors]
+    bounds.append((left, relop, right))
     return bounds
 
 """
  @return a list of lower bounds on verticality of complete bipartite graphs
  @param limit upper limit on number of nodes to consider
+ @todo not fully implemented
 """
 def bipartite_constraints(limit):
     if limit < 2:
@@ -721,8 +765,8 @@ def bottleneck_vertical_constraints():
     right = '0'
     _integer_variables.append("bn_vertical")
     constraints = []
-    for distance_variable in _distance_variables:
-        left = ["+ bn_vertical", "-", distance_variable]
+    for quadratic_variable in _nonverticality_variables:
+        left = ["+ bn_vertical", "-", quadratic_variable]
         constraints.append((left, relop, right))
     return constraints
 
@@ -847,17 +891,20 @@ if __name__ == '__main__':
         constraints.append(total_stretch_constraint())
     if args.objective == 'bn_stretch' or args.bn_stretch != None:
         constraints.extend(bottleneck_stretch_constraints())
-    if args.objective == 'vertical' or args.vertical != None:
+    if args.objective == 'vertical' or args.vertical != None \
+            or args.objective == 'bn_vertical' or args.bn_vertical != None:
         constraints.extend(distance_definitions())
         constraints.extend(linearized_distances())
         constraints.extend(edge_nonverticalities())
         constraints.extend(verticality_lower_bounds())
-        constraints.append(total_nonverticality())
         if args.bipartite != None:
+            # print these constraints and exit
             constraints.extend(bipartite_constraints(args.bipartite))
             sys.exit()
+    if args.objective == 'vertical' or args.vertical != None:
+        constraints.append(total_nonverticality())
     if args.objective == 'bn_vertical' or args.bn_vertical != None:
-        constraints.extend(distance_definitions())
+#        constraints.extend(distance_definitions())
         constraints.extend(bottleneck_vertical_constraints())
     if args.objective == 'quad_vertical':
         constraints.extend(distance_definitions())
@@ -897,5 +944,3 @@ if __name__ == '__main__':
         print_bounds_on_raw_stretch_variables()
     print_variables()
     print("End")
-
-#  [Last modified: 2020 05 19 at 15:23:34 GMT]

@@ -31,12 +31,23 @@ void sift( Nodeptr node );
 void sift_node_for_edge_crossings( Edgeptr edge, Nodeptr node );
 
 /**
+ * @param node This node is placed on its layer in a position that minimizes
+ * the maximum nonverticality for any edge incident on the layer.
+ */
+void sift_node_for_nonverticality(Nodeptr node);
+
+/**
  * @param node This node is placed into a position that minimizes the total
  * stretch of edges incident on its layer; ties are broken by moving the node
  * as far away as possible from its initial position
  */
 void sift_node_for_total_stretch(Nodeptr node);
 
-#endif
+/**
+ * @brief moves the node into a random position on its layer
+ * works also for verticality, where not only the position in the array is updated
+ * but also the node's position
+ */
+void randomSift(Nodeptr node);
 
-/*  [Last modified: 2016 05 19 at 20:15:25 GMT] */
+#endif

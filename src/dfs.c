@@ -125,5 +125,3 @@ void assignDfsWeights( void )
   initialize_dfs_weights();
   dfs();
 }
-
-/*  [Last modified: 2020 12 30 at 18:10:32 GMT] */

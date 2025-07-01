@@ -5,7 +5,7 @@ import os
 
 class LayeredGraph:
     """
-    Maintains all information about a proper layered graph:
+    A Python class that maintains all information about a proper layered graph:
     - list of node id's (in order they were added)
     - mapping from a node id (a string, usually encoding an integer)
       to information about a node

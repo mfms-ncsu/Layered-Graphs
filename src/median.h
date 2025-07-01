@@ -20,18 +20,14 @@ void medianWeights( int layer, Orientation orientation );
 /**
  * Repeats median heuristic moving upward from the starting layer to the
  * uppermost layer. Orientation of each heuristic application is downward.
- *
- * @return true if max iterations was reached in the process
  */
-bool medianUpSweep( int starting_layer );
+void medianUpSweep( int starting_layer );
 
 /**
  * Repeats median heuristic moving downward from the starting layer to the
  * bottom layer, layer 0. Orientation of each heuristic application is upward.
- *
- * @return true if max iterations was reached in the process
  */
-bool medianDownSweep( int starting_layer );
+void medianDownSweep( int starting_layer );
 
 #endif
 

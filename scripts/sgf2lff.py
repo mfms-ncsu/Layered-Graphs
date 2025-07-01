@@ -9,7 +9,7 @@ import sys
 
 def usage(program_name):
     sys.stderr.write("Usage: {} INPUT_FILE > OUTPUT_FILE\n".format(program_name))
-    sys.stderr.write("Takes the lff file INPUT_FILE and converts to sgf,\n")
+    sys.stderr.write("Takes the sgf file INPUT_FILE and converts to lff format,\n")
     sys.stderr.write("which is printed on standard output.\n")
 
 """

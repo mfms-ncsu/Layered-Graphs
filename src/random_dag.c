@@ -31,8 +31,8 @@ static void add_edge( Nodeptr upper_node, Nodeptr lower_node )
 {
 #ifdef DEBUG
   printf( "-> add_edge: upper_node = (%s,%d,%d), lower_node = (%s,%d,%d)\n",
-          upper_node->name, upper_node->layer, upper_node->position,
-          lower_node->name, lower_node->layer, lower_node->position );
+          upper_node->name, upper_node->layer, upper_node->layer_index,
+          lower_node->name, lower_node->layer, lower_node->layer_index );
 #endif
   assert( upper_node->layer == lower_node->layer + 1 );
   Edgeptr new_edge = (Edgeptr) calloc( 1, sizeof(struct edge_struct) );

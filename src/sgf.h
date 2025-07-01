@@ -39,8 +39,9 @@ void readSgf(FILE * sgf_stream);
 /**
  * Writes the current graph and its ordering to an sgf file with the given name.
  * @param output_stream either a pointer to a file or stdout
+ * @param graph_output_name needed as a graph name for an sgf file
  */
-void writeSgf(FILE * output_stream);
+void writeSgf(FILE * output_stream, const char * graph_output_name);
 
 #endif
 

@@ -1,0 +1,38 @@
+# Ordering for graph north12.145_GKNV-total_7_vertical
+# 
+
+# Order for layer 0: 
+0 {
+ 0
+} # end of layer 0
+
+# Order for layer 1: 
+1 {
+ 2 1
+} # end of layer 1
+
+# Order for layer 2: 
+2 {
+ 3 5 4
+} # end of layer 2
+
+# Order for layer 3: 
+3 {
+ 6 7 8
+} # end of layer 3
+
+# Order for layer 4: 
+4 {
+ 9 11 10 12 13 14 15 16
+} # end of layer 4
+
+# Order for layer 5: 
+5 {
+ 17 19 18 20 21 22 23 24 25
+} # end of layer 5
+
+# Order for layer 6: 
+6 {
+ 26 27
+} # end of layer 6
+

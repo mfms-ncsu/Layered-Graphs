@@ -1,0 +1,11 @@
+The following runs illustrate that sgf output does not reflect best configuration for crossings
+
+./minimization -O -h bary -a 50 north42.32.sgf | ./minimization -I
+59 final crossings in first run, but second run starts with 80
+
+./minimization -O -h bary -a 100 ../testing/TestData/r_100_120_10_0_0-019.sgf | ./minimization -I
+71 on first run, 76 starting
+
+./minimization -O -h bary -a 100 ../testing/TestData/t_0500_09_01.sgf | ./minimization -I
+94 on first run, 133 starting
+

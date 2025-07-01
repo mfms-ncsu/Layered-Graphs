@@ -40,6 +40,8 @@ static char error_message[MAX_NAME_LENGTH];
 static char local_graph_name[MAX_NAME_LENGTH];
 static int line_number = 1;
 
+#define MAX_COMMENT_SIZE 4096
+
 /* -----------  UTILITY FUNCTIONS -------------- */
 
 /**
@@ -50,6 +52,47 @@ static void error( bool fatal )
 {
   fprintf( stderr, "Line %d: %s\n", line_number, error_message );
   if( fatal ) exit( EXIT_FAILURE );
+}
+
+static char comment_buffer[MAX_COMMENT_SIZE];
+static int comment_size = 0;
+// used for retrieving comments
+static char * comment_ptr;
+
+/**
+ * Usage of the following two functions:
+    char buffer[SIZE];
+    startGettingDotComments();
+    while ( getNextDotComment(buffer) ) {
+       // add buffer to list of comments
+    }
+ */
+void startGettingDotComments(void) {
+    comment_ptr = comment_buffer;
+}
+
+char * getNextDotComment(char * buffer) {
+    if ( *comment_ptr == '\0' ) return NULL;
+    char * buffer_ptr = buffer;
+    while ( *comment_ptr != '\n' && *comment_ptr != '\0' ) {
+        *buffer_ptr++ = *comment_ptr++;
+    }
+    // here *comment_ptr == '\n', so needs to advance
+    comment_ptr++;
+    *buffer_ptr++ = '\0';
+    return buffer;
+}
+
+/**
+ * adds a character to the comment buffer, checking for overflow
+ */
+static void add_char_to_comment_buffer(char ch) {
+  if ( comment_size >= MAX_COMMENT_SIZE ) {
+    fprintf(stderr, "** WARNING: Too many characters in comments, ignoring %c **\n", ch);
+  }
+  else {
+    comment_buffer[comment_size++] = ch;
+  }
 }
 
 /**
@@ -72,17 +115,24 @@ static int skip_blanks_and_comments( int ch, FILE * in_stream )
       switch( ch ) {
       case '\n':
         line_number++;
-        if( state == CPP_COMMENT ) { state = BLANK; break; }
+        if( state == CPP_COMMENT ) {
+            add_char_to_comment_buffer(ch);
+            state = BLANK;
+            break;
+        }
       case ' ': case '\t': case '\r':
-        if( state == SLASH )
-          {
+        if ( state == SLASH ) {
             // the slash was not the beginning of a comment and therefore ends
             // the sequence
             ungetc( ch, in_stream );
             ch = '/';
+            comment_buffer[comment_size] = '\0';
             done = true;
           }
         else if( state == STAR ) state = C_COMMENT;
+        else if ( state == C_COMMENT ) {
+            add_char_to_comment_buffer(ch);
+        }
         break;
       case '/':
         if( state == BLANK ) state = SLASH;
@@ -93,21 +143,29 @@ static int skip_blanks_and_comments( int ch, FILE * in_stream )
         if( state == C_COMMENT ) state = STAR;
         else if( state == SLASH ) state = C_COMMENT;
         else if( state == STAR ) state = C_COMMENT;
-        else if( state == BLANK ) done = true;
+        else if( state == BLANK ) {
+          add_char_to_comment_buffer('\0');
+          done = true;
+        }
         break;
       case EOF:
+        add_char_to_comment_buffer('\0');
         done = true;
+        break;
       default:
-        if( state == SLASH )
-          {
+        if ( state == SLASH ) {
             // the slash was not the beginning of a comment and therefore ends
             // the sequence
             ungetc( ch, in_stream );
             ch = '/';
+            add_char_to_comment_buffer('\0');
             done = true;
           }
         else if( state == STAR ) state = C_COMMENT;
         else if( state == BLANK ) done = true;
+        else { // ordinary character in C comment
+            add_char_to_comment_buffer(ch);
+        }
         break;
       } // end, switch
 #ifdef DEBUG
@@ -146,7 +204,7 @@ void initDot( FILE * in )
   /** @todo eventually will want to pick up the first comment */
   ungetc( ch, in );
   char digraph[strlen("digraph") + 1];
-  int success = fscanf( in, "%8s", digraph );
+  int success = fscanf( in, "%7s", digraph );
   if ( success == EOF ) {
     sprintf( error_message, "expected 'digraph', got EOF" );
     error(true);
@@ -212,7 +270,8 @@ bool nextEdge( FILE * in, char * src_buf, char * dst_buf )
 void dotPreamble( FILE * out, const char * graph_name,
                    const char * seed_info )
 {
-  fprintf( out, "/* %s */\n", seed_info );
+  fprintf(out, "/* %s ", comments);
+  fprintf( out, " seed_info = %s */\n", seed_info );
   fprintf( out, "digraph %s {\n", graph_name );
 }
 
@@ -256,5 +315,3 @@ int main()
 }
 
 #endif
-
-/*  [Last modified: 2019 12 13 at 21:08:31 GMT] */

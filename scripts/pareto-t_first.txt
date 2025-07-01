@@ -1,0 +1,5 @@
+-p dfs -h mod_bary -a 100 -o t -P t_v
+-h mcn -a 100 -o t -P t_v
+-h vertical_bary -a 100 -o v -P t_v
+-h mnve -a 100 -o v -P t_v
+-p dfs -h mod_bary -a 100 -o t -P t_v

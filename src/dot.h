@@ -46,6 +46,22 @@ void initDot( FILE * in );
 void getNameFromDotFile( char * buffer );
 
 /**
+ * Usage of the following two functions:
+    char buffer[SIZE];
+    startGettingDotComments();
+    while ( getNextDotComment(buffer) ) {
+       // add buffer to list of comments
+    }
+ */
+void startGettingDotComments(void);
+
+/**
+ * stores next line of comments in the buffer
+ * @return pointer to start of buffer or NULL if at end of comments
+ */
+char * getNextDotComment(char * buffer);
+
+/**
  * Reads the next edge from the input, storing the names of the vertices in
  * buffers. Assumes the buffers are large enough.
  * @return true if another edge was found.

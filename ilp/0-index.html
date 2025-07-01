@@ -1,0 +1,66 @@
+<html> <head>
+<title>Integer Program Utilities for Layered Graphs</title>
+</head>
+
+<body>
+<h2 align="center">Integer Program Utilities for Layered Graphs</h2>
+
+These assume that CPLEX is available. And that <code>cplex_ilp</code> from
+<pre>
+  https://github.com/mfms-ncsu/CPX-ILP
+</pre>
+is installed.
+<pre>
+</pre>
+<h3>Files in lexicographic order</h3>
+<hr>
+<ul>
+<li>
+<strong><a href="pareto_frontier.sh">pareto_frontier.sh</a> --</strong><br>
+<pre>
+starts with an sgf file and two extreme values 'low' and 'high' for one of two objectives
+for every value 'val' in the range [low,high]:
+    - compute the value of the other objective with the first constrained to be 'val'
+(assumes sgf2ilp.py is in this directory and cplex_ilp is in PATH)
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="sgf2ilp.py">sgf2ilp.py</a> --</strong><br>
+<pre>
+Converts a graph in .sgf format to a linear integer program
+This program translates from standard input to standard output.
+Can be used to minimize a variety of objectives or two in combination.
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="sgf2opt.sh">sgf2opt.sh</a> --</strong><br>
+<pre>
+starts with an sgf file and finds orderings that minimize two distinct objectives;
+four different optimizations are done:
+    - first objective alone
+    - second objective alone
+    - first given the optimum value of second as a constraint
+    - second given the optimum value of first as a constraint
+  The run for 'second given the optimum value of first as a constraint' is omitted
+  if 'first given the optimum value of second as a constraint' has the same outcome
+  as solving for first alone.
+(assumes sgf2ilp.py is in this directory and cplex_ilp is in PATH)
+</pre>
+</li>
+<hr><br>
+<li>
+<strong><a href="sol2sgf.py">sol2sgf.py</a> --</strong><br>
+<pre>
+Converts solution of a linear integer program to a graph in .sgf format
+This program translates from standard input to standard output.
+</pre>
+</li>
+<hr><br>
+</ul>
+<address>
+<a href="http://mfms.wordpress.ncsu.edu">Matthias F. (Matt) Stallmann</a><br>
+Created: Tue Jun 27 15:35:50 EDT 2023
+</address>
+</body> </html>
