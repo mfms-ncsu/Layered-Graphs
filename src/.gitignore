@@ -2,5 +2,7 @@
 add_edges
 create_random_dag
 dot_and_ord_to_sgf
-min_crossings
+minimization
 rand_seq
+sgf_to_dot_and_ord
+verticality_adjustment_test

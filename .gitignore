@@ -10,6 +10,7 @@ TAGS
 *.ord
 *.sgf
 *.graphml
+*.lp
 
 # java class files
 *.class
