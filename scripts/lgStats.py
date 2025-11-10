@@ -12,6 +12,7 @@
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter # to allow newlines in help messages
 import math
+import os
 import statistics
 
 def parse_arguments():
@@ -22,6 +23,18 @@ def parse_arguments():
                         help='an sgf file')
     args = parser.parse_args()
     return args
+
+from pathlib import Path
+
+"""
+    Returns the base name (filename with extension) from a file path.
+    Works cross-platform and handles edge cases.
+"""
+def get_base_name(file_path):
+    if not isinstance(file_path, (str, Path)) or not str(file_path).strip():
+        raise ValueError("file_path must be a non-empty string or Path object")
+    
+    return Path(file_path).name
 
 """
 creates the global data structures _node_dictionary and _nodes_on_layer,
@@ -239,6 +252,7 @@ def num_edges_in_channel(channel):
 adds basic information about the graph
 """
 def add_basic_information(output_list):
+    output_list.append(("filename", get_base_name(_args.input_file)))
     output_list.append(("name", graph_name()))
     output_list.append(("nodes", number_of_nodes()))
     output_list.append(("edges", number_of_edges()))

@@ -16,6 +16,9 @@ usage() {
     errcho "      the first heuristic is not repeated"
     errcho "   if SEED is specified, heuristics are randomized, using SEED as an initial seed"
     errcho "      (the seed is incremented each time minimization is run again)"
+    errcho "To run this on every file in a directory DIR use runScript.sh as follows"
+    errcho "   runScript.sh repeatHeuristics.sh DIR OUTPUT_DIR TAG + CONFIG_FILE REPETITIONS [SEED]"
+    errcho " where TAG is a suffix for the output file, which will be DIR-TAG.out"
 }
 
 if [ $# -lt 3 ] || [ $# -gt 4 ]; then
