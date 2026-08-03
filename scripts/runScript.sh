@@ -1,7 +1,6 @@
 #! /bin/bash
 
 # generic script for running a program on a set of instances in the same directory
-# [from mfms/Utilities repository]
 
 # beginning of line before a record; this will be followed by a description and a date
 START_TAG="======"

@@ -35,4 +35,6 @@ The ilp directory contains scripts for creating CPLEX LP format integer/quadrati
 `https://github.com/mfms-ncsu/CPX-ILP` and run `cplex_ilp` with the `-solution` option
 
 For displaying small to medium size graphs, you may use Galant after conversion to `graphml` via the `sgf2layered_graphml.py` script in the `scripts` directory. See
-`https://github.com/mfms-ncsu/galant`
+[github.com/mfms-ncsu/galant](github.com/mfms-ncsu/galant)
+
+Or, better yet, use the web-based version of galant at [galant.csc.ncsu.edu](galant.csc.ncsu.edu), which uses `sgf` as the input format for layered graphs.

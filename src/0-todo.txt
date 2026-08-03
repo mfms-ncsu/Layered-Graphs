@@ -22,8 +22,6 @@ Consider runtime options that assume three stages: preprocessing (e.g., dfs), so
 *** Get rid of ***
 
 - sifting variations (-s)
-- the -g option; made obsolete by naming heuristics differently; but see above
-- termination based on lack of improvement for barycenter variations
 
 *** Modify ***
 
